@@ -1,23 +1,21 @@
 import React from 'react';
 import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import  Dashboard from './Pages/dashboard';
+import MyInventory from './Pages/myInventory';
+import AuctionView from './Pages/auction';
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <BrowserRouter>
+          <Switch>
+            <Route path="/myInventory" component={MyInventory}></Route>
+            <Route path="/auctions/:id" component={AuctionView}></Route>
+            <Route path="/" component={Dashboard}></Route>
+          </Switch>
+        </BrowserRouter>
       </header>
     </div>
   );
