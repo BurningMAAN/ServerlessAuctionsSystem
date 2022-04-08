@@ -4,6 +4,7 @@
 package models
 
 type Bid struct {
-	ID    string
-	Value float32
+	ID     string
+	Value  float32
+	UserID string
 }

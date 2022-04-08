@@ -16,15 +16,21 @@ type auctionRepository interface {
 	GetAuctionByID(ctx context.Context, auctionID string) (models.Auction, error)
 }
 
+type userRepository interface {
+	GetUserByID(ctx context.Context, userID string) (models.User, error)
+}
+
 type service struct {
 	auctionRepository auctionRepository
 	bidRepository     bidRepository
+	userRepository    userRepository
 }
 
-func New(auctionRepository auctionRepository, bidRepository bidRepository) *service {
+func New(auctionRepository auctionRepository, bidRepository bidRepository, userRepository userRepository) *service {
 	return &service{
 		auctionRepository: auctionRepository,
 		bidRepository:     bidRepository,
+		userRepository:    userRepository,
 	}
 }
 
@@ -32,6 +38,15 @@ func (s *service) PlaceBid(ctx context.Context, auctionID string, bid models.Bid
 	auction, err := s.auctionRepository.GetAuctionByID(ctx, auctionID)
 	if err != nil {
 		return models.Bid{}, err
+	}
+
+	user, err := s.userRepository.GetUserByID(ctx, bid.UserID)
+	if err != nil {
+		return models.Bid{}, err
+	}
+
+	if auction.CreatorID == user.ID {
+		return models.Bid{}, errors.ErrAuctionUserBidUserMatch
 	}
 
 	if auction.IsFinished {
