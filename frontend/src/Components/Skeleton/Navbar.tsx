@@ -1,16 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { createStyles, Navbar, Group, Code, Image } from "@mantine/core";
 import {
-  BellRinging,
-  Fingerprint,
-  Key,
-  Settings,
-  TwoFA,
-  DatabaseImport,
-  Receipt2,
-  SwitchHorizontal,
   Logout,
-  AugmentedReality,
   Menu,
 } from "tabler-icons-react";
 import sebas from '../../shared/sebas.png';
@@ -97,8 +88,9 @@ const useStyles = createStyles((theme, _params, getRef) => {
 
 const data = [
   { link: "/", label: "Aukcionai", icon: Menu },
-  {link: "", label: "Mano aukcionai", icon: Menu},
-  {link: "/myInventory", label: "Mano inventorius", icon: Menu}
+  {link: "/myAuctions", label: "Mano aukcionai", icon: Menu},
+  {link: "/myInventory", label: "Mano inventorius", icon: Menu},
+  {link: "", label: "Vartotojo valdymas", icon: Menu}
 ];
 
 export default function NavigationBar() {

@@ -1,36 +1,18 @@
-import React, { FC, useEffect, useState } from "react";
-import AuctionCard from "../Components/Auction/AuctionItem";
-import {
-  AuctionGroup,
-  GetAuctionList,
-} from "../Components/Auction/AuctionGroup";
+import { useEffect, useState } from "react";
 import NavigationBar from "../Components/Skeleton/Navbar";
-import HeaderMiddle from "../Components/Skeleton/Header";
 import ProgressCircle from "../Components/General/ProgressCircle";
 import { Carousel } from "react-bootstrap";
 import {
   AppShell,
-  Container,
   Grid,
-  Menu,
-  UnstyledButton,
-  Group,
-  Stack,
-  Select,
   Title,
   Table,
   Divider,
-  Badge,
-  ScrollArea,
   Button,
-  Image,
   Center,
   createStyles,
   Text,
-  RingProgress,
 } from "@mantine/core";
-import { ChevronDown } from "tabler-icons-react";
-import AuctionItem from "../Components/Auction/AuctionItem";
 
 interface AuctionProps {
   data: { name: string; email: string; company: string }[];
@@ -93,7 +75,10 @@ export default function AuctionView({}: AuctionProps) {
         <Grid.Col span={7}>
           <Title>BMW 525D E39</Title>
           <Divider />
-          <Carousel style={{height: 450, width: 650, top: 25}} onClick={() => setTimeLeft(30)}>
+          <Carousel
+            style={{ height: 450, width: 650, top: 25 }}
+            onClick={() => setTimeLeft(30)}
+          >
             <Carousel.Item>
               <img
                 className="d-block w-100"
@@ -136,8 +121,21 @@ export default function AuctionView({}: AuctionProps) {
             </Carousel.Item>
           </Carousel>
           <Title py={50}>Informacija</Title>
-          <Text style={{top: 200}} size="sm">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur nec tempus est, id varius nisi. Donec et aliquet elit. Suspendisse potenti. Donec viverra, eros at mollis finibus, diam neque vehicula dolor, sed aliquet arcu arcu ac turpis. Nulla congue risus id consectetur lacinia. Nulla metus nibh, gravida eget lacus feugiat, tristique ornare massa. Donec vel augue eu justo dapibus porta. Aenean mauris risus, blandit in auctor in, mattis ac ex. Etiam pharetra sollicitudin libero vel porttitor. Aliquam semper pellentesque turpis at ornare. Sed at volutpat tortor. Nunc nec augue vestibulum, auctor purus a, cursus urna. Integer vulputate orci nulla, vitae cursus lacus fringilla id. Aliquam quis ullamcorper risus, non imperdiet dui. Maecenas id hendrerit metus, ac suscipit tellus. Cras gravida pharetra metus ac consequat.
-</Text>
+          <Text style={{ top: 200 }} size="sm">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur
+            nec tempus est, id varius nisi. Donec et aliquet elit. Suspendisse
+            potenti. Donec viverra, eros at mollis finibus, diam neque vehicula
+            dolor, sed aliquet arcu arcu ac turpis. Nulla congue risus id
+            consectetur lacinia. Nulla metus nibh, gravida eget lacus feugiat,
+            tristique ornare massa. Donec vel augue eu justo dapibus porta.
+            Aenean mauris risus, blandit in auctor in, mattis ac ex. Etiam
+            pharetra sollicitudin libero vel porttitor. Aliquam semper
+            pellentesque turpis at ornare. Sed at volutpat tortor. Nunc nec
+            augue vestibulum, auctor purus a, cursus urna. Integer vulputate
+            orci nulla, vitae cursus lacus fringilla id. Aliquam quis
+            ullamcorper risus, non imperdiet dui. Maecenas id hendrerit metus,
+            ac suscipit tellus. Cras gravida pharetra metus ac consequat.
+          </Text>
         </Grid.Col>
         <Grid.Col span={4}>
           <Center>
@@ -227,7 +225,7 @@ export default function AuctionView({}: AuctionProps) {
           </Table>
         </Grid.Col>
         <Grid.Col span={10}>
-            <Divider/>
+          <Divider />
         </Grid.Col>
       </Grid>
     </AppShell>

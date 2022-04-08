@@ -1,16 +1,7 @@
 import {
-  Card,
-  Image,
   Text,
-  Badge,
-  Button,
-  Group,
-  useMantineTheme,
-  Modal,
-  Progress,
   RingProgress,
 } from "@mantine/core";
-import { Link } from "react-router-dom";
 
 interface RingProgressProps {
   progressValue: number;

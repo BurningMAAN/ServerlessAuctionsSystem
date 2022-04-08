@@ -1,28 +1,18 @@
-import React, { FC } from "react";
-import AuctionCard from "../Components/Auction/AuctionItem";
-import {
-  AuctionGroup,
-  GetAuctionList,
-} from "../Components/Auction/AuctionGroup";
+import React, { FC, useState } from "react";
 import NavigationBar from "../Components/Skeleton/Navbar";
-import HeaderMiddle from "../Components/Skeleton/Header";
 import {
   AppShell,
-  Container,
-  Grid,
-  Menu,
-  UnstyledButton,
+  Divider,
   Group,
-  Stack,
   Select,
   Title,
   Button,
 } from "@mantine/core";
-import { ChevronDown } from "tabler-icons-react";
-import AuctionItem from "../Components/Auction/AuctionItem";
+import ItemCreateWizard from "../Components/Item/AddItemWizard";
 interface TitleProps {}
 
 const MyInventory: FC<TitleProps> = ({}) => {
+  const [open, setOpen] = useState(false);
   return (
     <AppShell
       padding="md"
@@ -30,6 +20,26 @@ const MyInventory: FC<TitleProps> = ({}) => {
     //   header={<HeaderMiddle></HeaderMiddle>}
       fixed
     >
+     <div>
+        <Group spacing="sm">
+          <Title>Paieška</Title>
+          <Select style={{width: 150}}
+            width={20}
+            label="Kategorija"
+            placeholder="Kategorija"
+            data={[
+                {value: "-", label: "-"},
+                { value: "Transportas", label: "Transportas" }
+            ]}
+          ></Select>
+          <Button px={50} style={{top: 12}}>
+            Ieškoti
+            </Button>
+          <Button color="green" px={50} style={{top: 12}} onClick={() => setOpen(true)}>Pridėti inventorių</Button>
+        </Group>
+        </div>
+        <Divider/>
+        <ItemCreateWizard onOpen={open} onClose={() => setOpen(false)}></ItemCreateWizard>
     </AppShell>
   );
 };

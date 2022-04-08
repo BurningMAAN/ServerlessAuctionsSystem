@@ -49,7 +49,7 @@ Resources:
     Properties:
       AuthType: PERSONAL_ACCESS_TOKEN
       ServerType: GITHUB
-      Token: "{{resolve::secretsmanager::GITHUB_ACCESS::SecretString::GITHUB_ACCESS_TOKEN}}"
+      Token: "{{resolve::secretsmanager::valid_token_name::SecretString::valid}}"
       
   CodeBuildProject:
     Type: "AWS::CodeBuild::Project"
@@ -58,7 +58,7 @@ Resources:
       ServiceRole: !GetAtt CodeBuildServiceRole.Arn
       Source:
         Type: GITHUB
-        Location: "https://github.com/BurningMAAN/ServerlessAuctionsSystem.git"
+        Location: "validPATH"
         BuildSpec: buildspec.yaml
         Auth:
           Type: OAUTH
@@ -71,7 +71,7 @@ Resources:
           - - Type: EVENT
               Pattern: PUSH
             - Type: HEAD_REF
-              Pattern: !Sub ^refs/heads/master$
+              Pattern: !Sub ^refs/heads/branchName$
       Environment:
         Type: LINUX_CONTAINER
         ComputeType: BUILD_GENERAL1_SMALL
