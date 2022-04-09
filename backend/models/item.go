@@ -7,6 +7,8 @@ type Item struct {
 	ID          string
 	Description string
 	Category    ItemCategory
+	OwnerID     string
+	PhotoURLs   []string
 }
 
 type ItemCategory string

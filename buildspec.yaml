@@ -20,6 +20,14 @@ phases:
       - cd $ROOTDIR/backend/functions/api/auction/getAuction
       - go build -o main
 
+      # Build CreateItemFunction
+      - cd $ROOTDIR/backend/functions/api/item/createItem
+      - go build -o main
+
+      # Build GetItemFunction
+      - cd $ROOTDIR/backend/functions/api/item/getItem
+      - go build -o main
+
       - cd $ROOTDIR
       - echo ${PACKAGE_BUCKET}
       - aws cloudformation package --template-file backend_resources.yaml --s3-bucket ${PACKAGE_BUCKET} --output-template-file packaged-backend_resources.yaml

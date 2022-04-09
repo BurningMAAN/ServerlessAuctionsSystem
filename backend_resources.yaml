@@ -84,7 +84,65 @@ Resources:
         ApiEvent:
             Type: Api
             Properties:
-              Path: /auction/{auctionId}
+              Path: /auctions/{auctionId}
+              Method: get
+              RestApiId:
+                Ref: AuctionGateway
+  # Item Lambda Functions
+  CreateItemFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: main
+      Runtime: go1.x
+      AutoPublishAlias: live
+      Tracing: Active
+      MemorySize: 512
+      Timeout: 15
+      Description: Lambda function that creates item entity
+      CodeUri: backend/functions/api/item/createItem
+      Environment:
+        Variables:
+          DYNAMODB_TABLE: !Ref DynamoDBTable
+      Policies:
+        Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:PutItem
+            Resource: !GetAtt DynamoDBTable.Arn
+      Events:
+        ApiEvent:
+            Type: Api
+            Properties:
+              Path: /item
+              Method: post
+              RestApiId:
+                Ref: AuctionGateway
+
+  GetItemsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: main
+      Runtime: go1.x
+      AutoPublishAlias: live
+      Tracing: Active
+      MemorySize: 512
+      Timeout: 15
+      Description: Lambda function that gets item entity
+      CodeUri: backend/functions/api/item/getItem
+      Environment:
+        Variables:
+          DYNAMODB_TABLE: !Ref DynamoDBTable
+      Policies:
+        Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:GetItem
+            Resource: !GetAtt DynamoDBTable.Arn
+      Events:
+        ApiEvent:
+            Type: Api
+            Properties:
+              Path: /items/{itemId}
               Method: get
               RestApiId:
                 Ref: AuctionGateway

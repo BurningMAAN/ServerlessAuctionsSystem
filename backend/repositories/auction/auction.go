@@ -69,7 +69,7 @@ func (r *repository) CreateAuction(ctx context.Context, auction models.Auction) 
 	if err != nil {
 		var ccfe *types.ConditionalCheckFailedException
 		if errors.As(err, &ccfe) {
-			return models.Auction{}, errors.New("exists")
+			return models.Auction{}, errors.New("not exists")
 		}
 		return models.Auction{}, err
 	}
