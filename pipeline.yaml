@@ -164,6 +164,40 @@ Resources:
                   - 'codebuild:StartBuild'
                 Resource: '*'
                 Effect: Allow
+              - Sid: CloudFormationDescribeStacks
+                Effect: Allow
+                Action:
+                  - cloudformation:DescribeStacks
+                Resource:
+                  - '*'
+              ################### s3 ###################
+              - Effect: Allow
+                Action:
+                  - s3:PutObject*
+                  - s3:GetObject
+                Resource: '*'
+
+              - Effect: Allow
+                Action:
+                  - s3:DeleteBucket
+                  - s3:ListBucket
+                Resource: '*'
+
+              - Effect: Allow
+                Action:
+                  - s3:CreateBucket
+                  - s3:DeleteBucket
+                  - s3:PutLifecycleConfiguration
+                  - s3:GetLifecycleConfiguration
+                  - s3:GetEncryptionConfiguration
+                  - s3:PutEncryptionConfiguration
+                  - s3:GetObjectAcl
+                  - s3:PutObjectAcl
+                  - s3:PutBucketTagging
+                  - s3:PutBucketPublicAccessBlock
+                  - s3:GetBucketPublicAccessBlock
+                  - s3:GetBucketLocation
+                Resource: '*'
   CodePipelineArtifactStore:
     Type: 'AWS::S3::Bucket'
     Properties:
