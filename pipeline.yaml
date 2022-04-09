@@ -1,4 +1,5 @@
 AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
 Description: CI/CD pipeline for GitHub projects
 Parameters:
   GitHubOwner:
@@ -64,7 +65,7 @@ Resources:
     Properties:
       AuthType: PERSONAL_ACCESS_TOKEN
       ServerType: GITHUB
-      Token: "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"
+      Token: '{{resolve:secretsmanager:TOKENAS:SecretString:GITHUB_ACCESS_TOKEN}}'
       
   CodeBuilProject:
     Type: 'AWS::CodeBuild::Project'
@@ -95,10 +96,10 @@ Resources:
         Type: LINUX_CONTAINER
         ComputeType: BUILD_GENERAL1_SMALL
         Image: !Ref CodeBuildEnvironmentImage
-  CodeBuilProjectDeployProd:
+  CodeBuild:
     Type: 'AWS::CodeBuild::Project'
     Properties:
-      Name: !Sub '${AWS::StackName}-deploy-prod'
+      Name: !Sub '${AWS::StackName}-build'
       ServiceRole: !GetAtt 
         - CodeBuildServiceRole
         - Arn
@@ -173,7 +174,7 @@ Resources:
     Properties:
       Authentication: GITHUB_HMAC
       AuthenticationConfiguration:
-        SecretToken: "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"
+        SecretToken: '{{resolve:secretsmanager:TOKENAS:SecretString:GITHUB_ACCESS_TOKEN}}'
       RegisterWithThirdParty: 'true'
       Filters:
         - JsonPath: $.ref
@@ -209,18 +210,18 @@ Resources:
                 Repo: !Ref GitHubRepository
                 Branch: !Ref GitHubBranch
                 PollForSourceChanges: false
-                OAuthToken: "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"
+                OAuthToken: '{{resolve:secretsmanager:TOKENAS:SecretString:GITHUB_ACCESS_TOKEN}}'
               OutputArtifacts:
                 - Name: SourceCode
-        - Name: Prod
+        - Name: BuildBackend
           Actions:
-            - Name: Deploy
+            - Name: BuildBackend
               ActionTypeId:
                 Category: Build
                 Owner: AWS
                 Provider: CodeBuild
                 Version: '1'
               Configuration:
-                ProjectName: !Ref CodeBuilProjectDeployProd
+                ProjectName: !Ref CodeBuild
               InputArtifacts:
                 - Name: SourceCode

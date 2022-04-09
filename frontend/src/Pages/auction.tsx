@@ -13,6 +13,7 @@ import {
   createStyles,
   Text,
 } from "@mantine/core";
+import axios from 'axios';
 
 interface AuctionProps {
   data: { name: string; email: string; company: string }[];
@@ -152,6 +153,8 @@ export default function AuctionView({}: AuctionProps) {
           </Center>
           <Center>
             {(timeLeft !== 0 && <Button color="green" onClick={() => {
+              axios.get('https://qcsa7w7fyd.execute-api.us-east-1.amazonaws.com/prod/')
+              .then(response => console.log(response))
               console.log('atliktas statymas')
               setTimeLeft(30)
             }}>+ 25</Button>) || (

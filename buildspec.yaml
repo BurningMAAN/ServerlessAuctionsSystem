@@ -1,7 +1,17 @@
 version: 0.2
 
-phases: 
+env:
+  variables:
+    GO111MODULE: "on"
+
+phases:
+  install:
+    runtime-versions:
+      golang: 1.15
   build:
     commands:
-      - echo Entered the build phase...
-      - echo Build started on `date`
+      - export ROOTDIR=`pwd`
+
+      # Build CreateAuctionFunction
+      - cd $ROOTDIR/functions/api/auction/createAuction
+      - go build -o main
