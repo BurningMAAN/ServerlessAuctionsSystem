@@ -17,7 +17,8 @@ phases:
       - go build -o main
 
       - cd $ROOTDIR
-      - aws cloudformation package --template-file backend_resources.yaml --s3-bucket ${PACKAGE_BUCKET} --output-template-file backend_resources.yaml
+      - echo ${PACKAGE_BUCKET}
+      - aws cloudformation package --template-file backend_resources.yaml --s3-bucket ${PACKAGE_BUCKET} --output-template-file packaged-backend_resources.yaml
 artifacts:
   files:
-    - backend_resources.yaml
+    - packaged-backend_resources.yaml
