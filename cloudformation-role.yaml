@@ -1,0 +1,50 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  CFNStackName:
+    Description: stack name
+    Type: String
+    Default: test
+Resources:
+  CloudFormationRole:
+    Type: AWS::IAM::Role
+    # checkov:skip=CKV_AWS_109:Ensure IAM policies does not allow permissions management without constraints
+    Properties:
+      RoleName: !Sub '${CFNStackName}-cloudformation-role'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - cloudformation.amazonaws.com
+                - codepipeline.amazonaws.com
+            Action: sts:AssumeRole
+          - Effect: Allow
+            Sid: ''
+            Principal:
+              AWS: '*'
+            Condition:
+              StringLike:
+                'aws:PrincipalArn':
+                  - !Sub arn:aws:iam::${AWS::AccountId}:role/test-CodePipelineServiceRole*
+            Action: sts:AssumeRole
+
+      Policies:
+        - PolicyName: CodePipelineServiceRolePolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              ################### cloudformation ###################
+              - Effect: Allow
+                Action:
+                  - cloudformation:DescribeChangeSet
+                  - cloudformation:CreateChangeSet
+                  - cloudformation:ExecuteChangeSet
+                  - cloudformation:DeleteChangeSet
+                  - cloudformation:DescribeStacks
+                  - cloudformation:CreateStack
+                  - cloudformation:UpdateStack
+                Resource:
+                  - !Sub 'arn:aws:cloudformation:us-east-1:*:stack/${CFNStackName}*'
+                  - arn:aws:cloudformation:us-east-1:aws:transform/Serverless-2016-10-31
+                  - arn:aws:cloudformation:us-east-1:aws:transform/Include
