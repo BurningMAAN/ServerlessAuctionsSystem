@@ -15,7 +15,7 @@ Parameters:
     Default: master
   CodeBuildEnvironmentImage:
     Type: String
-    Default: 'aws/codebuild/standard:4.0'
+    Default: 'aws/codebuild/standard:5.0'
 Resources:
   CodeBuildServiceRole:
     Type: 'AWS::IAM::Role'

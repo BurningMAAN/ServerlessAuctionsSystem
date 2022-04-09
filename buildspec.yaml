@@ -10,8 +10,8 @@ phases:
       golang: 1.15
   build:
     commands:
+      - ls
       - export ROOTDIR=`pwd`
-
       # Build CreateAuctionFunction
       - cd $ROOTDIR/functions/api/auction/createAuction
       - go build -o main
