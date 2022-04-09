@@ -297,7 +297,7 @@ Resources:
                 ActionMode: "CREATE_UPDATE"
                 Capabilities: "CAPABILITY_AUTO_EXPAND,CAPABILITY_NAMED_IAM,CAPABILITY_IAM"
                 StackName: !Sub ${AWS::StackName}-backend
-                TemplatePath: BuildArtifact::backend_resources.yaml
+                TemplatePath: BuildArtifact::packaged-backend_resources.yaml
                 RoleArn: !Sub "arn:aws:iam::${AWS::AccountId}:role/${AWS::StackName}-cloudformation-role"
               InputArtifacts:
                 - Name: 'BuildArtifact'

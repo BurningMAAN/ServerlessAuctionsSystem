@@ -76,4 +76,49 @@ Resources:
                   - s3:GetBucketPublicAccessBlock
                   - s3:GetBucketLocation
                 Resource: '*'
+              - Effect: Allow
+                Action:
+                  - iam:CreateRole
+                  - iam:AttachRolePolicy
+                  - iam:DetachRolePolicy
+                  - iam:DeleteRole
+                  - iam:GetRole
+                  - iam:PassRole
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - dynamodb:DescribeTable
+                  - dynamodb:CreateTable
+                  - dynamodb:DeleteTable
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - lambda:CreateFunction
+                  - lambda:GetFunction
+                  - lambda:GetFunctionCodeSigningConfig
+                  - lambda:GetFunctionConfiguration
+                  - lambda:DeleteFunction
+                  - lambda:AddPermission
+                  - lambda:UpdateFunctionCode
+                  - lambda:ListTags
+                  - lambda:TagResource
+                  - lambda:UntagResource
+                  - lambda:ListVersionsByFunction
+                  - lambda:PublishVersion
+                  - lambda:CreateAlias
+                  - lambda:DeleteAlias
+                  - lambda:RemovePermission
+                  - lambda:GetAlias
+                  - lambda:UpdateAlias
+                  - lambda:UpdateFunctionConfiguration
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - apigateway:PATCH
+                  - apigateway:POST
+                  - apigateway:GET
+                  - apigateway:DELETE
+                  - apigateway:PUT
+                  - apigateway:UpdateRestApiPolicy
+                Resource: '*'
 

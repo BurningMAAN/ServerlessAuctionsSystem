@@ -42,11 +42,17 @@ Resources:
       Timeout: 15
       Description: Lambda function that creates auction entity
       CodeUri: backend/functions/api/auction/createAuction
+      Policies:
+        Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:PutItem
+            Resource: !GetAtt DynamoDBTable.Arn
       Events:
         ApiEvent:
             Type: Api
             Properties:
-              Path: /
+              Path: /auction
               Method: get
               RestApiId:
                 Ref: AuctionGateway

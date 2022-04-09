@@ -9,11 +9,10 @@ type Auction struct {
 	ID           string
 	IsFinished   bool
 	Type         AuctionType
-	BuyNowPrice  float32
+	BuyoutPrice  *float64
 	StartDate    time.Time
-	EndTime      time.Time
 	Participants []string /// ID's of Auction participants
-	MinimalBid   float32
+	BidIncrement float64
 	CreatorID    string
 }
 

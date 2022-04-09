@@ -17,7 +17,7 @@ import (
 )
 
 type lambdaConfig struct {
-	LoanServiceTableName string `envconfig:"DYNAMODB_LOAN_DATA_TABLE" required:"true"`
+	TableName string `envconfig:"DYNAMODB_TABLE" required:"true"`
 }
 
 func main() {
@@ -33,7 +33,7 @@ func main() {
 	}
 
 	db := dynamodb.NewFromConfig(awsCfg)
-	auctionRepository := auctionsRepository.New(db)
+	auctionRepository := auctionsRepository.New(cfg.TableName, db)
 
 	c := handler{
 		auctionService: auctionsService.New(auctionRepository),
