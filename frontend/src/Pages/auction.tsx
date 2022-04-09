@@ -49,16 +49,14 @@ export default function AuctionView({}: AuctionProps) {
   const { classes, cx } = useStyles();
   const [scrolled, setScrolled] = useState(false);
 
-  const [timeLeft, setTimeLeft] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(30);
 
   useEffect(() => {
     if (timeLeft == 0) {
+      console.log('aukcionas baigesi')
       return;
     }
 
-    if (timeLeft == 1) {
-      setTimeLeft(30);
-    }
     const intervalId = setInterval(() => {
       setTimeLeft(timeLeft - 1);
     }, 1000);
@@ -68,7 +66,6 @@ export default function AuctionView({}: AuctionProps) {
     <AppShell
       padding="md"
       navbar={<NavigationBar></NavigationBar>}
-      //   header={<HeaderMiddle></HeaderMiddle>}
       fixed
     >
       <Grid>
@@ -77,7 +74,6 @@ export default function AuctionView({}: AuctionProps) {
           <Divider />
           <Carousel
             style={{ height: 450, width: 650, top: 25 }}
-            onClick={() => setTimeLeft(30)}
           >
             <Carousel.Item>
               <img
@@ -155,9 +151,12 @@ export default function AuctionView({}: AuctionProps) {
             <Text>Statymo suma: 25.00 €</Text>
           </Center>
           <Center>
-            {(timeLeft !== 0 && <Button color="green">+ 25</Button>) || (
+            {(timeLeft !== 0 && <Button color="green" onClick={() => {
+              console.log('atliktas statymas')
+              setTimeLeft(30)
+            }}>+ 25</Button>) || (
               <Button color="grey" disabled>
-                + 25
+                Aukcionas baigėsi
               </Button>
             )}
           </Center>
