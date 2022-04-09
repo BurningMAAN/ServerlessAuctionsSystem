@@ -42,6 +42,9 @@ Resources:
       Timeout: 15
       Description: Lambda function that creates auction entity
       CodeUri: backend/functions/api/auction/createAuction
+      Environment:
+        Variables:
+          DYNAMODB_TABLE: !Ref DynamoDBTable
       Policies:
         Statement:
           - Effect: Allow
