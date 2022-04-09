@@ -15,10 +15,10 @@ type APIError struct {
 	ErrorMessage string `json:"errorMessage"`
 }
 
-func InternalError() (events.APIGatewayProxyResponse, error) {
+func InternalError(message string) (events.APIGatewayProxyResponse, error) {
 	error := APIError{
 		StatusCode:   http.StatusInternalServerError,
-		ErrorMessage: "Internal Server Error",
+		ErrorMessage: message,
 	}
 
 	errMsg, _ := json.Marshal(error)

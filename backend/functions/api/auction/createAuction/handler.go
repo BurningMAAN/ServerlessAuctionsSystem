@@ -41,7 +41,7 @@ func (h *handler) CreateAuction(ctx context.Context, event events.APIGatewayProx
 	req := request{}
 	err := json.Unmarshal([]byte(event.Body), &req)
 	if err != nil {
-		return utils.InternalError()
+		return utils.InternalError(err.Error())
 	}
 
 	auction, err := h.auctionService.CreateAuction(ctx, models.Auction{
@@ -51,7 +51,7 @@ func (h *handler) CreateAuction(ctx context.Context, event events.APIGatewayProx
 		CreatorID:    req.CreatorID,
 	}, req.ItemID)
 	if err != nil {
-		return utils.InternalError()
+		return utils.InternalError(err.Error())
 	}
 
 	respBody, err := json.Marshal(response{
@@ -63,7 +63,7 @@ func (h *handler) CreateAuction(ctx context.Context, event events.APIGatewayProx
 		CreatorID:    auction.CreatorID,
 	})
 	if err != nil {
-		return utils.InternalError()
+		return utils.InternalError(err.Error())
 	}
 
 	return events.APIGatewayProxyResponse{
