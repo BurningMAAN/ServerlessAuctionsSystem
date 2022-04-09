@@ -13,5 +13,5 @@ phases:
       - ls
       - export ROOTDIR=`pwd`
       # Build CreateAuctionFunction
-      - cd $ROOTDIR/functions/api/auction/createAuction
+      - cd $ROOTDIR/backend/functions/api/auction/createAuction
       - go build -o main
