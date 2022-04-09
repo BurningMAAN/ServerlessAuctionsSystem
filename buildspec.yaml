@@ -15,3 +15,7 @@ phases:
       # Build CreateAuctionFunction
       - cd $ROOTDIR/backend/functions/api/auction/createAuction
       - go build -o main
+
+artifacts:
+  files:
+    - backend_resources.yaml

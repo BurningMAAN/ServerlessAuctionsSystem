@@ -275,7 +275,10 @@ Resources:
                 StackName: !Sub ${AWS::StackName}-backend
                 TemplatePath: BuildArtifact::backend_resources.yaml
                 RoleArn: !Sub "arn:aws:iam::${AWS::AccountId}:role/${AWS::StackName}-cloudformation-role"
-                TemplatePath: BuildArtifact::cloudformation_role.yaml
+                ParameterOverrides: 
+                      Fn::Sub:
+                        - '{"BuildArtifactBucket": "${CodePipelineArtifactStore}"}'
+                        - ArtifactBucket: !GetAtt CodePipelineArtifactStore.Arn
               InputArtifacts:
                 - Name: 'BuildArtifact'
               RunOrder: 1
