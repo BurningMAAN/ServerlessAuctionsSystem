@@ -53,6 +53,6 @@ Resources:
             Type: Api
             Properties:
               Path: /auction
-              Method: get
+              Method: post
               RestApiId:
                 Ref: AuctionGateway
