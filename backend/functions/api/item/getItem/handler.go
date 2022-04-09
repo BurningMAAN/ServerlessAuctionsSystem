@@ -31,11 +31,11 @@ type handler struct {
 }
 
 func (h *handler) GetItem(ctx context.Context, event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	if len(event.PathParameters["auctionId"]) == 0 {
+	if len(event.PathParameters["itemId"]) == 0 {
 		return utils.InternalError("not provided auctionId")
 	}
 	req := request{
-		ItemID: event.PathParameters["auctionId"],
+		ItemID: event.PathParameters["itemId"],
 	}
 
 	item, err := h.itemService.GetItemByID(ctx, req.ItemID)
