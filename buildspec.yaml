@@ -16,6 +16,8 @@ phases:
       - cd $ROOTDIR/backend/functions/api/auction/createAuction
       - go build -o main
 
+      - cd $ROOTDIR
+      - aws cloudformation package --template-file backend_resources.yaml --s3-bucket ${PACKAGE_BUCKET} --output-template-file backend_resources.yaml
 artifacts:
   files:
     - backend_resources.yaml

@@ -198,6 +198,28 @@ Resources:
                   - s3:GetBucketPublicAccessBlock
                   - s3:GetBucketLocation
                 Resource: '*'
+
+              - Effect: Allow
+                Action:
+                  - iam:GetRolePolicy
+                  - iam:PutRolePolicy
+                  - iam:GetRole
+                  - iam:PassRole
+                  - iam:UpdateAssumeRolePolicy
+                Resource:
+                  - !Sub "arn:aws:iam::${AWS::AccountId}:role/${AWS::StackName}-cloudformation-role"
+
+              - Effect: Allow
+                Action:
+                  - cloudformation:DescribeChangeSet
+                  - cloudformation:CreateChangeSet
+                  - cloudformation:ExecuteChangeSet
+                  - cloudformation:DeleteChangeSet
+                  - cloudformation:DescribeStacks
+                  - cloudformation:CreateStack
+                  - cloudformation:UpdateStack
+                Resource:
+                  - !Sub 'arn:aws:cloudformation:us-east-1:*:stack/${AWS::StackName}*'
   CodePipelineArtifactStore:
     Type: 'AWS::S3::Bucket'
     Properties:
@@ -275,10 +297,6 @@ Resources:
                 StackName: !Sub ${AWS::StackName}-backend
                 TemplatePath: BuildArtifact::backend_resources.yaml
                 RoleArn: !Sub "arn:aws:iam::${AWS::AccountId}:role/${AWS::StackName}-cloudformation-role"
-                ParameterOverrides: 
-                      Fn::Sub:
-                        - '{"BuildArtifactBucket": "${CodePipelineArtifactStore}"}'
-                        - ArtifactBucket: !GetAtt CodePipelineArtifactStore.Arn
               InputArtifacts:
                 - Name: 'BuildArtifact'
               RunOrder: 1
