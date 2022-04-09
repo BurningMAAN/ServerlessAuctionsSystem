@@ -84,6 +84,7 @@ Resources:
                   - iam:DeleteRole
                   - iam:GetRole
                   - iam:PassRole
+                  - iam:PutRolePolicy
                 Resource: '*'
               - Effect: Allow
                 Action:
