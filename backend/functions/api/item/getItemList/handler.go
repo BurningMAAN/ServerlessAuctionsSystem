@@ -24,6 +24,7 @@ type itemsResponse struct {
 	Category    string   `json:"category"`
 	OwnerID     string   `json:"ownerId"`
 	PhotoURLs   []string `json:"photoURLs"`
+	Name        string   `json:"name"`
 }
 
 type itemService interface {
@@ -48,6 +49,7 @@ func (h *handler) GetItems(ctx context.Context, event events.APIGatewayProxyRequ
 			Category:    string(item.Category),
 			OwnerID:     item.OwnerID,
 			PhotoURLs:   item.PhotoURLs,
+			Name:        item.Name,
 		})
 	}
 	respBody, err := json.Marshal(resp)

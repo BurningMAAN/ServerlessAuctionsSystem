@@ -6,9 +6,12 @@ import {
   Group,
   Select,
   Title,
+  Container,
+  Grid,
   Button,
 } from "@mantine/core";
 import ItemCreateWizard from "../Components/Item/AddItemWizard";
+import ItemGroup from "../Components/Item/ItemGroup";
 interface TitleProps {}
 
 const MyInventory: FC<TitleProps> = ({}) => {
@@ -39,6 +42,11 @@ const MyInventory: FC<TitleProps> = ({}) => {
         </Group>
         </div>
         <Divider/>
+        <Container size="lg" style={{overflowY: 'scroll',overflowX: 'hidden', height: 800}}>
+        <Grid gutter="xl">
+          <ItemGroup></ItemGroup>
+        </Grid>
+      </Container>
         <ItemCreateWizard onOpen={open} onClose={() => setOpen(false)}></ItemCreateWizard>
     </AppShell>
   );
