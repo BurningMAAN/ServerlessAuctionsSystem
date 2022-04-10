@@ -19,12 +19,6 @@ Resources:
         -
           AttributeName: 'GSI1SK'
           AttributeType: 'S'
-        -
-          AttributeName: 'GSI2PK'
-          AttributeType: 'S'
-        -
-          AttributeName: 'GSI2SK'
-          AttributeType: 'S'
       KeySchema:
         -
           AttributeName: 'PK'
@@ -36,9 +30,9 @@ Resources:
         - IndexName: GSI1
           KeySchema:
             - AttributeName: GSI1PK
-              KeyType: HASH
+              KeyType: 'HASH'
             - AttributeName: GSI1SK
-              KeyType: RANGE
+              KeyType: 'RANGE'
           Projection:
             ProjectionType: ALL
           ProvisionedThroughput: 
