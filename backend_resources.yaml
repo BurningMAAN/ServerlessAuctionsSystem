@@ -107,7 +107,7 @@ Resources:
         Statement:
           - Effect: Allow
             Action:
-              - dynamodb:Query
+              - dynamodb:Scan
             Resource: !GetAtt DynamoDBTable.Arn
       Events:
         ApiEvent:
