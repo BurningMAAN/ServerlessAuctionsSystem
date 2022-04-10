@@ -36,5 +36,8 @@ func (h *handler) GetAuction(ctx context.Context, event events.APIGatewayProxyRe
 
 	return events.APIGatewayProxyResponse{
 		StatusCode: http.StatusNoContent,
+		Headers: map[string]string{
+			"Access-Control-Allow-Origin": "*",
+		},
 	}, nil
 }

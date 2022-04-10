@@ -56,7 +56,8 @@ func (h *handler) GetItem(ctx context.Context, event events.APIGatewayProxyReque
 
 	return events.APIGatewayProxyResponse{
 		Headers: map[string]string{
-			"Content-Type": "application/json",
+			"Content-Type":                "application/json",
+			"Access-Control-Allow-Origin": "*",
 		},
 		StatusCode: http.StatusOK,
 		Body:       string(respBody),

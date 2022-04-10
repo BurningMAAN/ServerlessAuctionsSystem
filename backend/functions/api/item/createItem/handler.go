@@ -67,7 +67,8 @@ func (h *handler) CreateItem(ctx context.Context, event events.APIGatewayProxyRe
 
 	return events.APIGatewayProxyResponse{
 		Headers: map[string]string{
-			"Content-Type": "application/json",
+			"Content-Type":                "application/json",
+			"Access-Control-Allow-Origin": "*",
 		},
 		StatusCode: http.StatusCreated,
 		Body:       string(respBody),

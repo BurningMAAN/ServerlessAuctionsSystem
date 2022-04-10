@@ -71,7 +71,8 @@ func (h *handler) CreateAuction(ctx context.Context, event events.APIGatewayProx
 
 	return events.APIGatewayProxyResponse{
 		Headers: map[string]string{
-			"Content-Type": "application/json",
+			"Content-Type":                "application/json",
+			"Access-Control-Allow-Origin": "*",
 		},
 		StatusCode: http.StatusCreated,
 		Body:       string(respBody),
