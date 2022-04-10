@@ -20,6 +20,10 @@ phases:
       - cd $ROOTDIR/backend/functions/api/auction/getAuction
       - go build -o main
 
+      # Build GetAuctionListFunction
+      - cd $ROOTDIR/backend/functions/api/auction/getAuctionList
+      - go build -o main
+
       # Build CreateItemFunction
       - cd $ROOTDIR/backend/functions/api/item/createItem
       - go build -o main

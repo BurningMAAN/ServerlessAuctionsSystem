@@ -5,10 +5,12 @@ import (
 	"auctionsPlatform/utils"
 	"context"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
+	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/expression"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"github.com/google/uuid"
@@ -19,6 +21,9 @@ type DB interface {
 	GetItem(ctx context.Context, input *dynamodb.GetItemInput, optFns ...func(*dynamodb.Options)) (*dynamodb.GetItemOutput, error)
 	// https://pkg.go.dev/github.com/aws/aws-sdk-go-v2/service/dynamodb#Client.PutItem
 	PutItem(ctx context.Context, input *dynamodb.PutItemInput, optFns ...func(*dynamodb.Options)) (*dynamodb.PutItemOutput, error)
+	// https://pkg.go.dev/github.com/aws/aws-sdk-go-v2/service/dynamodb#Client.UpdateItem
+	UpdateItem(ctx context.Context, input *dynamodb.UpdateItemInput, optFns ...func(*dynamodb.Options)) (*dynamodb.UpdateItemOutput, error)
+	Query(ctx context.Context, input *dynamodb.QueryInput, optFns ...func(*dynamodb.Options)) (*dynamodb.QueryOutput, error)
 }
 
 type repository struct {
@@ -41,7 +46,10 @@ type AuctionDB struct {
 	BidIncrement float64
 	CreatorID    string
 	Type         string
+	IsFinished   bool
 }
+
+type OptionalGetParameters struct{}
 
 func (r *repository) CreateAuction(ctx context.Context, auction models.Auction) (models.Auction, error) {
 	auctionID := uuid.New().String()
@@ -54,6 +62,7 @@ func (r *repository) CreateAuction(ctx context.Context, auction models.Auction) 
 		BidIncrement: auction.BidIncrement,
 		CreatorID:    auction.CreatorID,
 		Type:         string(auction.Type),
+		IsFinished:   false,
 	}
 	auctionAttributeValues, err := attributevalue.MarshalMap(auctionDB)
 	if err != nil {
@@ -96,4 +105,58 @@ func (r *repository) GetAuctionByID(ctx context.Context, auctionID string) (mode
 	}
 
 	return ExtractAuction(result.Item)
+}
+
+func (r *repository) FinishAuction(ctx context.Context, auctionID string) error {
+	express, err := expression.NewBuilder().WithUpdate(expression.Set(
+		expression.Name("IsFinished"), expression.Value(true))).Build()
+	if err != nil {
+		return err
+	}
+	input := &dynamodb.UpdateItemInput{
+		TableName:                 aws.String(r.tableName),
+		ReturnValues:              types.ReturnValueAllNew,
+		ExpressionAttributeValues: express.Values(),
+		ExpressionAttributeNames:  express.Names(),
+		Key: map[string]types.AttributeValue{
+			"PK": &types.AttributeValueMemberS{
+				Value: fmt.Sprintf("%s#%s", models.AuctionEntityType, auctionID),
+			},
+			"SK": &types.AttributeValueMemberS{
+				Value: "Metadata",
+			},
+		},
+		UpdateExpression: express.Update(),
+	}
+
+	_, err = r.DB.UpdateItem(ctx, input)
+	if err != nil {
+		return err
+	}
+
+	return err
+}
+
+func (r *repository) GetAllAuctions(ctx context.Context, optFns ...func(*OptionalGetParameters)) ([]models.Auction, error) {
+	expr, err := expression.NewBuilder().WithKeyCondition(expression.KeyAnd(
+		expression.Key("PK").BeginsWith(""), expression.Key("SK").Equal(expression.Value("Metadata")))).Build()
+	if err != nil {
+		return nil, err
+	}
+
+	result, err := r.DB.Query(ctx, &dynamodb.QueryInput{
+		TableName:                 &r.tableName,
+		KeyConditionExpression:    expr.KeyCondition(),
+		ExpressionAttributeNames:  expr.Names(),
+		ExpressionAttributeValues: expr.Values(),
+	})
+	if err != nil {
+		return []models.Auction{}, err
+	}
+
+	if result.Items == nil {
+		return []models.Auction{}, errors.New("exists")
+	}
+
+	return ExtractAuctions(result.Items)
 }

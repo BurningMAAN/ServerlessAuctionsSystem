@@ -285,9 +285,9 @@ Resources:
                 - Name: SourceCode
               OutputArtifacts:
                 - Name: 'BuildArtifact'
-        - Name: DeployResources
+        - Name: DeployBackend
           Actions:
-            - Name: DeployResources
+            - Name: DeployBackend
               ActionTypeId:
                 Category: Deploy
                 Owner: AWS

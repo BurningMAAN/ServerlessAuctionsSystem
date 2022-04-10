@@ -3,22 +3,10 @@ package auction
 import (
 	"auctionsPlatform/models"
 	"auctionsPlatform/utils"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 )
-
-func marshalAuction(auctionID string, auction models.Auction) (AuctionDB, error) {
-	return AuctionDB{
-		PK:           fmt.Sprintf("Auction#%s", auctionID),
-		SK:           "Metadata",
-		BuyoutPrice:  auction.BuyoutPrice,
-		StartDate:    auction.StartDate,
-		BidIncrement: auction.BidIncrement,
-		CreatorID:    auction.CreatorID,
-	}, nil
-}
 
 func unmarshalAuction(auctionDB AuctionDB) (models.Auction, error) {
 	return models.Auction{
@@ -28,6 +16,7 @@ func unmarshalAuction(auctionDB AuctionDB) (models.Auction, error) {
 		BidIncrement: auctionDB.BidIncrement,
 		StartDate:    auctionDB.StartDate,
 		CreatorID:    auctionDB.CreatorID,
+		IsFinished:   auctionDB.IsFinished,
 	}, nil
 }
 
@@ -44,4 +33,18 @@ func ExtractAuction(items map[string]types.AttributeValue) (models.Auction, erro
 	}
 
 	return auction, nil
+}
+
+func ExtractAuctions(items []map[string]types.AttributeValue) ([]models.Auction, error) {
+	auctions := []models.Auction{}
+	for _, item := range items {
+		auction, err := ExtractAuction(item)
+		if err != nil {
+			return []models.Auction{}, err
+		}
+
+		auctions = append(auctions, auction)
+	}
+
+	return auctions, nil
 }

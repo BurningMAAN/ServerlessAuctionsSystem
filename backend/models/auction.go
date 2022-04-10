@@ -14,6 +14,7 @@ type Auction struct {
 	Participants []string /// ID's of Auction participants
 	BidIncrement float64
 	CreatorID    string
+	// Category string Prideti kategorija (nes rodome korteleje)
 }
 
 type AuctionType string
