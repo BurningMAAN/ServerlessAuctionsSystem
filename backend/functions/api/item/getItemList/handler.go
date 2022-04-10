@@ -11,10 +11,14 @@ import (
 )
 
 type request struct {
-	ItemID string
+	// ItemID string
 }
 
 type response struct {
+	Items []itemsResponse `json:"items"`
+}
+
+type itemsResponse struct {
 	ID          string   `json:"id"`
 	Description string   `json:"description"`
 	Category    string   `json:"category"`
@@ -23,33 +27,30 @@ type response struct {
 }
 
 type itemService interface {
-	GetItemByID(ctx context.Context, itemID string) (models.Item, error)
+	GetItemsByUserID(ctx context.Context, userID string) ([]models.Item, error)
 }
 
 type handler struct {
 	itemService itemService
 }
 
-func (h *handler) GetItem(ctx context.Context, event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	if len(event.PathParameters["itemId"]) == 0 {
-		return utils.InternalError("not provided auctionId")
-	}
-	req := request{
-		ItemID: event.PathParameters["itemId"],
-	}
-
-	item, err := h.itemService.GetItemByID(ctx, req.ItemID)
+func (h *handler) GetItems(ctx context.Context, event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	items, err := h.itemService.GetItemsByUserID(ctx, "")
 	if err != nil {
 		return utils.InternalError(err.Error())
 	}
 
-	respBody, err := json.Marshal(response{
-		ID:          item.ID,
-		Description: item.Description,
-		Category:    string(item.Category),
-		OwnerID:     item.OwnerID,
-		PhotoURLs:   item.PhotoURLs,
-	})
+	resp := response{}
+	for _, item := range items {
+		resp.Items = append(resp.Items, itemsResponse{
+			ID:          item.ID,
+			Description: item.Description,
+			Category:    string(item.Category),
+			OwnerID:     item.OwnerID,
+			PhotoURLs:   item.PhotoURLs,
+		})
+	}
+	respBody, err := json.Marshal(resp)
 	if err != nil {
 		return utils.InternalError(err.Error())
 	}

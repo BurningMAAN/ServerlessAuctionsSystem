@@ -22,6 +22,7 @@ type DB interface {
 	PutItem(ctx context.Context, input *dynamodb.PutItemInput, optFns ...func(*dynamodb.Options)) (*dynamodb.PutItemOutput, error)
 	// https://pkg.go.dev/github.com/aws/aws-sdk-go-v2/service/dynamodb#Client.UpdateItem
 	UpdateItem(ctx context.Context, input *dynamodb.UpdateItemInput, optFns ...func(*dynamodb.Options)) (*dynamodb.UpdateItemOutput, error)
+	Scan(ctx context.Context, params *dynamodb.ScanInput, optFns ...func(*dynamodb.Options)) (*dynamodb.ScanOutput, error)
 }
 
 type repository struct {
@@ -133,4 +134,28 @@ func (r *repository) AssignItem(ctx context.Context, auctionID, itemID string) e
 	}
 
 	return err
+}
+
+func (r *repository) GetItemsByUserID(ctx context.Context, userID string) ([]models.Item, error) {
+	filter := expression.Name("PK").BeginsWith(string(models.ItemEntityType))
+
+	expr, err := expression.NewBuilder().WithFilter(filter).Build()
+	if err != nil {
+		return []models.Item{}, err
+	}
+	result, err := r.DB.Scan(ctx, &dynamodb.ScanInput{
+		TableName:                 &r.tableName,
+		ExpressionAttributeNames:  expr.Names(),
+		ExpressionAttributeValues: expr.Values(),
+		FilterExpression:          expr.Filter(),
+	})
+	if err != nil {
+		return []models.Item{}, err
+	}
+
+	if result.Items == nil {
+		return []models.Item{}, errors.New("exists")
+	}
+
+	return ExtractItems(result.Items)
 }

@@ -33,3 +33,18 @@ func ExtractItem(items map[string]types.AttributeValue) (models.Item, error) {
 
 	return item, nil
 }
+
+func ExtractItems(items []map[string]types.AttributeValue) ([]models.Item, error) {
+	returnedItems := []models.Item{}
+
+	for _, item := range items {
+		extractedItem, err := ExtractItem(item)
+		if err != nil {
+			return []models.Item{}, err
+		}
+
+		returnedItems = append(returnedItems, extractedItem)
+	}
+
+	return returnedItems, nil
+}

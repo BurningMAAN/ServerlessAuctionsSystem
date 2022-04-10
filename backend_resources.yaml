@@ -208,3 +208,32 @@ Resources:
               Method: get
               RestApiId:
                 Ref: AuctionGateway
+  
+  GetItemListFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: main
+      Runtime: go1.x
+      AutoPublishAlias: live
+      Tracing: Active
+      MemorySize: 512
+      Timeout: 15
+      Description: Lambda function that gets auction entity
+      CodeUri: backend/functions/api/item/getItemList
+      Environment:
+        Variables:
+          DYNAMODB_TABLE: !Ref DynamoDBTable
+      Policies:
+        Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:Scan
+            Resource: !GetAtt DynamoDBTable.Arn
+      Events:
+        ApiEvent:
+            Type: Api
+            Properties:
+              Path: /itemsList
+              Method: get
+              RestApiId:
+                Ref: AuctionGateway

@@ -38,5 +38,5 @@ func main() {
 	c := handler{
 		itemService: itemsService.New(itemRepository, nil),
 	}
-	lambda.Start(c.GetItem)
+	lambda.Start(c.GetItems)
 }
