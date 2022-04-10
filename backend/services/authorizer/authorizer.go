@@ -14,6 +14,8 @@ const (
 	defaultExpirationTime int = 180
 )
 
+var jwtKey = []byte("my_secret_key")
+
 type userRepository interface {
 	GetUserByUserName(ctx context.Context, userName string) (models.User, error)
 }
@@ -35,7 +37,7 @@ func (s *service) Authorize(ctx context.Context, userName, password string) (mod
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
-		return models.AuthorizationConfig{}, fmt.Errorf("comparing error: %w", err)
+		return models.AuthorizationConfig{}, err
 	}
 
 	expirationTime := time.Now().Add(time.Duration(defaultExpirationTime) * time.Minute)
@@ -47,7 +49,7 @@ func (s *service) Authorize(ctx context.Context, userName, password string) (mod
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString(user.Password)
+	tokenString, err := token.SignedString(jwtKey)
 	if err != nil {
 		return models.AuthorizationConfig{}, fmt.Errorf("Signed string: %w", err)
 	}
