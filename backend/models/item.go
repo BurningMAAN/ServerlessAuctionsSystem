@@ -9,6 +9,7 @@ type Item struct {
 	Category    ItemCategory
 	OwnerID     string
 	PhotoURLs   []string
+	AuctionID   string
 }
 
 type ItemCategory string

@@ -5,9 +5,11 @@ import (
 	"auctionsPlatform/utils"
 	"context"
 	"errors"
+	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
+	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/expression"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"github.com/google/uuid"
@@ -18,6 +20,8 @@ type DB interface {
 	GetItem(ctx context.Context, input *dynamodb.GetItemInput, optFns ...func(*dynamodb.Options)) (*dynamodb.GetItemOutput, error)
 	// https://pkg.go.dev/github.com/aws/aws-sdk-go-v2/service/dynamodb#Client.PutItem
 	PutItem(ctx context.Context, input *dynamodb.PutItemInput, optFns ...func(*dynamodb.Options)) (*dynamodb.PutItemOutput, error)
+	// https://pkg.go.dev/github.com/aws/aws-sdk-go-v2/service/dynamodb#Client.UpdateItem
+	UpdateItem(ctx context.Context, input *dynamodb.UpdateItemInput, optFns ...func(*dynamodb.Options)) (*dynamodb.UpdateItemOutput, error)
 }
 
 type repository struct {
@@ -37,6 +41,8 @@ type ItemDB struct {
 	SK          string // Example: Metadata
 	GSI1PK      string // Example: User#{OwnerID}
 	GSI1SK      string // Example: Category
+	GSI2PK      string // Example: Auction#{AuctionID}
+	GSI2SK      string // Example: Metadata
 	PhotoURLs   []string
 	Description string
 }
@@ -95,4 +101,34 @@ func (r *repository) GetItemByID(ctx context.Context, itemID string) (models.Ite
 	}
 
 	return ExtractItem(result.Item)
+}
+
+func (r *repository) AssignItem(ctx context.Context, auctionID, itemID string) error {
+	express, err := expression.NewBuilder().WithUpdate(expression.Set(
+		expression.Name("GSI2PK"), expression.Value(utils.Make(models.UserEntityType, auctionID)))).Build()
+	if err != nil {
+		return err
+	}
+	input := &dynamodb.UpdateItemInput{
+		TableName:                 aws.String(r.tableName),
+		ReturnValues:              types.ReturnValueAllNew,
+		ExpressionAttributeValues: express.Values(),
+		ExpressionAttributeNames:  express.Names(),
+		Key: map[string]types.AttributeValue{
+			"PK": &types.AttributeValueMemberS{
+				Value: fmt.Sprintf("%s#%s", models.ItemEntityType, itemID),
+			},
+			"SK": &types.AttributeValueMemberS{
+				Value: "Metadata",
+			},
+		},
+		UpdateExpression: express.Update(),
+	}
+
+	_, err = r.DB.UpdateItem(ctx, input)
+	if err != nil {
+		return err
+	}
+
+	return err
 }
