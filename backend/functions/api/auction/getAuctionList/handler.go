@@ -24,7 +24,7 @@ type auction struct {
 	AuctionDate  time.Time    `json:"auctionDate"`
 	BuyoutPrice  *float64     `json:"buyoutPrice"`
 	AuctionType  string       `json:"auctionType"`
-	BidIncrement float64      `json:"BidIncrement"`
+	BidIncrement float64      `json:"bidIncrement"`
 	CreatorID    string       `json:"creatorId"`
 	ItemID       string       `json:"itemId"`
 	Item         itemResponse `json:"item"`
@@ -35,6 +35,7 @@ type itemResponse struct {
 	Description string   `json:"description"`
 	Category    string   `json:"category"`
 	OwnerID     string   `json:"ownerId"`
+	Name        string   `json:"name"`
 	PhotoURLs   []string `json:"photoURLs"`
 }
 
@@ -82,6 +83,7 @@ func auctionsToResponse(auctions []models.AuctionListView) response {
 				Description: auctionItem.Item.Description,
 				Category:    string(auctionItem.Item.Category),
 				PhotoURLs:   auctionItem.Item.PhotoURLs,
+				Name:        auctionItem.Item.Name,
 			},
 		})
 	}

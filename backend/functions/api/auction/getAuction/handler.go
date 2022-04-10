@@ -20,7 +20,7 @@ type response struct {
 	AuctionDate  time.Time `json:"auctionDate"`
 	BuyoutPrice  *float64  `json:"buyoutPrice"`
 	AuctionType  string    `json:"auctionType"`
-	BidIncrement float64   `json:"BidIncrement"`
+	BidIncrement float64   `json:"bidIncrement"`
 	CreatorID    string    `json:"creatorId"`
 	ItemID       string    `json:"itemId"`
 }

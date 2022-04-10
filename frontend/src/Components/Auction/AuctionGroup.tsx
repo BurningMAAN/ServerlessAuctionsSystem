@@ -3,8 +3,24 @@ import { Grid } from "@mantine/core";
 import AuctionCard from "./AuctionItem";
 import { AuctionProps } from "./AuctionItem";
 
+export interface AuctionList {
+  auctions: [
+    {
+      id: string;
+      auctionDate: string;
+      buyoutPrice: number;
+      auctionType: string;
+      bidIncrement: number;
+      item:{
+        category: string;
+        name: string;
+      }
+    }
+  ]
+}
+
 export default function AuctionGroup() {
-  const [auctionsList, setAuctionsList] = useState<AuctionProps[]>([]);
+  const [auctionsList, setAuctionsList] = useState<AuctionList>();
 
   useEffect(() => {
     const url =
@@ -15,7 +31,6 @@ export default function AuctionGroup() {
         const response = await fetch(url);
         const responseJSON = await response.json();
         setAuctionsList(responseJSON.auctions);
-        console.log(responseJSON.auctions);
       } catch (error) {
         console.log("failed to get data from api", error);
       }
@@ -26,12 +41,15 @@ export default function AuctionGroup() {
 
   return (
     <>
-      {auctionsList.map((auctionItem) => {
+      {
+      auctionsList?.auctions?.map((auctionItem) => {
         return (
           <Grid.Col span={4}>
             <AuctionCard
               auctionDate={auctionItem.auctionDate}
               buyoutPrice={auctionItem.buyoutPrice}
+              auctionName={auctionItem.item.name}
+              category={auctionItem.item.category}
             ></AuctionCard>
           </Grid.Col>
         );
