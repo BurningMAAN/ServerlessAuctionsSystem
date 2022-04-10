@@ -25,7 +25,7 @@ export default function AuctionGroup() {
 
   useEffect(() => {
     const url =
-      "http://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/auctionsList";
+      "https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/auctionsList";
 
     const fetchData = async () => {
       try {

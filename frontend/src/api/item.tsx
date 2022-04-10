@@ -8,7 +8,7 @@ export interface ItemCreateRequest {
 
 export const createItem = async (item: ItemCreateRequest) => {
   const url =
-    "http://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/item";
+    "https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/item";
 
   const requestOptions = {
     method: "POST",
