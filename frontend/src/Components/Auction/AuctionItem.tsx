@@ -10,11 +10,13 @@ import {
 import { Link } from "react-router-dom";
 
 export interface AuctionProps {
+  auctionName: string;
   auctionDate: string;
+  category: string;
   buyoutPrice: number;
 }
 
-export default function AuctionCard({ auctionDate, buyoutPrice }: AuctionProps) {
+export default function AuctionCard({ auctionDate, buyoutPrice, auctionName, category }: AuctionProps) {
   const theme = useMantineTheme();
   const secondaryColor =
     theme.colorScheme === "dark" ? theme.colors.dark[1] : theme.colors.gray[7];
@@ -33,14 +35,14 @@ export default function AuctionCard({ auctionDate, buyoutPrice }: AuctionProps) 
           position="apart"
           style={{ marginBottom: 5, marginTop: theme.spacing.sm }}
         >
-          <Text weight={500}>Aukcijonas</Text>
+          <Text weight={500}>{auctionName}</Text>
           {buyoutPrice && (
             <Badge color="green" variant="light">
               Buy Now
             </Badge>
           )}
           <Badge color="pink" variant="light">
-            Kategorija
+            {category}
           </Badge>
         </Group>
 
