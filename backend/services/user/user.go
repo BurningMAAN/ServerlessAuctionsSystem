@@ -22,11 +22,6 @@ func New(userRepository userRepository) *service {
 }
 
 func (s *service) CreateUser(ctx context.Context, user models.User) (models.User, error) {
-	_, err := s.userRepository.GetUserByUserName(ctx, user.UserName)
-	if err != nil {
-		return models.User{}, err
-	}
-
 	return s.userRepository.CreateUser(ctx, user)
 }
 
