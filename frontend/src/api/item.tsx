@@ -18,8 +18,8 @@ export const createItem = async (item: ItemCreateRequest) => {
 
   try {
     fetch(url, requestOptions).then((response) => {
-      response.json()
-      console.log(response.json());
+      console.log(response.json())
+     
     });
   } catch (error) {
     console.log("failed to create item", error);

@@ -79,7 +79,10 @@ export default function ItemCreateWizard({ onOpen, onClose }: ItemCreateProps) {
       </Dropzone>
       <Divider />
       <Center>
-        <Button color="green" onClick={() => createItem(item)}>Patvirtinti</Button>
+        <Button color="green" onClick={() => {
+          createItem(item)
+          onClose();
+        }}>Patvirtinti</Button>
       </Center>
     </Modal>
   );
