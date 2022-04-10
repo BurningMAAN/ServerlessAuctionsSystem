@@ -24,6 +24,7 @@ type DB interface {
 	// https://pkg.go.dev/github.com/aws/aws-sdk-go-v2/service/dynamodb#Client.UpdateItem
 	UpdateItem(ctx context.Context, input *dynamodb.UpdateItemInput, optFns ...func(*dynamodb.Options)) (*dynamodb.UpdateItemOutput, error)
 	Query(ctx context.Context, input *dynamodb.QueryInput, optFns ...func(*dynamodb.Options)) (*dynamodb.QueryOutput, error)
+	Scan(ctx context.Context, params *dynamodb.ScanInput, optFns ...func(*dynamodb.Options)) (*dynamodb.ScanOutput, error)
 }
 
 type repository struct {
@@ -138,15 +139,14 @@ func (r *repository) FinishAuction(ctx context.Context, auctionID string) error 
 }
 
 func (r *repository) GetAllAuctions(ctx context.Context, optFns ...func(*OptionalGetParameters)) ([]models.Auction, error) {
-	expr, err := expression.NewBuilder().WithKeyCondition(expression.KeyAnd(
-		expression.Key("PK").BeginsWith(""), expression.Key("SK").Equal(expression.Value("Metadata")))).Build()
-	if err != nil {
-		return nil, err
-	}
+	filter := expression.Name("PK").BeginsWith(string(models.AuctionEntityType))
 
-	result, err := r.DB.Query(ctx, &dynamodb.QueryInput{
+	expr, err := expression.NewBuilder().WithFilter(filter).Build()
+	if err != nil {
+		return []models.Auction{}, err
+	}
+	result, err := r.DB.Scan(ctx, &dynamodb.ScanInput{
 		TableName:                 &r.tableName,
-		KeyConditionExpression:    expr.KeyCondition(),
 		ExpressionAttributeNames:  expr.Names(),
 		ExpressionAttributeValues: expr.Values(),
 	})
