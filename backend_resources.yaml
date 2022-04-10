@@ -49,10 +49,10 @@ Resources:
               KeyType: RANGE
           Projection:
             ProjectionType: ALL
-      ProvisionedThroughput: 
-        ReadCapacityUnits: "5"
-        WriteCapacityUnits: "5"
-      TableName: "AuctionsTable"
+    ProvisionedThroughput: 
+      ReadCapacityUnits: "5"
+      WriteCapacityUnits: "5"
+    TableName: "AuctionsTable"
 
   AuctionGateway:
     Type: AWS::Serverless::Api
