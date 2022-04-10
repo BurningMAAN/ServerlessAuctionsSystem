@@ -14,29 +14,35 @@ type auctionRepository interface {
 	FinishAuction(ctx context.Context, auctionID string) error
 }
 
-type itemService interface {
+type itemRepository interface {
 	AssignItem(ctx context.Context, auctionID, itemID string) error
+	GetItemByID(ctx context.Context, itemID string) (models.Item, error)
 }
 
 type service struct {
-	itemService       itemService
+	itemRepository    itemRepository
 	auctionRepository auctionRepository
 }
 
-func New(auctionRepository auctionRepository, itemService itemService) *service {
+func New(auctionRepository auctionRepository, itemRepository itemRepository) *service {
 	return &service{
 		auctionRepository: auctionRepository,
-		itemService:       itemService,
+		itemRepository:    itemRepository,
 	}
 }
 
 func (s *service) CreateAuction(ctx context.Context, auction models.Auction, itemID string) (models.Auction, error) {
-	auction, err := s.auctionRepository.CreateAuction(ctx, auction)
+	item, err := s.itemRepository.GetItemByID(ctx, itemID)
 	if err != nil {
 		return models.Auction{}, err
 	}
 
-	err = s.itemService.AssignItem(ctx, auction.ID, itemID)
+	auction, err = s.auctionRepository.CreateAuction(ctx, auction)
+	if err != nil {
+		return models.Auction{}, err
+	}
+
+	err = s.itemRepository.AssignItem(ctx, auction.ID, item.ID)
 	if err != nil {
 		return models.Auction{}, err
 	}
