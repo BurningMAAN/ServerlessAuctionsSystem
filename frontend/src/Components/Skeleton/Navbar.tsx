@@ -3,6 +3,7 @@ import { createStyles, Navbar, Group, Code, Image } from "@mantine/core";
 import {
   Logout,
   Menu,
+  Login,
 } from "tabler-icons-react";
 import sebas from '../../shared/sebas.png';
 
@@ -123,6 +124,13 @@ export default function NavigationBar() {
       </Navbar.Section>
 
       <Navbar.Section className={classes.footer}>
+      <a
+          href="/login"
+          className={classes.link}
+        >
+          <Login className={classes.linkIcon} />
+          <span>Prisijungti</span>
+        </a>
         <a
           href="#"
           className={classes.link}

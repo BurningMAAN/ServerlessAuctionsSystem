@@ -9,8 +9,10 @@ require (
 	github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue v1.8.4
 	github.com/aws/aws-sdk-go-v2/feature/dynamodb/expression v1.4.5
 	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.15.3
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/google/uuid v1.3.0
 	github.com/kelseyhightower/envconfig v1.4.0
+	golang.org/x/crypto v0.0.0-20220408190544-5352b0902921
 )
 
 require (

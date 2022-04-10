@@ -241,3 +241,63 @@ Resources:
               Method: get
               RestApiId:
                 Ref: AuctionGateway
+
+  CreateUserFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: main
+      Runtime: go1.x
+      AutoPublishAlias: live
+      Tracing: Active
+      MemorySize: 512
+      Timeout: 15
+      Description: Lambda function that creates user entity
+      CodeUri: backend/functions/api/user/createUser
+      Environment:
+        Variables:
+          DYNAMODB_TABLE: !Ref DynamoDBTable
+      Policies:
+        Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:GetItem
+              - dynamodb:PutItem
+            Resource: !GetAtt DynamoDBTable.Arn
+      Events:
+        ApiEvent:
+            Type: Api
+            Properties:
+              Path: /user
+              Method: post
+              RestApiId:
+                Ref: AuctionGateway
+
+  AuthorizerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: main
+      Runtime: go1.x
+      AutoPublishAlias: live
+      Tracing: Active
+      MemorySize: 512
+      Timeout: 15
+      Description: Lambda function that authorizes user
+      CodeUri: backend/functions/authorizer
+      Environment:
+        Variables:
+          DYNAMODB_TABLE: !Ref DynamoDBTable
+      Policies:
+        Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:GetItem
+              - dynamodb:PutItem
+            Resource: !GetAtt DynamoDBTable.Arn
+      Events:
+        ApiEvent:
+            Type: Api
+            Properties:
+              Path: /authorize
+              Method: post
+              RestApiId:
+                Ref: AuctionGateway

@@ -40,6 +40,14 @@ phases:
       - cd $ROOTDIR/backend/functions/api/item/getItemList
       - go build -o main
 
+      # Build CreateUserFunction
+      - cd $ROOTDIR/backend/functions/api/user/createUser
+      - go build -o main
+
+      # Build AuthorizerFunction
+      - cd $ROOTDIR/backend/functions/authorizer
+      - go build -o main
+
       - cd $ROOTDIR
       - echo ${PACKAGE_BUCKET}
       - aws cloudformation package --template-file backend_resources.yaml --s3-bucket ${PACKAGE_BUCKET} --output-template-file packaged-backend_resources.yaml

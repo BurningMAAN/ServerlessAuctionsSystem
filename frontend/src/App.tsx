@@ -3,6 +3,7 @@ import  Dashboard from './Pages/dashboard';
 import MyInventory from './Pages/myInventory';
 import AuctionView from './Pages/auction';
 import MyAuctions from './Pages/myAuctions';
+import AuthenticationImage from './Pages/login';
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
       <header className="App-header">
         <BrowserRouter>
           <Switch>
+            <Route path="/login" component={AuthenticationImage}></Route>
             <Route path="/myInventory" component={MyInventory}></Route>
             <Route path="/myAuctions" component={MyAuctions}></Route>
             <Route path="/auctions/:id" component={AuctionView}></Route>
