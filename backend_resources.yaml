@@ -51,6 +51,7 @@ Resources:
             Action:
               - dynamodb:PutItem
               - dynamodb:GetItem
+              - dynamodb:UpdateItem
             Resource: !GetAtt DynamoDBTable.Arn
       Events:
         ApiEvent:
