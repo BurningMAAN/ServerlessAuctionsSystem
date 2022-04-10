@@ -91,6 +91,7 @@ Resources:
                   - dynamodb:DescribeTable
                   - dynamodb:CreateTable
                   - dynamodb:DeleteTable
+                  - dynamodb:UpdateTable
                 Resource: '*'
               - Effect: Allow
                 Action:
