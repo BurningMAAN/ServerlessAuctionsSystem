@@ -10,15 +10,12 @@ import (
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
-	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type UserDB struct {
-	PK       string // Example: User#{UserID}
+	PK       string // Example: User#{UserName}
 	SK       string // Example: Metadata
-	GSI1PK   string `dynamodbav:",omitempty"` // Example: User#{UserName}
-	GSI1SK   string `dynamodbav:",omitempty"` // Example: Metadata
 	Password string
 	Email    string
 }
@@ -46,18 +43,14 @@ func New(tableName string, db DB) *repository {
 }
 
 func (r *repository) CreateUser(ctx context.Context, user models.User) (models.User, error) {
-	userID := uuid.New().String()
-
 	pswHash, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return models.User{}, err
 	}
 
 	itemDB := UserDB{
-		PK:       utils.Make(models.UserEntityType, userID),
+		PK:       utils.Make(models.UserEntityType, user.UserName),
 		SK:       "Metadata",
-		GSI1PK:   utils.Make(models.UserEntityType, user.UserName),
-		GSI1SK:   "Metadata",
 		Password: string(pswHash),
 		Email:    user.Email,
 	}
@@ -81,7 +74,6 @@ func (r *repository) CreateUser(ctx context.Context, user models.User) (models.U
 		return models.User{}, err
 	}
 
-	user.ID = userID
 	return user, nil
 }
 
@@ -110,8 +102,8 @@ func (r *repository) GetUserByUserName(ctx context.Context, userName string) (mo
 	query := &dynamodb.GetItemInput{
 		TableName: aws.String(r.tableName),
 		Key: map[string]types.AttributeValue{
-			"GSI1PK": &types.AttributeValueMemberS{Value: utils.Make(models.UserEntityType, userName)},
-			"GSI1SK": &types.AttributeValueMemberS{Value: "Metadata"},
+			"PK": &types.AttributeValueMemberS{Value: utils.Make(models.UserEntityType, userName)},
+			"SK": &types.AttributeValueMemberS{Value: "Metadata"},
 		},
 	}
 

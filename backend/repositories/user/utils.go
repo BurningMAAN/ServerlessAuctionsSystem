@@ -10,8 +10,7 @@ import (
 
 func unmarshalUser(userDB UserDB) (models.User, error) {
 	return models.User{
-		ID:       utils.Extract(models.UserEntityType, userDB.PK),
-		UserName: utils.Extract(models.UserEntityType, userDB.GSI1PK),
+		UserName: utils.Extract(models.UserEntityType, userDB.PK),
 		Password: userDB.Password,
 		Email:    userDB.Email,
 	}, nil
