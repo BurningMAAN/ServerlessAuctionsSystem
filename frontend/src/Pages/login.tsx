@@ -79,6 +79,8 @@ export default function AuthenticationImage() {
     } catch (error) {
       console.log("failed to create user", error);
     }
+
+    setClickedRegister(false);
   };
 
   return (
@@ -181,7 +183,6 @@ export default function AuthenticationImage() {
             }
             icon={<At size={14} />}
           />
-          {/* <Checkbox label="Keep me logged in" mt="xl" size="md" /> */}
           <Button fullWidth mt="xl" size="md" onClick={() => registerUser(userInformation)}>
             Registruotis
           </Button>
