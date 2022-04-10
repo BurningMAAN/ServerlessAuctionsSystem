@@ -117,6 +117,35 @@ Resources:
               Method: get
               RestApiId:
                 Ref: AuctionGateway
+
+  FinishAuctionFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: main
+      Runtime: go1.x
+      AutoPublishAlias: live
+      Tracing: Active
+      MemorySize: 512
+      Timeout: 15
+      Description: Lambda function that finishes auction
+      CodeUri: backend/functions/api/auction/finishAuction
+      Environment:
+        Variables:
+          DYNAMODB_TABLE: !Ref DynamoDBTable
+      Policies:
+        Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:UpdateItem
+            Resource: !GetAtt DynamoDBTable.Arn
+      Events:
+        ApiEvent:
+            Type: Api
+            Properties:
+              Path: /auctions/{auctionId}/finish
+              Method: post
+              RestApiId:
+                Ref: AuctionGateway
   # Item Lambda Functions
   CreateItemFunction:
     Type: AWS::Serverless::Function
