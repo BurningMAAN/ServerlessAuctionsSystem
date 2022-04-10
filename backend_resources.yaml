@@ -44,17 +44,17 @@ Resources:
           ProvisionedThroughput: 
             ReadCapacityUnits: "5"
             WriteCapacityUnits: "5"
-        - IndexName: GSI2
-          KeySchema:
-            - AttributeName: GSI2PK
-              KeyType: HASH
-            - AttributeName: GSI2SK
-              KeyType: RANGE
-          Projection:
-            ProjectionType: ALL
-          ProvisionedThroughput: 
-            ReadCapacityUnits: "5"
-            WriteCapacityUnits: "5"
+        # - IndexName: GSI2
+        #   KeySchema:
+        #     - AttributeName: GSI2PK
+        #       KeyType: HASH
+        #     - AttributeName: GSI2SK
+        #       KeyType: RANGE
+        #   Projection:
+        #     ProjectionType: ALL
+        #   ProvisionedThroughput: 
+        #     ReadCapacityUnits: "5"
+        #     WriteCapacityUnits: "5"
       ProvisionedThroughput: 
         ReadCapacityUnits: "5"
         WriteCapacityUnits: "5"
