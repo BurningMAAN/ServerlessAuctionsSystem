@@ -32,7 +32,11 @@ Resources:
         -
           AttributeName: 'SK'
           KeyType: 'RANGE'
-      GlobalSecondaryIndexes:
+    ProvisionedThroughput: 
+      ReadCapacityUnits: "5"
+      WriteCapacityUnits: "5"
+    TableName: "AuctionsTable"
+    GlobalSecondaryIndexes:
         - IndexName: GSI1
           KeySchema:
             - AttributeName: GSI1PK
@@ -49,10 +53,6 @@ Resources:
               KeyType: RANGE
           Projection:
             ProjectionType: ALL
-    ProvisionedThroughput: 
-      ReadCapacityUnits: "5"
-      WriteCapacityUnits: "5"
-    TableName: "AuctionsTable"
 
   AuctionGateway:
     Type: AWS::Serverless::Api
