@@ -136,6 +136,7 @@ Resources:
         Statement:
           - Effect: Allow
             Action:
+              - dynamodb:GetItem
               - dynamodb:UpdateItem
             Resource: !GetAtt DynamoDBTable.Arn
       Events:
