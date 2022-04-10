@@ -17,8 +17,8 @@ import (
 type UserDB struct {
 	PK       string // Example: User#{UserID}
 	SK       string // Example: Metadata
-	GSI1PK   string // Example: User#{UserName}
-	GSI1SK   string // Example: Metadata
+	GSI1PK   string `dynamodbav:",omitempty"` // Example: User#{UserName}
+	GSI1SK   string `dynamodbav:",omitempty"` // Example: Metadata
 	Password string
 	Email    string
 }

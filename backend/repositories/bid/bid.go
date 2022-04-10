@@ -39,8 +39,8 @@ type BidDB struct {
 	PK     string // Example: Bid#{BidID}
 	SK     string // Example: Metadata
 	Value  float64
-	GSI1PK string // Example: Auction#{AuctionID}
-	GSI1SK string // Example: DateTime#2020-11-26T10:56:52Z
+	GSI1PK string `dynamodbav:",omitempty"` // Example: Auction#{AuctionID}
+	GSI1SK string `dynamodbav:",omitempty"` // Example: DateTime#2020-11-26T10:56:52Z
 }
 
 type OptionalGetParameters struct{}
