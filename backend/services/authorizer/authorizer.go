@@ -3,6 +3,7 @@ package authorizer
 import (
 	"auctionsPlatform/models"
 	"context"
+	"errors"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -34,7 +35,7 @@ func (s *service) Authorize(ctx context.Context, userName, password string) (mod
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
-		return models.AuthorizationConfig{}, err
+		return models.AuthorizationConfig{}, errors.New("comparing error:", err)
 	}
 
 	expirationTime := time.Now().Add(time.Duration(defaultExpirationTime) * time.Minute)
