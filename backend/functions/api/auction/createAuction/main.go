@@ -8,7 +8,9 @@ import (
 	"log"
 
 	auctionsRepository "auctionsPlatform/repositories/auction"
+	itemsRepository "auctionsPlatform/repositories/item"
 	auctionsService "auctionsPlatform/services/auction"
+	itemService "auctionsPlatform/services/item"
 
 	"github.com/aws/aws-lambda-go/lambda"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
@@ -34,9 +36,10 @@ func main() {
 
 	db := dynamodb.NewFromConfig(awsCfg)
 	auctionRepository := auctionsRepository.New(cfg.TableName, db)
+	itemRepository := itemsRepository.New(cfg.TableName, db)
 
 	c := handler{
-		auctionService: auctionsService.New(auctionRepository),
+		auctionService: auctionsService.New(auctionRepository, itemService.New(itemRepository, auctionRepository)),
 	}
 	lambda.Start(c.CreateAuction)
 }

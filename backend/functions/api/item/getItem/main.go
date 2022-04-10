@@ -36,7 +36,7 @@ func main() {
 	itemRepository := itemsRepository.New(cfg.TableName, db)
 
 	c := handler{
-		itemService: itemsService.New(itemRepository),
+		itemService: itemsService.New(itemRepository, nil),
 	}
 	lambda.Start(c.GetItem)
 }

@@ -36,7 +36,7 @@ func main() {
 	auctionRepository := auctionsRepository.New(cfg.TableName, db)
 
 	c := handler{
-		auctionService: auctionsService.New(auctionRepository),
+		auctionService: auctionsService.New(auctionRepository, nil),
 	}
 	lambda.Start(c.GetAuction)
 }
