@@ -45,6 +45,7 @@ type ItemDB struct {
 	GSI2SK      string // Example: Metadata
 	PhotoURLs   []string
 	Description string
+	Name        string
 }
 
 func (r *repository) CreateItem(ctx context.Context, item models.Item) (models.Item, error) {
@@ -57,6 +58,7 @@ func (r *repository) CreateItem(ctx context.Context, item models.Item) (models.I
 		GSI1SK:      string(item.Category),
 		PhotoURLs:   item.PhotoURLs,
 		Description: item.Description,
+		Name:        item.Name,
 	}
 
 	itemAttributeValues, err := attributevalue.MarshalMap(itemDB)

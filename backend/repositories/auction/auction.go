@@ -48,6 +48,7 @@ type AuctionDB struct {
 	CreatorID    string
 	Type         string
 	IsFinished   bool
+	ItemID       string
 }
 
 type OptionalGetParameters struct{}
@@ -63,6 +64,7 @@ func (r *repository) CreateAuction(ctx context.Context, auction models.Auction) 
 		BidIncrement: auction.BidIncrement,
 		CreatorID:    auction.CreatorID,
 		Type:         string(auction.Type),
+		ItemID:       auction.ItemID,
 		IsFinished:   false,
 	}
 	auctionAttributeValues, err := attributevalue.MarshalMap(auctionDB)

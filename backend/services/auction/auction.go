@@ -54,8 +54,26 @@ func (s *service) GetAuctionByID(ctx context.Context, auctionID string) (models.
 	return s.auctionRepository.GetAuctionByID(ctx, auctionID)
 }
 
-func (s *service) GetAuctions(ctx context.Context) ([]models.Auction, error) {
-	return s.auctionRepository.GetAllAuctions(ctx)
+func (s *service) GetAuctions(ctx context.Context) ([]models.AuctionListView, error) {
+	view := []models.AuctionListView{}
+
+	auctions, err := s.auctionRepository.GetAllAuctions(ctx)
+	if err != nil {
+		return []models.AuctionListView{}, err
+	}
+
+	for _, auction := range auctions {
+		item, err := s.itemRepository.GetItemByID(ctx, auction.ItemID)
+		if err != nil {
+			return []models.AuctionListView{}, err
+		}
+		view = append(view, models.AuctionListView{
+			Auction: auction,
+			Item:    item,
+		})
+	}
+
+	return view, err
 }
 
 func (s *service) FinishAuction(ctx context.Context, auctionID string) error {

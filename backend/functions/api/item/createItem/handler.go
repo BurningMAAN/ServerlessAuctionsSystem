@@ -11,6 +11,7 @@ import (
 )
 
 type request struct {
+	Name        string `json:"name"`
 	Description string `json:"description"`
 	Category    string `json:"category"`
 	OwnerID     string `json:"ownerId"`
@@ -22,6 +23,7 @@ type response struct {
 	Category    string   `json:"category"`
 	OwnerID     string   `json:"ownerId"`
 	PhotoURLs   []string `json:"photoURLs"`
+	Name        string   `json:"name"`
 }
 
 type itemService interface {
@@ -45,6 +47,7 @@ func (h *handler) CreateItem(ctx context.Context, event events.APIGatewayProxyRe
 		Category:    models.ItemCategory(req.Category),
 		OwnerID:     req.OwnerID,
 		PhotoURLs:   []string{},
+		Name:        req.Name,
 	})
 	if err != nil {
 		return utils.InternalError(err.Error())
@@ -56,6 +59,7 @@ func (h *handler) CreateItem(ctx context.Context, event events.APIGatewayProxyRe
 		Category:    string(item.Category),
 		OwnerID:     item.OwnerID,
 		PhotoURLs:   item.PhotoURLs,
+		Name:        item.Name,
 	})
 	if err != nil {
 		return utils.InternalError(err.Error())

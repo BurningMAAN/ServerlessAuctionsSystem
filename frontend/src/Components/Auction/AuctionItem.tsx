@@ -9,17 +9,12 @@ import {
 } from "@mantine/core";
 import { Link } from "react-router-dom";
 
-interface AuctionProps {
-  auctionID?: string;
-  auctionName: string;
-  auctionDescription: string;
+export interface AuctionProps {
+  auctionDate: string;
+  buyoutPrice: number;
 }
 
-export default function AuctionCard({
-    auctionID,
-  auctionName,
-  auctionDescription,
-}: AuctionProps) {
+export default function AuctionCard({ auctionDate, buyoutPrice }: AuctionProps) {
   const theme = useMantineTheme();
   const secondaryColor =
     theme.colorScheme === "dark" ? theme.colors.dark[1] : theme.colors.gray[7];
@@ -38,19 +33,19 @@ export default function AuctionCard({
           position="apart"
           style={{ marginBottom: 5, marginTop: theme.spacing.sm }}
         >
-          <Text weight={500}>{auctionName}</Text>
-          <Badge color="green" variant="light">
-            Buy Now
-          </Badge>
+          <Text weight={500}>Aukcijonas</Text>
+          {buyoutPrice && (
+            <Badge color="green" variant="light">
+              Buy Now
+            </Badge>
+          )}
           <Badge color="pink" variant="light">
             Kategorija
           </Badge>
         </Group>
 
         <Text size="sm" style={{ color: secondaryColor, lineHeight: 1.5 }}>
-          <b>Aukciono pradžia</b>: data
-          <br />
-          <b>Aprašymas</b>: {auctionDescription}
+          <b>Aukciono pradžia</b>: {auctionDate}
         </Text>
 
         <Button
@@ -59,7 +54,7 @@ export default function AuctionCard({
           fullWidth
           style={{ marginTop: 14 }}
         >
-          <Link to={`/auctions/${auctionID}`}>Peržiūrėti</Link>
+          <Link to={`/auctions/id`}>Peržiūrėti</Link>
         </Button>
       </Card>
     </div>

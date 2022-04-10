@@ -10,6 +10,7 @@ type Item struct {
 	OwnerID     string
 	PhotoURLs   []string
 	AuctionID   string
+	Name        string
 }
 
 type ItemCategory string

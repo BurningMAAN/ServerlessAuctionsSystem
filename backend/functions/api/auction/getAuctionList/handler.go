@@ -20,16 +20,26 @@ type response struct {
 }
 
 type auction struct {
-	ID           string    `json:"id"`
-	AuctionDate  time.Time `json:"auctionDate"`
-	BuyoutPrice  *float64  `json:"buyoutPrice"`
-	AuctionType  string    `json:"auctionType"`
-	BidIncrement float64   `json:"BidIncrement"`
-	CreatorID    string    `json:"creatorId"`
+	ID           string       `json:"id"`
+	AuctionDate  time.Time    `json:"auctionDate"`
+	BuyoutPrice  *float64     `json:"buyoutPrice"`
+	AuctionType  string       `json:"auctionType"`
+	BidIncrement float64      `json:"BidIncrement"`
+	CreatorID    string       `json:"creatorId"`
+	ItemID       string       `json:"itemId"`
+	Item         itemResponse `json:"item"`
+}
+
+type itemResponse struct {
+	ID          string   `json:"id"`
+	Description string   `json:"description"`
+	Category    string   `json:"category"`
+	OwnerID     string   `json:"ownerId"`
+	PhotoURLs   []string `json:"photoURLs"`
 }
 
 type auctionService interface {
-	GetAuctions(ctx context.Context) ([]models.Auction, error)
+	GetAuctions(ctx context.Context) ([]models.AuctionListView, error)
 }
 
 type handler struct {
@@ -57,16 +67,22 @@ func (h *handler) GetAuction(ctx context.Context, event events.APIGatewayProxyRe
 	}, nil
 }
 
-func auctionsToResponse(auctions []models.Auction) response {
+func auctionsToResponse(auctions []models.AuctionListView) response {
 	auctionsList := []auction{}
 	for _, auctionItem := range auctions {
 		auctionsList = append(auctionsList, auction{
-			ID:           auctionItem.ID,
-			AuctionDate:  auctionItem.StartDate,
-			AuctionType:  string(auctionItem.Type),
-			BuyoutPrice:  auctionItem.BuyoutPrice,
-			BidIncrement: auctionItem.BidIncrement,
-			CreatorID:    auctionItem.CreatorID,
+			ID:           auctionItem.Auction.ID,
+			AuctionDate:  auctionItem.Auction.StartDate,
+			AuctionType:  string(auctionItem.Auction.Type),
+			BuyoutPrice:  auctionItem.Auction.BuyoutPrice,
+			BidIncrement: auctionItem.Auction.BidIncrement,
+			CreatorID:    auctionItem.Auction.CreatorID,
+			Item: itemResponse{
+				ID:          auctionItem.Auction.ItemID,
+				Description: auctionItem.Item.Description,
+				Category:    string(auctionItem.Item.Category),
+				PhotoURLs:   auctionItem.Item.PhotoURLs,
+			},
 		})
 	}
 

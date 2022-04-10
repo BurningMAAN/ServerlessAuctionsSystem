@@ -109,6 +109,7 @@ Resources:
           - Effect: Allow
             Action:
               - dynamodb:Scan
+              - dynamodb:GetItem
             Resource: !GetAtt DynamoDBTable.Arn
       Events:
         ApiEvent:

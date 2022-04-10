@@ -14,6 +14,7 @@ type Auction struct {
 	Participants []string /// ID's of Auction participants
 	BidIncrement float64
 	CreatorID    string
+	ItemID       string
 	// Category string Prideti kategorija (nes rodome korteleje)
 }
 
@@ -22,3 +23,8 @@ type AuctionType string
 const (
 	AuctionTypeAbsolute AuctionType = "AbsoluteAuction"
 )
+
+type AuctionListView struct {
+	Auction Auction
+	Item    Item
+}
