@@ -11,6 +11,7 @@ export interface AuctionList {
       buyoutPrice: number;
       auctionType: string;
       bidIncrement: number;
+      description: string;
       item:{
         category: string;
         name: string;
@@ -20,7 +21,7 @@ export interface AuctionList {
 }
 
 export default function AuctionGroup() {
-  const [auctionsList, setAuctionsList] = useState<AuctionList>();
+  const [auctionsList, setAuctionsList] = useState<AuctionList>({} as AuctionList);
 
   useEffect(() => {
     const url =
@@ -30,7 +31,8 @@ export default function AuctionGroup() {
       try {
         const response = await fetch(url);
         const responseJSON = await response.json();
-        setAuctionsList(responseJSON.auctions);
+        console.log(responseJSON);
+        setAuctionsList(responseJSON);
       } catch (error) {
         console.log("failed to get data from api", error);
       }
@@ -50,6 +52,8 @@ export default function AuctionGroup() {
               buyoutPrice={auctionItem.buyoutPrice}
               auctionName={auctionItem.item.name}
               category={auctionItem.item.category}
+              description={auctionItem.description}
+              bidIncrement={auctionItem.bidIncrement}
             ></AuctionCard>
           </Grid.Col>
         );

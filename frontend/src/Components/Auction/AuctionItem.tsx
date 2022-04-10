@@ -14,9 +14,11 @@ export interface AuctionProps {
   auctionDate: string;
   category: string;
   buyoutPrice: number;
+  description: string;
+  bidIncrement: number;
 }
 
-export default function AuctionCard({ auctionDate, buyoutPrice, auctionName, category }: AuctionProps) {
+export default function AuctionCard({ auctionDate, buyoutPrice, auctionName, category, description, bidIncrement }: AuctionProps) {
   const theme = useMantineTheme();
   const secondaryColor =
     theme.colorScheme === "dark" ? theme.colors.dark[1] : theme.colors.gray[7];
@@ -38,7 +40,7 @@ export default function AuctionCard({ auctionDate, buyoutPrice, auctionName, cat
           <Text weight={500}>{auctionName}</Text>
           {buyoutPrice && (
             <Badge color="green" variant="light">
-              Buy Now
+              Pirkti dabar
             </Badge>
           )}
           <Badge color="pink" variant="light">
@@ -48,6 +50,10 @@ export default function AuctionCard({ auctionDate, buyoutPrice, auctionName, cat
 
         <Text size="sm" style={{ color: secondaryColor, lineHeight: 1.5 }}>
           <b>Aukciono pradžia</b>: {auctionDate}
+          <br/>
+          <b>Aprašymas</b>: {description}
+          <br/>
+          <b>Minimalus kėlimas</b>: {bidIncrement}
         </Text>
 
         <Button
