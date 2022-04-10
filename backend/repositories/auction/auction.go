@@ -146,8 +146,10 @@ func (r *repository) GetAllAuctions(ctx context.Context, optFns ...func(*Optiona
 		return []models.Auction{}, err
 	}
 	result, err := r.DB.Scan(ctx, &dynamodb.ScanInput{
-		TableName:                &r.tableName,
-		ExpressionAttributeNames: expr.Names(),
+		TableName:                 &r.tableName,
+		ExpressionAttributeNames:  expr.Names(),
+		ExpressionAttributeValues: expr.Values(),
+		FilterExpression:          expr.Filter(),
 	})
 	if err != nil {
 		return []models.Auction{}, err
