@@ -251,8 +251,8 @@ Resources:
       Tracing: Active
       MemorySize: 512
       Timeout: 15
-      Description: Lambda function that gets user items
-      CodeUri: backend/functions/api/item/getUserItems
+      Description: Lambda function that gets user items list
+      CodeUri: backend/functions/api/item/getUserItemsList
       Environment:
         Variables:
           DYNAMODB_TABLE: !Ref DynamoDBTable

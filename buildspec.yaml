@@ -45,7 +45,7 @@ phases:
       - go build -o main
 
       # Build GetUserItemsFunction
-      - cd $ROOTDIR/backend/functions/api/item/getUserItems
+      - cd $ROOTDIR/backend/functions/api/item/getUserItemsList
       - go build -o main
 
 

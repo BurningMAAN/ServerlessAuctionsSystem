@@ -8,12 +8,28 @@ import {
   NumberInput,
   Divider,
 } from "@mantine/core";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DatePicker } from '@mantine/dates';
 
 interface AuctionProps {
   onOpen: boolean;
   onClose: () => void;
+}
+
+interface ItemList {
+  items: [
+    {
+      id: string;
+      description: string;
+      category: string;
+      name: string;
+    }
+  ]
+}
+
+interface SelectItemProps{
+  label: string;
+  value: string;
 }
 
 export default function AuctionCreateWizard({ onOpen, onClose }: AuctionProps) {
@@ -27,6 +43,40 @@ export default function AuctionCreateWizard({ onOpen, onClose }: AuctionProps) {
     setActiveStepStepper(0);
     onClose();
   };
+
+  const [userItemsList, setUserItemsList] = useState<ItemList>({} as ItemList);
+  const getUserItems = useEffect(() => {
+    let tokenas:string = ""
+    const token = sessionStorage.getItem("access_token");
+    if(token){
+      tokenas = token
+    }
+
+  const requestOptions = {
+    method: "GET",
+    headers: { "access_token": unescape(tokenas)},
+  };
+    const url =
+      "https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/user/items";
+
+    const fetchData = async () => {
+      try {
+        const response = await fetch(url, requestOptions);
+        const responseJSON = await response.json();
+        console.log(responseJSON)
+        setUserItemsList(responseJSON);
+      } catch (error) {
+        console.log("failed to get data from api", error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const selectionItems:SelectItemProps[] = []
+    userItemsList.items?.map((userItem) => {
+      selectionItems.push({label: userItem.name, value: userItem.name})
+    })
+
   return (
     <Modal opened={onOpen} onClose={handleOnClose} size="xl">
       <Stepper
@@ -42,7 +92,7 @@ export default function AuctionCreateWizard({ onOpen, onClose }: AuctionProps) {
          <Select
         label="Inventoriaus pasirinkimas"
         placeholder="Pasirinkti"
-        data={[{ value: "Dvirka", label: "Dvirka" }]}
+        data={selectionItems}
         required
       />
           <Divider/>
