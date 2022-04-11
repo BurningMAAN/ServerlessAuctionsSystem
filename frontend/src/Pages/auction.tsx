@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import NavigationBar from "../Components/Skeleton/Navbar";
 import ProgressCircle from "../Components/General/ProgressCircle";
 import { Carousel } from "react-bootstrap";
+import { useParams } from "react-router-dom";
 import {
   AppShell,
   Grid,
@@ -13,13 +14,9 @@ import {
   createStyles,
   Text,
 } from "@mantine/core";
-import axios from 'axios';
+import axios from "axios";
 import AuctionBiddingDashboard from "../Components/Auction/AuctionBidding/AuctionBidding";
 import AuctionInformationDashboard from "../Components/Auction/AuctionBidding/AuctionInformationBlock";
-
-interface AuctionProps {
-  data: { name: string; email: string; company: string }[];
-}
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -48,37 +45,23 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-export default function AuctionView({}: AuctionProps) {
+interface AuctionViewProps{}
+export default function AuctionView({}: AuctionViewProps) {
+  const { auctionID } = useParams<{ auctionID: string }>();
   const { classes, cx } = useStyles();
   const [scrolled, setScrolled] = useState(false);
+  console.log(auctionID)
 
-  const [timeLeft, setTimeLeft] = useState(30);
-
-  useEffect(() => {
-    if (timeLeft == 0) {
-      console.log('aukcionas baigesi')
-      return;
-    }
-
-    const intervalId = setInterval(() => {
-      setTimeLeft(timeLeft - 1);
-    }, 1000);
-    return () => clearInterval(intervalId);
-  });
   return (
-    <AppShell
-      padding="md"
-      navbar={<NavigationBar></NavigationBar>}
-      fixed
-    >
+    <AppShell padding="md" navbar={<NavigationBar></NavigationBar>} fixed>
       <Grid>
-        <AuctionInformationDashboard auctionID="example"></AuctionInformationDashboard>
+        <AuctionInformationDashboard
+          auctionID={auctionID}
+        ></AuctionInformationDashboard>
         <AuctionBiddingDashboard
-        auctionType="absolute"
-        timeLeft={timeLeft}
-        setTimeLeft={setTimeLeft}
-        currentMaxBid={30}
-        bidIncrement={15}
+          auctionType="absolute"
+          currentMaxBid={30}
+          bidIncrement={15}
         ></AuctionBiddingDashboard>
         <Grid.Col span={10}>
           <Divider />

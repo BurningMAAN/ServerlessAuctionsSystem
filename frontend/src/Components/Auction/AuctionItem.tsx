@@ -8,6 +8,8 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import { Link } from "react-router-dom";
+import {useParams, Redirect
+} from "react-router-dom";
 
 export interface AuctionProps {
   auctionName: string;
@@ -16,9 +18,10 @@ export interface AuctionProps {
   buyoutPrice: number;
   description: string;
   bidIncrement: number;
+  auctionID: string;
 }
 
-export default function AuctionCard({ auctionDate, buyoutPrice, auctionName, category, description, bidIncrement }: AuctionProps) {
+export default function AuctionCard({ auctionDate, buyoutPrice, auctionName, category, description, bidIncrement, auctionID }: AuctionProps) {
   const theme = useMantineTheme();
   const secondaryColor =
     theme.colorScheme === "dark" ? theme.colors.dark[1] : theme.colors.gray[7];
@@ -62,7 +65,7 @@ export default function AuctionCard({ auctionDate, buyoutPrice, auctionName, cat
           fullWidth
           style={{ marginTop: 14 }}
         >
-          <Link to={`/auctions/id`}>Peržiūrėti</Link>
+         <Link to={`/auctions/${auctionID}`}>Peržiūrėti</Link>
         </Button>
       </Card>
     </div>

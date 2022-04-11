@@ -5,6 +5,7 @@ import (
 	"auctionsPlatform/utils"
 	"context"
 	"encoding/json"
+	"log"
 	"net/http"
 	"time"
 
@@ -17,7 +18,6 @@ type request struct {
 	BuyoutPrice  *float64  `json:"buyoutPrice"`
 	AuctionType  string    `json:"auctionType"`
 	BidIncrement float64   `json:"bidIncrement"`
-	CreatorID    string    `json:"creatorId"`
 }
 
 type response struct {
@@ -26,7 +26,7 @@ type response struct {
 	BuyoutPrice  *float64  `json:"buyoutPrice"`
 	AuctionType  string    `json:"auctionType"`
 	BidIncrement float64   `json:"bidIncrement"`
-	CreatorID    string    `json:"creatorId"`
+	CreatorName  string    `json:"creatorName"`
 	ItemID       string    `json:"itemId"`
 }
 
@@ -39,8 +39,18 @@ type handler struct {
 }
 
 func (h *handler) CreateAuction(ctx context.Context, event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	if len(event.Headers["access_token"]) == 0 {
+		return utils.InternalError("no auth token provided")
+	}
+
+	log.Print(event)
+	userConfig, err := utils.GetUserConfig(event.Headers["access_token"])
+	if err != nil {
+		return utils.InternalError(err.Error())
+	}
+
 	req := request{}
-	err := json.Unmarshal([]byte(event.Body), &req)
+	err = json.Unmarshal([]byte(event.Body), &req)
 	if err != nil {
 		return utils.InternalError(err.Error())
 	}
@@ -49,7 +59,7 @@ func (h *handler) CreateAuction(ctx context.Context, event events.APIGatewayProx
 		Type:         models.AuctionType(req.AuctionType),
 		StartDate:    req.AuctionDate,
 		BidIncrement: req.BidIncrement,
-		CreatorID:    req.CreatorID,
+		CreatorID:    userConfig.Name,
 		ItemID:       req.ItemID,
 	}, req.ItemID)
 	if err != nil {
@@ -62,7 +72,7 @@ func (h *handler) CreateAuction(ctx context.Context, event events.APIGatewayProx
 		BuyoutPrice:  auction.BuyoutPrice,
 		AuctionType:  string(auction.Type),
 		BidIncrement: auction.BidIncrement,
-		CreatorID:    auction.CreatorID,
+		CreatorName:  auction.CreatorID,
 		ItemID:       auction.ItemID,
 	})
 	if err != nil {

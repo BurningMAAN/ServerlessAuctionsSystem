@@ -6,17 +6,29 @@ import {
     Grid,
     Divider,
   } from "@mantine/core";
+  import {useState, useEffect} from 'react'
   import ProgressCircle from "../../General/ProgressCircle";
   
   interface AuctionBiddingProps {
     auctionType: string;
-    timeLeft: number;
-    setTimeLeft: (number: number) => void;
     currentMaxBid: number;
     bidIncrement: number;
   }
   
-  export default function AuctionBiddingDashboard({ auctionType, timeLeft, setTimeLeft, currentMaxBid, bidIncrement }: AuctionBiddingProps) {
+  export default function AuctionBiddingDashboard({ auctionType, currentMaxBid, bidIncrement }: AuctionBiddingProps) {
+    const [timeLeft, setTimeLeft] = useState(30);
+
+    const AuctionTimer = useEffect(() => {
+      if (timeLeft == 0) {
+        console.log('aukcionas baigesi')
+        return;
+      }
+  
+      const intervalId = setInterval(() => {
+        setTimeLeft(timeLeft - 1);
+      }, 1000);
+      return () => clearInterval(intervalId);
+    });
   return (
     <Grid.Col span={4}>
       <Center>

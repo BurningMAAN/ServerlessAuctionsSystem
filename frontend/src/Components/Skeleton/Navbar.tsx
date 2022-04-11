@@ -6,7 +6,6 @@ import { Redirect } from 'react-router-dom';
 
 const getToken = () => {
   const tokenString = sessionStorage.getItem("access_token");
-  console.log(tokenString);
   return tokenString;
 };
 

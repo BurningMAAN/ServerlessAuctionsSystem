@@ -104,7 +104,7 @@ func (r *repository) GetAuctionByID(ctx context.Context, auctionID string) (mode
 	}
 
 	if result.Item == nil {
-		return models.Auction{}, errors.New("exists")
+		return models.Auction{}, errors.New("resource does not exist")
 	}
 
 	return ExtractAuction(result.Item)

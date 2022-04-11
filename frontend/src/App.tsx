@@ -14,7 +14,7 @@ function App() {
             <Route path="/login" component={AuthenticationImage}></Route>
             <Route path="/myInventory" component={MyInventory}></Route>
             <Route path="/myAuctions" component={MyAuctions}></Route>
-            <Route path="/auctions/:id" component={AuctionView}></Route>
+            <Route path="/auctions/:auctionID" component={AuctionView}></Route>
             <Route path="/" component={Dashboard}></Route>
           </Switch>
         </BrowserRouter>

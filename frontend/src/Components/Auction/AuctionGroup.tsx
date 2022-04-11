@@ -48,6 +48,7 @@ export default function AuctionGroup() {
         return (
           <Grid.Col span={4}>
             <AuctionCard
+              auctionID={auctionItem.id}
               auctionDate={auctionItem.auctionDate}
               buyoutPrice={auctionItem.buyoutPrice}
               auctionName={auctionItem.item.name}
