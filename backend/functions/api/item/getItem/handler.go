@@ -20,6 +20,7 @@ type response struct {
 	Category    string   `json:"category"`
 	OwnerID     string   `json:"ownerId"`
 	PhotoURLs   []string `json:"photoURLs"`
+	Name        string   `json:"name"`
 }
 
 type itemService interface {
@@ -49,6 +50,7 @@ func (h *handler) GetItem(ctx context.Context, event events.APIGatewayProxyReque
 		Category:    string(item.Category),
 		OwnerID:     item.OwnerID,
 		PhotoURLs:   item.PhotoURLs,
+		Name:        item.Name,
 	})
 	if err != nil {
 		return utils.InternalError(err.Error())

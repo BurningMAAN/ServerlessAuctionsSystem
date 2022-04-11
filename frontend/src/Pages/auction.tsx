@@ -1,62 +1,56 @@
-import { useEffect, useState } from "react";
 import NavigationBar from "../Components/Skeleton/Navbar";
-import ProgressCircle from "../Components/General/ProgressCircle";
-import { Carousel } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import {
   AppShell,
   Grid,
-  Title,
-  Table,
   Divider,
-  Button,
-  Center,
-  createStyles,
-  Text,
 } from "@mantine/core";
-import axios from "axios";
+import {useState, useEffect} from 'react'
 import AuctionBiddingDashboard from "../Components/Auction/AuctionBidding/AuctionBidding";
 import AuctionInformationDashboard from "../Components/Auction/AuctionBidding/AuctionInformationBlock";
 
-const useStyles = createStyles((theme) => ({
-  header: {
-    position: "sticky",
-    top: 0,
-    backgroundColor:
-      theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
-    transition: "box-shadow 150ms ease",
+interface AuctionProps {
+  auctionName: string;
+  auctionDate: string;
+  category: string;
+  buyoutPrice: number;
+  description: string;
+  bidIncrement: number;
+  itemId: string;
+  id: string;
+}
 
-    "&::after": {
-      content: '""',
-      position: "absolute",
-      left: 0,
-      right: 0,
-      bottom: 0,
-      borderBottom: `1px solid ${
-        theme.colorScheme === "dark"
-          ? theme.colors.dark[3]
-          : theme.colors.gray[2]
-      }`,
-    },
-  },
+interface AuctionItemProps {
+  id: string;
+  description: string;
+  category: string;
+  name: string;
+}
 
-  scrolled: {
-    boxShadow: theme.shadows.sm,
-  },
-}));
-
-interface AuctionViewProps{}
+interface AuctionViewProps{
+}
 export default function AuctionView({}: AuctionViewProps) {
   const { auctionID } = useParams<{ auctionID: string }>();
-  const { classes, cx } = useStyles();
-  const [scrolled, setScrolled] = useState(false);
-  console.log(auctionID)
+  const [auction, setAuction] = useState<AuctionProps>({} as AuctionProps);
+  const [item, setItem] = useState<AuctionItemProps>({} as AuctionItemProps);
+
+  const getData = async () => {
+    const auctionData = await fetch(`https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/auctions/${auctionID}`).then(res => res.json())
+    setAuction(auctionData)
+    const itemData = await fetch(`https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/items/${auctionData.itemId}`).then(res => res.json())
+    setItem(itemData)
+  };
+
+  useEffect(() => {
+    getData()
+  }, []);
 
   return (
     <AppShell padding="md" navbar={<NavigationBar></NavigationBar>} fixed>
       <Grid>
         <AuctionInformationDashboard
-          auctionID={auctionID}
+          name={item.name}
+          description={item.description}
         ></AuctionInformationDashboard>
         <AuctionBiddingDashboard
           auctionType="absolute"
