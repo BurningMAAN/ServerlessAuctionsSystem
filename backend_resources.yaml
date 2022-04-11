@@ -290,7 +290,11 @@ Resources:
           - Effect: Allow
             Action:
               - dynamodb:Query
-            Resource: !GetAtt DynamoDBTable.Arn
+            Resource: 
+              - !GetAtt DynamoDBTable.Arn
+              - Fn::Sub:
+                  - '${dynamoDBTableArn}/index/GSI2'
+                  - DynamoDBTableArn: !GetAtt DynamoDBTable.Arn
       Events:
         ApiEvent:
             Type: Api
