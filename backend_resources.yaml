@@ -62,7 +62,7 @@ Resources:
       Cors:
         AllowOrigin: "'*'"
         AllowMethods: "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'"
-        AllowHeaders: "'X-Amz-Date,X-Api-Key,X-Amz-Security-Token,X-Requested-With,X-Auth-Token,Referer,User-Agent,Origin,Content-Type,Authorization,Accept,Access-Control-Allow-Methods,Access-Control-Allow-Origin,Access-Control-Allow-Headers'"
+        AllowHeaders: "'X-Amz-Date,X-Api-Key,X-Amz-Security-Token,access_token,X-Requested-With,X-Auth-Token,Referer,User-Agent,Origin,Content-Type,Authorization,Accept,Access-Control-Allow-Methods,Access-Control-Allow-Origin,Access-Control-Allow-Headers'"
   # Auction Lambda Functions
   CreateAuctionFunction:
     Type: AWS::Serverless::Function
