@@ -23,6 +23,7 @@ interface ItemList {
       description: string;
       category: string;
       name: string;
+      auctionId: string;
     }
   ];
 }
@@ -82,7 +83,9 @@ export default function AuctionCreateWizard({ onOpen, onClose }: AuctionProps) {
 
   const selectionItems: SelectItemProps[] = [];
   userItemsList.items?.map((userItem) => {
-    selectionItems.push({ label: userItem.name, value: userItem.id });
+    if(userItem.auctionId.length <= 0){
+      selectionItems.push({ label: userItem.name, value: userItem.id });
+    }
   });
 
   const createAuction = async () => {

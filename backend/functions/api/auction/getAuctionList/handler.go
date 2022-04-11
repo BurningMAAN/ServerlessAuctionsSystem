@@ -38,6 +38,7 @@ type itemResponse struct {
 	OwnerID     string   `json:"ownerId"`
 	Name        string   `json:"name"`
 	PhotoURLs   []string `json:"photoURLs"`
+	AuctionID   string   `json:"auctionId"`
 }
 
 type auctionService interface {
@@ -87,6 +88,7 @@ func auctionsToResponse(auctions []models.AuctionListView) response {
 				Category:    string(auctionItem.Item.Category),
 				PhotoURLs:   auctionItem.Item.PhotoURLs,
 				Name:        auctionItem.Item.Name,
+				AuctionID:   auctionItem.Item.AuctionID,
 			},
 		})
 	}

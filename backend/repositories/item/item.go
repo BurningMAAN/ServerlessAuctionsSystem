@@ -48,6 +48,7 @@ type ItemDB struct {
 	PhotoURLs   []string
 	Description string
 	Name        string
+	AuctionID   string
 }
 
 func (r *repository) CreateItem(ctx context.Context, item models.Item) (models.Item, error) {
@@ -61,6 +62,7 @@ func (r *repository) CreateItem(ctx context.Context, item models.Item) (models.I
 		PhotoURLs:   item.PhotoURLs,
 		Description: item.Description,
 		Name:        item.Name,
+		AuctionID:   item.AuctionID,
 	}
 
 	itemAttributeValues, err := attributevalue.MarshalMap(itemDB)
