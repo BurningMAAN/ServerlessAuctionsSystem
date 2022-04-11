@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { createStyles, Navbar, Group, Code, Image } from "@mantine/core";
-import {
-  Logout,
-  Menu,
-  Login,
-} from "tabler-icons-react";
-import sebas from '../../shared/sebas.png';
+import { Logout, Menu, Login } from "tabler-icons-react";
+import sebas from "../../shared/sebas.png";
+import { Redirect } from 'react-router-dom';
+
+const getToken = () => {
+  const tokenString = sessionStorage.getItem("access_token");
+  console.log(tokenString);
+  return tokenString;
+};
 
 const useStyles = createStyles((theme, _params, getRef) => {
   const icon = getRef("icon");
@@ -87,58 +90,48 @@ const useStyles = createStyles((theme, _params, getRef) => {
   };
 });
 
-const data = [
-  { link: "/", label: "Aukcionai", icon: Menu },
-  {link: "/myAuctions", label: "Mano aukcionai", icon: Menu},
-  {link: "/myInventory", label: "Mano inventorius", icon: Menu},
-  {link: "", label: "Vartotojo valdymas", icon: Menu}
-];
-
 export default function NavigationBar() {
   const { classes, cx } = useStyles();
-  const [active, setActive] = useState("Billing");
-
-  const links = data.map((item) => (
-    <a
-      className={cx(classes.link, {
-        [classes.linkActive]: item.label === active,
-      })}
-      href={item.link}
-      key={item.label}
-    //   onClick={(event) => {
-    //     event.preventDefault();
-    //     setActive(item.label);
-    //   }}
-    >
-      <item.icon className={classes.linkIcon} />
-      <span>{item.label}</span>
-    </a>
-  ));
+  const token = getToken();
 
   return (
     <Navbar height={700} width={{ sm: 300 }} p="md">
-        <Image src={sebas}></Image>
+      <Image src={sebas}></Image>
       <Navbar.Section grow>
         <Group className={classes.header} position="apart"></Group>
-        {links}
+        <a className={cx(classes.link)} href="/" key="Visi aukcionai"> <Menu className={classes.linkIcon} />
+        <span>Visi aukcionai</span></a>
+      {token && (
+        <>
+        <a className={cx(classes.link)} href="/myAuctions" key="Mano aukcionai"> <Menu className={classes.linkIcon} />
+        <span>Mano aukcionai</span></a>
+        <a className={cx(classes.link)} href="/myInventory" key="Mano inventorius"> <Menu className={classes.linkIcon} />
+        <span>Mano inventorius</span></a>
+        </>
+      )}
       </Navbar.Section>
 
       <Navbar.Section className={classes.footer}>
-      <a
-          href="/login"
-          className={classes.link}
-        >
-          <Login className={classes.linkIcon} />
-          <span>Prisijungti</span>
-        </a>
-        <a
-          href="#"
-          className={classes.link}
-          onClick={(event) => event.preventDefault()}
-        >
-          <Logout className={classes.linkIcon} />
-          <span>Atsijungti</span>
-        </a>
+        {!token && (
+          <a href="/login" className={classes.link}>
+            <Login className={classes.linkIcon} />
+            <span>Prisijungti</span>
+          </a>
+        )}
+        {token && (
+          <a
+            href="#"
+            className={classes.link}
+            onClick={(event) => {
+              event.preventDefault()
+              sessionStorage.removeItem('access_token')
+              window.location.reload();
+            }}
+          >
+            <Logout className={classes.linkIcon} />
+            <span>Atsijungti</span>
+          </a>
+        )}
       </Navbar.Section>
     </Navbar>
   );

@@ -11,10 +11,17 @@ import {
   Button,
 } from "@mantine/core";
 import AuctionGroup from "../Components/Auction/AuctionGroup";
+import { Redirect } from 'react-router-dom';
 interface TitleProps {}
 
+const getToken = () => {
+  const tokenString = sessionStorage.getItem('access_token');
+  console.log(tokenString)
+  return tokenString
+};
 const Dashboard: FC<TitleProps> = ({}) => {
     const [opened, setOpened] = useState(false);
+   const token = getToken();
   return (
     <AppShell
       padding="md"
@@ -49,7 +56,11 @@ const Dashboard: FC<TitleProps> = ({}) => {
           <Button px={50} style={{top: 12}}>
             Ieškoti
             </Button>
-           <Button color="teal" px={50} style={{top: 12, left: 400}} onClick={() => setOpened(true)}>
+           <Button color="teal" px={50} style={{top: 12, left: 400}} onClick={() => {
+             if(token){
+              return setOpened(true)
+             }
+           }}>
             Kurti aukcioną
             </Button>
         </Group>

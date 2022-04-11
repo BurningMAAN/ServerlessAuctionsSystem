@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState} from "react";
 import {
   Paper,
   createStyles,
@@ -10,6 +10,7 @@ import {
   Text,
   Anchor,
 } from "@mantine/core";
+import { Redirect } from 'react-router-dom';
 import { At } from "tabler-icons-react";
 
 const useStyles = createStyles((theme) => ({
@@ -53,9 +54,23 @@ interface CreateUserRequest {
   email: string;
 }
 
+interface AuthorizeUserRequest {
+  username: string;
+  password: string;
+}
+
+interface AuthorizerUserResponse {
+  access_token: string;
+}
+
 export default function AuthenticationImage() {
   const { classes } = useStyles();
+  const [token, setToken] = useState<AuthorizerUserResponse>(
+    {} as AuthorizerUserResponse
+  );
   const [clickedRegister, setClickedRegister] = useState(false);
+  const [loginInformation, setLoginInformation] =
+    useState<AuthorizeUserRequest>({} as AuthorizeUserRequest);
   const [userInformation, setUserInformation] = useState<CreateUserRequest>(
     {} as CreateUserRequest
   );
@@ -63,18 +78,17 @@ export default function AuthenticationImage() {
   const registerUser = async (user: CreateUserRequest) => {
     const url =
       "https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/user";
-  
+
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(user),
     };
-  
+
     try {
       fetch(url, requestOptions).then((response) => {
-       response.json()
-       console.log(response)
-       
+        response.json();
+        console.log(response);
       });
     } catch (error) {
       console.log("failed to create user", error);
@@ -83,6 +97,27 @@ export default function AuthenticationImage() {
     setClickedRegister(false);
   };
 
+  const authorizeUser = async (user: AuthorizeUserRequest) => {
+    const url =
+      "https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/authorize";
+
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(user),
+    };
+
+    try {
+      const response = await fetch(url, requestOptions);
+      const responseJSON = await response.json();
+      console.log(responseJSON);
+      setToken(responseJSON);
+    } catch (error) {
+      console.log("failed to get data from api", error);
+    }
+  };
+
+  sessionStorage.setItem('access_token', JSON.stringify(token.access_token));
   return (
     <div className={classes.wrapper}>
       {!clickedRegister && (
@@ -101,15 +136,32 @@ export default function AuthenticationImage() {
             label="Vartotojo vardas"
             placeholder="Vartotojas"
             size="md"
+            onChange={(event) => {
+              setLoginInformation({
+                username: event.currentTarget.value,
+                password: loginInformation.password,
+              } as AuthorizeUserRequest);
+            }}
           />
           <PasswordInput
             label="Slaptažodis"
             placeholder="Slaptažodis"
             mt="md"
             size="md"
+            onChange={(event) => {
+              setLoginInformation({
+                username: loginInformation.username,
+                password: event.currentTarget.value,
+              } as AuthorizeUserRequest);
+            }}
           />
           {/* <Checkbox label="Keep me logged in" mt="xl" size="md" /> */}
-          <Button fullWidth mt="xl" size="md">
+          <Button
+            fullWidth
+            mt="xl"
+            size="md"
+            onClick={() => authorizeUser(loginInformation)}
+          >
             Prisijungti
           </Button>
 
@@ -183,7 +235,12 @@ export default function AuthenticationImage() {
             }
             icon={<At size={14} />}
           />
-          <Button fullWidth mt="xl" size="md" onClick={() => registerUser(userInformation)}>
+          <Button
+            fullWidth
+            mt="xl"
+            size="md"
+            onClick={() => registerUser(userInformation)}
+          >
             Registruotis
           </Button>
 
@@ -202,6 +259,7 @@ export default function AuthenticationImage() {
           </Text>
         </Paper>
       )}
+      {token.access_token && <Redirect to="/"></Redirect>}
     </div>
   );
 }

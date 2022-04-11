@@ -23,6 +23,7 @@ type DB interface {
 	// https://pkg.go.dev/github.com/aws/aws-sdk-go-v2/service/dynamodb#Client.UpdateItem
 	UpdateItem(ctx context.Context, input *dynamodb.UpdateItemInput, optFns ...func(*dynamodb.Options)) (*dynamodb.UpdateItemOutput, error)
 	Scan(ctx context.Context, params *dynamodb.ScanInput, optFns ...func(*dynamodb.Options)) (*dynamodb.ScanOutput, error)
+	Query(ctx context.Context, input *dynamodb.QueryInput, optFns ...func(*dynamodb.Options)) (*dynamodb.QueryOutput, error)
 }
 
 type repository struct {
@@ -38,12 +39,12 @@ func New(tableName string, db DB) *repository {
 }
 
 type ItemDB struct {
-	PK          string // Example: Item#{ItemID}
-	SK          string // Example: Metadata
-	GSI1PK      string `dynamodbav:",omitempty"` // Example: User#{OwnerID}
-	GSI1SK      string `dynamodbav:",omitempty"` // Example: Category
-	GSI2PK      string `dynamodbav:",omitempty"` // Example: Auction#{AuctionID}
-	GSI2SK      string `dynamodbav:",omitempty"` // Example: Metadata
+	PK     string // Example: Item#{ItemID}
+	SK     string // Example: Metadata
+	GSI1PK string `dynamodbav:",omitempty"` // Example: User#{OwnerID}
+	GSI1SK string `dynamodbav:",omitempty"` // Example: Category#{Category}
+	// GSI2PK      string `dynamodbav:",omitempty"` // Example: Auction#{AuctionID}
+	// GSI2SK      string `dynamodbav:",omitempty"` // Example: Metadata
 	PhotoURLs   []string
 	Description string
 	Name        string
@@ -137,25 +138,30 @@ func (r *repository) AssignItem(ctx context.Context, auctionID, itemID string) e
 }
 
 func (r *repository) GetItemsByUserID(ctx context.Context, userID string) ([]models.Item, error) {
-	filter := expression.Name("PK").BeginsWith(string(models.ItemEntityType))
+	keyCondition := expression.Key("GSI1PK").Equal(expression.Value(utils.Make(models.UserEntityType, userID)))
 
-	expr, err := expression.NewBuilder().WithFilter(filter).Build()
+	expr, err := expression.NewBuilder().WithKeyCondition(keyCondition).Build()
 	if err != nil {
-		return []models.Item{}, err
+		return nil, err
 	}
-	result, err := r.DB.Scan(ctx, &dynamodb.ScanInput{
-		TableName:                 &r.tableName,
+
+	queryInput := &dynamodb.QueryInput{
+		IndexName:                 aws.String("GSI1"),
+		TableName:                 aws.String(r.tableName),
+		KeyConditionExpression:    expr.KeyCondition(),
 		ExpressionAttributeNames:  expr.Names(),
 		ExpressionAttributeValues: expr.Values(),
-		FilterExpression:          expr.Filter(),
-	})
+	}
+
+	res, err := r.DB.Query(ctx, queryInput)
+
 	if err != nil {
-		return []models.Item{}, err
+		return nil, err
 	}
 
-	if result.Items == nil {
-		return []models.Item{}, errors.New("exists")
+	if len(res.Items) == 0 {
+		return nil, nil
 	}
 
-	return ExtractItems(result.Items)
+	return ExtractItems(res.Items)
 }

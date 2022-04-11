@@ -271,6 +271,35 @@ Resources:
               RestApiId:
                 Ref: AuctionGateway
 
+  GetUserItemListFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: main
+      Runtime: go1.x
+      AutoPublishAlias: live
+      Tracing: Active
+      MemorySize: 512
+      Timeout: 15
+      Description: Lambda function that gets user items
+      CodeUri: backend/functions/api/item/getUserItems
+      Environment:
+        Variables:
+          DYNAMODB_TABLE: !Ref DynamoDBTable
+      Policies:
+        Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:Query
+            Resource: !GetAtt DynamoDBTable.Arn
+      Events:
+        ApiEvent:
+            Type: Api
+            Properties:
+              Path: /user/{userId}/items
+              Method: get
+              RestApiId:
+                Ref: AuctionGateway
+
   CreateUserFunction:
     Type: AWS::Serverless::Function
     Properties:
