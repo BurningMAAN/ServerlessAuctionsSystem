@@ -93,7 +93,9 @@ type UserConfig struct {
 
 func getUserConfig(accessToken string) (UserConfig, error) {
 	claims := jwt.MapClaims{}
-	_, err := jwt.ParseWithClaims(accessToken, claims, nil)
+	_, err := jwt.ParseWithClaims(accessToken, claims, func(token *jwt.Token) (interface{}, error) {
+		return []byte("my_secret_key"), nil
+	})
 	if err != nil {
 		return UserConfig{}, fmt.Errorf("failed to parse token: %w", err)
 	}
