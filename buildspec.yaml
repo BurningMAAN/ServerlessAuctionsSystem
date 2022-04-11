@@ -36,10 +36,6 @@ phases:
       - cd $ROOTDIR/backend/functions/api/item/getItem
       - go build -o main
 
-      # Build GetItemListFunction
-      - cd $ROOTDIR/backend/functions/api/item/getItemList
-      - go build -o main
-
       # Build CreateUserFunction
       - cd $ROOTDIR/backend/functions/api/user/createUser
       - go build -o main

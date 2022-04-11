@@ -5,15 +5,15 @@ import (
 	"auctionsPlatform/utils"
 	"context"
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/aws/aws-lambda-go/events"
 )
 
 type request struct {
-	UserID string
+	UserName string
 }
-
 type response struct {
 	ItemList []item `json:"items"`
 }
@@ -27,7 +27,7 @@ type item struct {
 }
 
 type itemService interface {
-	GetItemsByUserID(ctx context.Context, userID string) ([]models.Item, error)
+	GetItemsByUserName(ctx context.Context, userID string) ([]models.Item, error)
 }
 
 type handler struct {
@@ -35,14 +35,21 @@ type handler struct {
 }
 
 func (h *handler) GetUserItems(ctx context.Context, event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	if len(event.PathParameters["userId"]) == 0 {
-		return utils.InternalError("not provided auctionId")
-	}
-	req := request{
-		UserID: event.PathParameters["userId"],
+	log.Print("got headers", event.Headers)
+	accessToken := event.Headers["access_token"]
+	if len(accessToken) <= 0 {
+		return utils.InternalError("token not provided")
 	}
 
-	items, err := h.itemService.GetItemsByUserID(ctx, req.UserID)
+	userConfig, err := utils.GetUserConfig(accessToken)
+	if err != nil {
+		return utils.InternalError(err.Error())
+	}
+	req := request{
+		UserName: userConfig.Name,
+	}
+
+	items, err := h.itemService.GetItemsByUserName(ctx, req.UserName)
 	if err != nil {
 		return utils.InternalError(err.Error())
 	}

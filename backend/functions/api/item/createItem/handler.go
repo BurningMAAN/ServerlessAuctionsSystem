@@ -5,13 +5,10 @@ import (
 	"auctionsPlatform/utils"
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
-	"strconv"
 
 	"github.com/aws/aws-lambda-go/events"
-	"github.com/dgrijalva/jwt-go"
 )
 
 type request struct {
@@ -45,7 +42,7 @@ func (h *handler) CreateItem(ctx context.Context, event events.APIGatewayProxyRe
 		return utils.InternalError("token not provided")
 	}
 
-	userConfig, err := getUserConfig(accessToken)
+	userConfig, err := utils.GetUserConfig(accessToken)
 	if err != nil {
 		return utils.InternalError(err.Error())
 	}
@@ -88,35 +85,4 @@ func (h *handler) CreateItem(ctx context.Context, event events.APIGatewayProxyRe
 		StatusCode: http.StatusCreated,
 		Body:       string(respBody),
 	}, nil
-}
-
-type UserConfig struct {
-	Name  string
-	Token string
-}
-
-func getUserConfig(accessToken string) (UserConfig, error) {
-	accessToken, err := strconv.Unquote(accessToken)
-	if err != nil {
-		return UserConfig{}, err
-	}
-	claims := jwt.MapClaims{}
-	token, err := jwt.ParseWithClaims(accessToken, claims, func(token *jwt.Token) (interface{}, error) {
-		return []byte("my_secret_key"), nil
-	})
-	if err != nil {
-		return UserConfig{}, fmt.Errorf("failed to parse token: %w", err)
-	}
-
-	userConfig := UserConfig{}
-	for key, val := range claims {
-		if key == "username" {
-			userConfig.Name = val.(string)
-		}
-		fmt.Printf("Key: %v, value: %v\n", key, val)
-	}
-
-	fmt.Println(token)
-
-	return userConfig, nil
 }

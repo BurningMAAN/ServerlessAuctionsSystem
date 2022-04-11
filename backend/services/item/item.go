@@ -9,7 +9,7 @@ type itemRepository interface {
 	CreateItem(ctx context.Context, item models.Item) (models.Item, error)
 	GetItemByID(ctx context.Context, itemID string) (models.Item, error)
 	AssignItem(ctx context.Context, auctionID, itemID string) error
-	GetItemsByUserID(ctx context.Context, userID string) ([]models.Item, error)
+	GetItemsByUserName(ctx context.Context, userName string) ([]models.Item, error)
 }
 
 type auctionRepository interface {
@@ -49,6 +49,6 @@ func (s *service) AssignItem(ctx context.Context, auctionID, itemID string) erro
 	return s.itemRepository.AssignItem(ctx, auction.ID, item.ID)
 }
 
-func (s *service) GetItemsByUserID(ctx context.Context, userID string) ([]models.Item, error) {
-	return s.itemRepository.GetItemsByUserID(ctx, userID)
+func (s *service) GetItemsByUserName(ctx context.Context, userName string) ([]models.Item, error) {
+	return s.itemRepository.GetItemsByUserName(ctx, userName)
 }

@@ -16,13 +16,24 @@ export interface ItemList {
 export default function AuctionGroup() {
   const [itemsList, setItemsList] = useState<ItemList>({} as ItemList);
 
+  
   useEffect(() => {
+    let tokenas:string = ""
+    const token = sessionStorage.getItem("access_token");
+    if(token){
+      tokenas = token
+    }
+
+  const requestOptions = {
+    method: "GET",
+    headers: { "access_token": unescape(tokenas)},
+  };
     const url =
-      "https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/itemsList";
+      "https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/user/items";
 
     const fetchData = async () => {
       try {
-        const response = await fetch(url);
+        const response = await fetch(url, requestOptions);
         const responseJSON = await response.json();
         console.log(responseJSON);
         setItemsList(responseJSON);

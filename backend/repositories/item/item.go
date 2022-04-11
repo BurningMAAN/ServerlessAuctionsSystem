@@ -137,8 +137,8 @@ func (r *repository) AssignItem(ctx context.Context, auctionID, itemID string) e
 	return err
 }
 
-func (r *repository) GetItemsByUserID(ctx context.Context, userID string) ([]models.Item, error) {
-	keyCondition := expression.Key("GSI1PK").Equal(expression.Value(utils.Make(models.UserEntityType, userID)))
+func (r *repository) GetItemsByUserName(ctx context.Context, userName string) ([]models.Item, error) {
+	keyCondition := expression.Key("GSI1PK").Equal(expression.Value(utils.Make(models.UserEntityType, userName)))
 
 	expr, err := expression.NewBuilder().WithKeyCondition(keyCondition).Build()
 	if err != nil {

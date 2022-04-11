@@ -5,9 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/aws/aws-lambda-go/events"
+	"github.com/dgrijalva/jwt-go"
 )
 
 type APIError struct {
@@ -48,4 +50,30 @@ func Make(entityType models.EntityType, attrs ...string) string {
 	}
 
 	return fmt.Sprintf("%s#%s", entityType, strings.Join(attrs, "#"))
+}
+
+func GetUserConfig(accessToken string) (models.UserConfig, error) {
+	accessToken, err := strconv.Unquote(accessToken)
+	if err != nil {
+		return models.UserConfig{}, err
+	}
+	claims := jwt.MapClaims{}
+	token, err := jwt.ParseWithClaims(accessToken, claims, func(token *jwt.Token) (interface{}, error) {
+		return []byte("my_secret_key"), nil
+	})
+	if err != nil {
+		return models.UserConfig{}, fmt.Errorf("failed to parse token: %w", err)
+	}
+
+	userConfig := models.UserConfig{}
+	for key, val := range claims {
+		if key == "username" {
+			userConfig.Name = val.(string)
+		}
+		fmt.Printf("Key: %v, value: %v\n", key, val)
+	}
+
+	fmt.Println(token)
+
+	return userConfig, nil
 }

@@ -10,3 +10,8 @@ type Claims struct {
 	Username string `json:"username"`
 	jwt.StandardClaims
 }
+
+type UserConfig struct {
+	Name  string
+	Token string
+}
