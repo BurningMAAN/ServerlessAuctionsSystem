@@ -54,10 +54,6 @@ export default function AuctionBiddingDashboard({
     "bids_before_auction_start"
   );
 
-  if(isFinished){
-    setActiveBiddingState("bids_auction_finish");
-  }
-  
   useEffect(() => {
     if (activeBiddingState === "bids_before_auction_start") {
       const interval = setInterval(() => {
@@ -90,6 +86,10 @@ export default function AuctionBiddingDashboard({
   });
 
   useEffect(() => {
+    if(isFinished){
+      setTimeLeft(0)
+      return
+    }
     if (activeBiddingState === "bids_auction_start") {
       if (timeLeft == 0) {
         setActiveBiddingState("bids_auction_finish");
@@ -125,7 +125,7 @@ export default function AuctionBiddingDashboard({
         <Text>Minimalus kėlimas: {bidIncrement} €</Text>
       </Center>
       <Center>
-        {(timeLeft !== 0 && token && decodedToken.username != creatorID && (
+        {!isFinished && (timeLeft !== 0 && token && decodedToken.username != creatorID && (
           <Button
             color="green"
             onClick={() => {
@@ -136,7 +136,7 @@ export default function AuctionBiddingDashboard({
             + {bidIncrement}
           </Button>
         )) ||
-          (token && decodedToken.username != creatorID && (
+          (isFinished && token && decodedToken.username != creatorID && (
             <Button color="grey" disabled>
               Aukcionas baigėsi
             </Button>
@@ -148,18 +148,18 @@ export default function AuctionBiddingDashboard({
           ))}
       </Center>
       <Center>
-        {activeBiddingState === "bids_before_auction_start" && (
+        {!isFinished && activeBiddingState === "bids_before_auction_start" && (
           <Title order={6}>
             Aukcionas prasideda už {days} dienų {hours} valandų {minutes}{" "}
             minučių {seconds} sekundžių
           </Title>
         )}
-        {activeBiddingState === "bids_auction_start" && (
+        {!isFinished && activeBiddingState === "bids_auction_start" && (
           <Title order={6}>
             Aukcionas šiuo metu vyksta
           </Title>
         )}
-        {activeBiddingState === "bids_auction_finish" && (
+        {isFinished && (
           <Title order={6}>
             Aukcionas baigtas
           </Title>

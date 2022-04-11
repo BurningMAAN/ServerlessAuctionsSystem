@@ -25,6 +25,7 @@ type auction struct {
 	BuyoutPrice  *float64     `json:"buyoutPrice"`
 	AuctionType  string       `json:"auctionType"`
 	BidIncrement float64      `json:"bidIncrement"`
+	IsFinished   bool         `json:"isFinished"`
 	CreatorID    string       `json:"creatorId"`
 	ItemID       string       `json:"itemId"`
 	Item         itemResponse `json:"item"`
@@ -78,6 +79,7 @@ func auctionsToResponse(auctions []models.AuctionListView) response {
 			AuctionType:  string(auctionItem.Auction.Type),
 			BuyoutPrice:  auctionItem.Auction.BuyoutPrice,
 			BidIncrement: auctionItem.Auction.BidIncrement,
+			IsFinished:   auctionItem.Auction.IsFinished,
 			CreatorID:    auctionItem.Auction.CreatorID,
 			Item: itemResponse{
 				ID:          auctionItem.Auction.ItemID,

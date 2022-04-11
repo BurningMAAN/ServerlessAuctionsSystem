@@ -11,17 +11,20 @@ export interface AuctionList {
       buyoutPrice: number;
       auctionType: string;
       bidIncrement: number;
+      isFinished: boolean;
       description: string;
-      item:{
+      item: {
         category: string;
         name: string;
-      }
+      };
     }
-  ]
+  ];
 }
 
 export default function AuctionGroup() {
-  const [auctionsList, setAuctionsList] = useState<AuctionList>({} as AuctionList);
+  const [auctionsList, setAuctionsList] = useState<AuctionList>(
+    {} as AuctionList
+  );
 
   useEffect(() => {
     const url =
@@ -43,11 +46,11 @@ export default function AuctionGroup() {
 
   return (
     <>
-      {
-      auctionsList?.auctions?.map((auctionItem) => {
+      {auctionsList?.auctions?.map((auctionItem) => {
         return (
           <Grid.Col span={4}>
             <AuctionCard
+              isFinished={auctionItem.isFinished}
               auctionID={auctionItem.id}
               auctionDate={auctionItem.auctionDate}
               buyoutPrice={auctionItem.buyoutPrice}
