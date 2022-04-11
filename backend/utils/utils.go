@@ -25,7 +25,8 @@ func InternalError(message string) (events.APIGatewayProxyResponse, error) {
 	return events.APIGatewayProxyResponse{
 		StatusCode: http.StatusInternalServerError,
 		Headers: map[string]string{
-			"Content-Type": "application/json",
+			"Content-Type":                "application/json",
+			"Access-Control-Allow-Origin": "*",
 		},
 		Body: string(errMsg),
 	}, nil
