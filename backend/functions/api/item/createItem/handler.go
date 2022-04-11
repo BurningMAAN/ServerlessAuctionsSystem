@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/dgrijalva/jwt-go"
@@ -95,6 +96,10 @@ type UserConfig struct {
 }
 
 func getUserConfig(accessToken string) (UserConfig, error) {
+	accessToken, err := strconv.Unquote(accessToken)
+	if err != nil {
+		return UserConfig{}, err
+	}
 	claims := jwt.MapClaims{}
 	token, err := jwt.ParseWithClaims(accessToken, claims, func(token *jwt.Token) (interface{}, error) {
 		return []byte("my_secret_key"), nil
