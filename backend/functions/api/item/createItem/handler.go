@@ -44,7 +44,7 @@ func (h *handler) CreateItem(ctx context.Context, event events.APIGatewayProxyRe
 
 	userConfig, err := getUserConfig(accessToken)
 	if err != nil {
-		return utils.InternalError("failed to process token")
+		return utils.InternalError(err.Error())
 	}
 
 	req := request{}
@@ -95,7 +95,7 @@ func getUserConfig(accessToken string) (UserConfig, error) {
 	claims := jwt.MapClaims{}
 	_, err := jwt.ParseWithClaims(accessToken, claims, nil)
 	if err != nil {
-		return UserConfig{}, err
+		return UserConfig{}, fmt.Errorf("failed to parse token: %w", err)
 	}
 
 	userConfig := UserConfig{}
