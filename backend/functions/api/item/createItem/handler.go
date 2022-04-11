@@ -6,6 +6,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -37,6 +38,7 @@ type handler struct {
 
 // Reik pridet kad eitu submitint nuotraukas
 func (h *handler) CreateItem(ctx context.Context, event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	log.Print("got headers", event.Headers)
 	accessToken := event.Headers["access_token"]
 	if len(accessToken) <= 0 {
 		return utils.InternalError("token not provided")
