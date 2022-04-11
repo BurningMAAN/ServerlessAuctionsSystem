@@ -93,7 +93,7 @@ type UserConfig struct {
 
 func getUserConfig(accessToken string) (UserConfig, error) {
 	claims := jwt.MapClaims{}
-	_, err := jwt.ParseWithClaims(accessToken, claims, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(accessToken, claims, func(token *jwt.Token) (interface{}, error) {
 		return []byte("my_secret_key"), nil
 	})
 	if err != nil {
@@ -108,5 +108,7 @@ func getUserConfig(accessToken string) (UserConfig, error) {
 		fmt.Printf("Key: %v, value: %v\n", key, val)
 	}
 
-	return UserConfig{}, nil
+	fmt.Println(token)
+
+	return userConfig, nil
 }
