@@ -3,8 +3,8 @@ export interface ItemCreateRequest {
     name: string;
     description: string;
     category: string;
-    ownerID: string;
   }
+
 
 export const createItem = async (item: ItemCreateRequest) => {
   const url =
