@@ -16,6 +16,7 @@ interface AuctionProps {
   buyoutPrice: number;
   description: string;
   bidIncrement: number;
+  creatorId: string;
   itemId: string;
   id: string;
 }
@@ -29,6 +30,7 @@ interface AuctionItemProps {
 
 interface AuctionViewProps{
 }
+
 export default function AuctionView({}: AuctionViewProps) {
   const { auctionID } = useParams<{ auctionID: string }>();
   const [auction, setAuction] = useState<AuctionProps>({} as AuctionProps);
@@ -53,9 +55,11 @@ export default function AuctionView({}: AuctionViewProps) {
           description={item.description}
         ></AuctionInformationDashboard>
         <AuctionBiddingDashboard
+        startDate={new Date(auction.auctionDate)}
           auctionType="absolute"
-          currentMaxBid={30}
-          bidIncrement={15}
+          currentMaxBid={auction.bidIncrement} // pakeisti i max bid ar dar kazka
+          bidIncrement={auction.bidIncrement}
+          creatorID={auction.creatorId}
         ></AuctionBiddingDashboard>
         <Grid.Col span={10}>
           <Divider />
