@@ -22,6 +22,7 @@ type response struct {
 	AuctionType  string    `json:"auctionType"`
 	BidIncrement float64   `json:"bidIncrement"`
 	CreatorID    string    `json:"creatorId"`
+	IsFinished   bool      `json:"isFinished"`
 	ItemID       string    `json:"itemId"`
 }
 
@@ -55,6 +56,7 @@ func (h *handler) GetAuction(ctx context.Context, event events.APIGatewayProxyRe
 		BidIncrement: auction.BidIncrement,
 		CreatorID:    auction.CreatorID,
 		ItemID:       auction.ItemID,
+		IsFinished:   auction.IsFinished,
 	})
 	if err != nil {
 		return utils.InternalError(err.Error())

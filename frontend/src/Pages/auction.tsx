@@ -1,11 +1,7 @@
 import NavigationBar from "../Components/Skeleton/Navbar";
 import { useParams } from "react-router-dom";
-import {
-  AppShell,
-  Grid,
-  Divider,
-} from "@mantine/core";
-import {useState, useEffect} from 'react'
+import { AppShell, Grid, Divider } from "@mantine/core";
+import { useState, useEffect } from "react";
 import AuctionBiddingDashboard from "../Components/Auction/AuctionBidding/AuctionBidding";
 import AuctionInformationDashboard from "../Components/Auction/AuctionBidding/AuctionInformationBlock";
 
@@ -18,6 +14,7 @@ interface AuctionProps {
   bidIncrement: number;
   creatorId: string;
   itemId: string;
+  isFinished: boolean;
   id: string;
 }
 
@@ -28,8 +25,7 @@ interface AuctionItemProps {
   name: string;
 }
 
-interface AuctionViewProps{
-}
+interface AuctionViewProps {}
 
 export default function AuctionView({}: AuctionViewProps) {
   const { auctionID } = useParams<{ auctionID: string }>();
@@ -37,14 +33,19 @@ export default function AuctionView({}: AuctionViewProps) {
   const [item, setItem] = useState<AuctionItemProps>({} as AuctionItemProps);
 
   const getData = async () => {
-    const auctionData = await fetch(`https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/auctions/${auctionID}`).then(res => res.json())
-    setAuction(auctionData)
-    const itemData = await fetch(`https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/items/${auctionData.itemId}`).then(res => res.json())
-    setItem(itemData)
+    const auctionData = await fetch(
+      `https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/auctions/${auctionID}`
+    ).then((res) => res.json());
+    console.log("parsing auction");
+    setAuction(auctionData);
+    const itemData = await fetch(
+      `https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/items/${auctionData.itemId}`
+    ).then((res) => res.json());
+    setItem(itemData);
   };
 
   useEffect(() => {
-    getData()
+    getData();
   }, []);
 
   return (
@@ -55,7 +56,9 @@ export default function AuctionView({}: AuctionViewProps) {
           description={item.description}
         ></AuctionInformationDashboard>
         <AuctionBiddingDashboard
-        startDate={new Date(auction.auctionDate)}
+          isFinished={auction.isFinished}
+          auctionID={auction.id}
+          startDate={auction.auctionDate}
           auctionType="absolute"
           currentMaxBid={auction.bidIncrement} // pakeisti i max bid ar dar kazka
           bidIncrement={auction.bidIncrement}
