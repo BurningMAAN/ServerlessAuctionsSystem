@@ -293,7 +293,7 @@ Resources:
             Resource: 
               - !GetAtt DynamoDBTable.Arn
               - Fn::Sub:
-                  - '${dynamoDBTableArn}/index/GSI1'
+                  - '${DynamoDBTableArn}/index/GSI1'
                   - DynamoDBTableArn: !GetAtt DynamoDBTable.Arn
       Events:
         ApiEvent:
