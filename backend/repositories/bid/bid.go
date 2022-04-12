@@ -113,6 +113,7 @@ func (r *repository) GetLatestAuctionBids(ctx context.Context, auctionID string,
 		KeyConditionExpression:    expr.KeyCondition(),
 		ExpressionAttributeNames:  expr.Names(),
 		ExpressionAttributeValues: expr.Values(),
+		ScanIndexForward:          aws.Bool(false),
 	})
 	if err != nil {
 		return []models.Bid{}, err

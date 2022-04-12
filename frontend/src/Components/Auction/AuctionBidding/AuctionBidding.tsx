@@ -180,8 +180,10 @@ export default function AuctionBiddingDashboard({
             color="green"
             onClick={() => {
               if(bids.bids == null || bids.bids == undefined){
+                console.log("nera statymu")
                 setNextBidValue(0 + bidIncrement)
               }else{
+                console.log("kitas statymas")
                 setNextBidValue(bids.bids![0].value + bidIncrement)
               }
               console.log('bid placed: ', nextBidValue)
