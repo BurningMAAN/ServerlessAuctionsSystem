@@ -70,7 +70,7 @@ export default function ItemCreateWizard({ onOpen, onClose }: ItemCreateProps) {
       />
       <Title order={3}>Nuotraukos</Title>
       <Dropzone
-        onDrop={() => console.log("accepted files")}
+        onDrop={(item) => console.log(item)}
         onReject={() => console.log("rejected files")}
         maxSize={3 * 1024 ** 2}
         accept={IMAGE_MIME_TYPE}

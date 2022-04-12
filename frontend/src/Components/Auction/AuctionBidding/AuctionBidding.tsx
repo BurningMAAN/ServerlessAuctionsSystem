@@ -2,6 +2,7 @@ import { Button, Center, Title, Text, Grid, Divider } from "@mantine/core";
 import { useState, useEffect } from "react";
 import ProgressCircle from "../../General/ProgressCircle";
 import jwtDecode, { JwtPayload } from "jwt-decode";
+import { useInterval } from 'usehooks-ts'
 
 interface AuctionBiddingProps {
   auctionType: string;
@@ -26,11 +27,6 @@ interface BidProps{
   value: number;
   timestamp: string;
   userId: string;
-}
-
-interface PlaceBidRequest{
-  auctionId: string;
-  value: number;
 }
 
 const getToken = () => {
@@ -58,9 +54,9 @@ const placeBid = async (auctionID: string, bid: number) => {
     headers: { "Content-Type": "application/json", "access_token": unescape(getToken())},
     body: JSON.stringify({value: bid})
   };
-  await fetch(
+  return await fetch(
     `https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/auction/${auctionID}/bid`, requestOptions
-  ).catch((error) => console.log(error));
+  )
 }
 
 export default function AuctionBiddingDashboard({
@@ -78,14 +74,12 @@ export default function AuctionBiddingDashboard({
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
   const [bids, setBids] = useState<Bid>({} as Bid)
-  const [nextBidValue, setNextBidValue] = useState(0);
   const [activeBiddingState, setActiveBiddingState] = useState(
     "bids_before_auction_start"
   );
 
-  useEffect(() => {
+  useInterval(() => {
     if (activeBiddingState === "bids_before_auction_start") {
-      const interval = setInterval(() => {
         const targetDate = new Date(startDate);
         const now = new Date();
         const difference = targetDate.getTime() - now.getTime();
@@ -106,33 +100,23 @@ export default function AuctionBiddingDashboard({
 
         if (d <= 0 && h <= 0 && m <= 0 && s <= 0) {
           setActiveBiddingState("bids_auction_start");
-          return () => clearInterval(interval);
         }
-      }, 1000);
-
-      return () => clearInterval(interval);
     }
-  });
+  }, 500);
 
-  useEffect(() => {
+  useInterval(() => {
     if(isFinished){
       setTimeLeft(0)
       return
     }
     if (activeBiddingState === "bids_auction_start") {
       if (timeLeft == 0) {
-        setTimeLeft(30)
-        return
-        // setActiveBiddingState("bids_auction_finish");
-        // return () => finishAuction(auctionID)
+        setActiveBiddingState("bids_auction_finish");
+        return finishAuction(auctionID)
       }
-
-      const intervalId = setInterval(() => {
-        setTimeLeft(timeLeft - 1);
-      }, 1000);
-      return () => clearInterval(intervalId);
+      setTimeLeft(timeLeft - 1);
     }
-  });
+  }, 1000);
 
   
   const getLatestBids = async (auctionID: string) => {
@@ -146,12 +130,15 @@ export default function AuctionBiddingDashboard({
     setBids(itemData);
   }
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
+  let getLatestBidsDelay: number | null = 300
+   useInterval(() => {
+     if(isFinished && auctionID){
       getLatestBids(auctionID)
-    }, 1000);
-    return () => clearInterval(intervalId);
-  });
+      getLatestBidsDelay = null
+      return
+     }
+      getLatestBids(auctionID)
+  }, getLatestBidsDelay)
 
   const token = getToken();
   const decodedToken = jwtDecode<DecodedToken>(token);
@@ -179,16 +166,21 @@ export default function AuctionBiddingDashboard({
           <Button
             color="green"
             onClick={() => {
+              let bidValue: number;
               if(bids.bids == null || bids.bids == undefined){
-                console.log("nera statymu")
-                setNextBidValue(0 + bidIncrement)
+                bidValue = 0 + bidIncrement
               }else{
-                console.log("kitas statymas")
-                setNextBidValue(bids.bids![0].value + bidIncrement)
+                bidValue = bids.bids![0].value + bidIncrement
               }
-              console.log('bid placed: ', nextBidValue)
-              placeBid(auctionID, nextBidValue)
-              setTimeLeft(30);
+              placeBid(auctionID, bidValue)
+              .then((response) => {
+                if(response.status === 201){
+                  setTimeLeft(30);
+                }
+              })
+              .catch((error) => {
+                console.log(error)
+              })
             }}
           >
             + {bidIncrement}
