@@ -3,22 +3,16 @@ package bid
 import (
 	"auctionsPlatform/models"
 	"auctionsPlatform/utils"
-	"time"
 
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 )
 
 func unmarshalItem(bidDB BidDB) (models.Bid, error) {
-	timestamp := utils.Extract("DateTime", bidDB.GSI1SK)
-	parsedTime, err := time.Parse(time.RFC3339, timestamp)
-	if err != nil {
-		return models.Bid{}, err
-	}
 	return models.Bid{
 		ID:        utils.Extract(models.BidEntityType, bidDB.PK),
 		Value:     bidDB.Value,
-		Timestamp: parsedTime,
+		Timestamp: bidDB.GSI1SK,
 		AuctionID: utils.Extract(models.AuctionEntityType, bidDB.GSI1PK),
 	}, nil
 }

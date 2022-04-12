@@ -39,8 +39,8 @@ type BidDB struct {
 	PK     string // Example: Bid#{BidID}
 	SK     string // Example: Metadata
 	Value  float64
-	GSI1PK string `dynamodbav:",omitempty"` // Example: Auction#{AuctionID}
-	GSI1SK string `dynamodbav:",omitempty"` // Example: DateTime#2020-11-26T10:56:52Z
+	GSI1PK string    `dynamodbav:",omitempty"` // Example: Auction#{AuctionID}
+	GSI1SK time.Time `dynamodbav:",omitempty"` // Example: 2020-11-26T10:56:52Z
 }
 
 type OptionalGetParameters struct{}
@@ -53,7 +53,7 @@ func (r *repository) CreateBid(ctx context.Context, auctionID string, bid models
 		SK:     "Metadata",
 		Value:  bid.Value,
 		GSI1PK: utils.Make(models.AuctionEntityType, auctionID),
-		GSI1SK: bidTime.String(),
+		GSI1SK: bidTime,
 	}
 
 	bidAttributeValues, err := attributevalue.MarshalMap(auctionDB)
