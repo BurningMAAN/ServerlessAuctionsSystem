@@ -13,6 +13,7 @@ func unmarshalItem(bidDB BidDB) (models.Bid, error) {
 		ID:        utils.Extract(models.BidEntityType, bidDB.PK),
 		Value:     bidDB.Value,
 		Timestamp: bidDB.GSI1SK,
+		UserID:    bidDB.UserID,
 		AuctionID: utils.Extract(models.AuctionEntityType, bidDB.GSI1PK),
 	}, nil
 }
