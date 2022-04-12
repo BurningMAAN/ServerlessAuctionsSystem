@@ -108,6 +108,7 @@ func (r *repository) GetLatestAuctionBids(ctx context.Context, auctionID string,
 		return nil, err
 	}
 	result, err := r.DB.Query(ctx, &dynamodb.QueryInput{
+		IndexName:                 aws.String("GSI1"),
 		TableName:                 &r.tableName,
 		KeyConditionExpression:    expr.KeyCondition(),
 		ExpressionAttributeNames:  expr.Names(),
