@@ -3,13 +3,14 @@ package bid
 import (
 	"auctionsPlatform/errors"
 	"auctionsPlatform/models"
+	bidRepo "auctionsPlatform/repositories/bid"
 	"context"
 )
 
 type bidRepository interface {
 	CreateBid(ctx context.Context, auctionID string, bid models.Bid) (models.Bid, error)
 	GetBidByID(ctx context.Context, bidID string) (models.Bid, error)
-	GetLatestAuctionBid(ctx context.Context, auctionID string) (*models.Bid, error)
+	GetLatestAuctionBids(ctx context.Context, auctionID string, optFns ...func(*bidRepo.OptionalGetParameters)) ([]models.Bid, error)
 }
 
 type auctionRepository interface {
@@ -66,4 +67,13 @@ func (s *service) PlaceBid(ctx context.Context, auctionID string, bid models.Bid
 
 func (s *service) GetBidByID(ctx context.Context, bidID string) (models.Bid, error) {
 	return s.bidRepository.GetBidByID(ctx, bidID)
+}
+
+func (s *service) GetLatestAuctionBids(ctx context.Context, auctionID string, optFns ...func(*bidRepo.OptionalGetParameters)) ([]models.Bid, error) {
+	auction, err := s.auctionRepository.GetAuctionByID(ctx, auctionID)
+	if err != nil {
+		return []models.Bid{}, err
+	}
+
+	return s.bidRepository.GetLatestAuctionBids(ctx, auction.ID)
 }

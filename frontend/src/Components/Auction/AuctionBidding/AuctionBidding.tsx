@@ -36,6 +36,16 @@ const finishAuction = async (auctionID: string) => {
   );
 }
 
+const getLatestBid = async (auctionID: string) => {
+  const requestOptions = {
+    method: "GET",
+    headers: {"access_token": unescape(getToken())},
+  };
+  const finishedAuction = await fetch(
+    `https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/auctions/${auctionID}/finish`, requestOptions
+  );
+}
+
 export default function AuctionBiddingDashboard({
   auctionType,
   currentMaxBid,

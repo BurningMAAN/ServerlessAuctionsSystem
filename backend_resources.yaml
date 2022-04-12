@@ -275,6 +275,75 @@ Resources:
               RestApiId:
                 Ref: AuctionGateway
 
+  GetAuctionBidsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: main
+      Runtime: go1.x
+      AutoPublishAlias: live
+      Tracing: Active
+      MemorySize: 512
+      Timeout: 15
+      Description: Lambda function that gets user items list
+      CodeUri: backend/functions/api/bid/getAuctionBids
+      Environment:
+        Variables:
+          DYNAMODB_TABLE: !Ref DynamoDBTable
+      Policies:
+        Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:Query
+              - dynamodb:GetItem
+            Resource: 
+              - !GetAtt DynamoDBTable.Arn
+              - Fn::Sub:
+                  - '${DynamoDBTableArn}/index/GSI1'
+                  - DynamoDBTableArn: !GetAtt DynamoDBTable.Arn
+      Events:
+        ApiEvent:
+            Type: Api
+            Properties:
+              Path: /auction/{auctionId}/bids
+              Method: get
+              RestApiId:
+                Ref: AuctionGateway
+
+  PutAuctionBidFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: main
+      Runtime: go1.x
+      AutoPublishAlias: live
+      Tracing: Active
+      MemorySize: 512
+      Timeout: 15
+      Description: Lambda function that puts auction bid
+      CodeUri: backend/functions/api/bid/placeBid
+      Environment:
+        Variables:
+          DYNAMODB_TABLE: !Ref DynamoDBTable
+      Policies:
+        Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:Query
+              - dynamodb:GetItem
+              - dynamodb:PutItem
+            Resource: 
+              - !GetAtt DynamoDBTable.Arn
+              - Fn::Sub:
+                  - '${DynamoDBTableArn}/index/GSI1'
+                  - DynamoDBTableArn: !GetAtt DynamoDBTable.Arn
+      Events:
+        ApiEvent:
+            Type: Api
+            Properties:
+              Path: /auction/{auctionId}/bid
+              Method: post
+              RestApiId:
+                Ref: AuctionGateway
+
   CreateUserFunction:
     Type: AWS::Serverless::Function
     Properties:

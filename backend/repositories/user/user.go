@@ -18,6 +18,7 @@ type UserDB struct {
 	SK       string // Example: Metadata
 	Password string
 	Email    string
+	Role     string
 }
 
 type DB interface {
@@ -53,6 +54,7 @@ func (r *repository) CreateUser(ctx context.Context, user models.User) (models.U
 		SK:       "Metadata",
 		Password: string(pswHash),
 		Email:    user.Email,
+		Role:     string(models.UserRole),
 	}
 
 	userAttributeValues, err := attributevalue.MarshalMap(itemDB)

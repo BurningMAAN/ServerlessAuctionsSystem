@@ -8,6 +8,7 @@ type AuthorizationConfig struct {
 
 type Claims struct {
 	Username string `json:"username"`
+	Role     `json:"role"`
 	jwt.StandardClaims
 }
 
@@ -15,3 +16,9 @@ type UserConfig struct {
 	Name  string
 	Token string
 }
+
+type Role string
+
+const (
+	UserRole Role = "standard_user"
+)

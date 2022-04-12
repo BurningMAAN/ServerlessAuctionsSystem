@@ -13,6 +13,7 @@ func unmarshalUser(userDB UserDB) (models.User, error) {
 		UserName: utils.Extract(models.UserEntityType, userDB.PK),
 		Password: userDB.Password,
 		Email:    userDB.Email,
+		Role:     userDB.Role,
 	}, nil
 }
 
