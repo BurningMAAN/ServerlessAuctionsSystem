@@ -117,7 +117,7 @@ func (r *repository) GetLatestAuctionBids(ctx context.Context, auctionID string,
 	}
 
 	if result.Items == nil {
-		return []models.Bid{}, errors.New("exists")
+		return []models.Bid{}, nil
 	}
 
 	return ExtractBids(result.Items)
