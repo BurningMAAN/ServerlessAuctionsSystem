@@ -53,7 +53,7 @@ phases:
       - go build -o main
 
       # Build PlaceAuctionBidFunction
-      - cd $ROOTDIR/backend/functions/api/item/backend/functions/api/bid/placeBid
+      - cd $ROOTDIR/backend/functions/api/bid/placeBid
       - go build -o main
 
       - cd $ROOTDIR
