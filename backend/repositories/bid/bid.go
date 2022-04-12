@@ -100,12 +100,13 @@ func (r *repository) GetBidByID(ctx context.Context, bidID string) (models.Bid, 
 }
 
 func (r *repository) GetLatestAuctionBids(ctx context.Context, auctionID string, optFns ...func(*OptionalGetParameters)) ([]models.Bid, error) {
-	expr, err := expression.NewBuilder().WithKeyCondition(expression.KeyAnd(
-		expression.Key("GSI1PK").Equal(expression.Value(utils.Make(models.AuctionEntityType, auctionID))), expression.Key("GSI1SK").BeginsWith("DateTime"))).Build()
+	GSI1PK := utils.Make(models.AuctionEntityType, auctionID)
+	keyCondition := expression.Key(string("GSI1PK")).Equal(expression.Value(GSI1PK))
+
+	expr, err := expression.NewBuilder().WithKeyCondition(keyCondition).Build()
 	if err != nil {
 		return nil, err
 	}
-
 	result, err := r.DB.Query(ctx, &dynamodb.QueryInput{
 		TableName:                 &r.tableName,
 		KeyConditionExpression:    expr.KeyCondition(),
