@@ -54,11 +54,6 @@ func (h *handler) PlaceBid(ctx context.Context, event events.APIGatewayProxyRequ
 		AuctionID: event.PathParameters["auctionId"],
 	}
 
-	err = json.Unmarshal([]byte(event.Body), &req)
-	if err != nil {
-		return utils.InternalError(fmt.Sprintf("unmarshal err: %s", err.Error()))
-	}
-
 	bids, err := h.bidService.GetLatestAuctionBids(ctx, req.AuctionID)
 	if err != nil {
 		return utils.InternalError(err.Error())
