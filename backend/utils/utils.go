@@ -4,6 +4,7 @@ import (
 	"auctionsPlatform/models"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -23,6 +24,7 @@ func InternalError(message string) (events.APIGatewayProxyResponse, error) {
 		ErrorMessage: message,
 	}
 
+	log.Print(message)
 	errMsg, _ := json.Marshal(error)
 	return events.APIGatewayProxyResponse{
 		StatusCode: http.StatusInternalServerError,

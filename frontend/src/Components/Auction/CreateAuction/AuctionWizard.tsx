@@ -150,12 +150,12 @@ export default function AuctionCreateWizard({ onOpen, onClose }: AuctionProps) {
             label="Aukciono tipas"
             placeholder="Pasirinkti"
             required
-            data={[{ value: "absoliutus", label: "Absoliutus" }]}
-            onSelect={(selectedItem) => {
+            data={[{ value: "AbsoluteAuction", label: "Absoliutus" }]}
+            onChange={(selectedItem) => {
               setAuctionMetadata({
                 auctionDate: auctionMetadata.auctionDate,
                 buyoutPrice: auctionMetadata.buyoutPrice,
-                auctionType: selectedItem.currentTarget.value,
+                auctionType: selectedItem,
                 bidIncrement:auctionMetadata.bidIncrement,
                 itemID: auctionMetadata.itemID,
               } as CreateAuctionRequest)

@@ -8,12 +8,19 @@ import (
 )
 
 func (s *service) handleAbsoluteBid(ctx context.Context, auctionID string, bid models.Bid) error {
-	latestBid, err := s.bidRepository.GetLatestAuctionBids(ctx, auctionID)
+	latestBids, err := s.bidRepository.GetLatestAuctionBids(ctx, auctionID)
 	if err != nil {
 		return fmt.Errorf("get latest auction bids err: %s", err.Error())
 	}
 
-	if latestBid != nil && bid.Value <= latestBid[0].Value {
+	var latestBid float64
+	if len(latestBids) == 0 {
+		latestBid = 0
+	} else {
+		latestBid = latestBids[0].Value
+	}
+
+	if bid.Value <= latestBid {
 		return errors.ErrBidNotHigher
 	}
 

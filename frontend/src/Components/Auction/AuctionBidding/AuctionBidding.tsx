@@ -158,7 +158,7 @@ export default function AuctionBiddingDashboard({
   return (
     <Grid.Col span={4}>
       <Center>
-        {auctionType == "absolute" && <Title>Absoliutus aukcionas</Title>}
+        {auctionType == "AbsoluteAuction" && <Title>Absoliutus aukcionas</Title>}
         {auctionType == "reserved" && <Title>Rezervinis aukcionas</Title>}
       </Center>
       <Divider />

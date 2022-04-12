@@ -11,6 +11,7 @@ interface AuctionProps {
   category: string;
   buyoutPrice: number;
   description: string;
+  auctionType: string;
   bidIncrement: number;
   creatorId: string;
   itemId: string;
@@ -45,6 +46,7 @@ export default function AuctionView({}: AuctionViewProps) {
   };
 
   useEffect(() => {
+    console.log(auction.auctionType)
     getData();
   }, []);
 
@@ -59,7 +61,7 @@ export default function AuctionView({}: AuctionViewProps) {
           isFinished={auction.isFinished}
           auctionID={auction.id}
           startDate={auction.auctionDate}
-          auctionType="absolute"
+          auctionType={auction.auctionType}
           currentMaxBid={auction.bidIncrement} // pakeisti i max bid ar dar kazka
           bidIncrement={auction.bidIncrement}
           creatorID={auction.creatorId}

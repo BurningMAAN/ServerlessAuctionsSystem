@@ -50,7 +50,7 @@ const Dashboard: FC<TitleProps> = ({}) => {
             placeholder="Aukciono tipas"
             data={[
                 {value: "-", label: "-"},
-                { value: "Absoliutus", label: "Absoliutus" }
+                { value: "AbsoluteAuction", label: "Absoliutus" }
             ]}
           ></Select>
           <Button px={50} style={{top: 12}}>
