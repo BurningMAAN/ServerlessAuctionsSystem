@@ -6,6 +6,7 @@ import (
 	"auctionsPlatform/utils"
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -14,8 +15,6 @@ import (
 
 type request struct {
 	AuctionID string
-	Value     float64 `json:"value"`
-	UserID    string  `json:"userId"`
 }
 
 type response struct {
@@ -45,7 +44,7 @@ func (h *handler) PlaceBid(ctx context.Context, event events.APIGatewayProxyRequ
 
 	_, err := utils.GetUserConfig(accessToken)
 	if err != nil {
-		return utils.InternalError(err.Error())
+		return utils.InternalError(fmt.Sprintf("get user config err: %s", err.Error()))
 	}
 
 	if len(event.PathParameters["auctionId"]) <= 0 {
@@ -57,7 +56,7 @@ func (h *handler) PlaceBid(ctx context.Context, event events.APIGatewayProxyRequ
 
 	err = json.Unmarshal([]byte(event.Body), &req)
 	if err != nil {
-		return utils.InternalError(err.Error())
+		return utils.InternalError(fmt.Sprintf("unmarshal err: %s", err.Error()))
 	}
 
 	bids, err := h.bidService.GetLatestAuctionBids(ctx, req.AuctionID)
@@ -76,7 +75,7 @@ func (h *handler) PlaceBid(ctx context.Context, event events.APIGatewayProxyRequ
 	}
 	respBody, err := json.Marshal(response)
 	if err != nil {
-		return utils.InternalError(err.Error())
+		return utils.InternalError(fmt.Sprintf("marshal err: %s", err.Error()))
 	}
 
 	return events.APIGatewayProxyResponse{

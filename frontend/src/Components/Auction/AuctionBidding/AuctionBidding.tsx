@@ -42,7 +42,7 @@ const getLatestBid = async (auctionID: string) => {
     headers: {"access_token": unescape(getToken())},
   };
   const finishedAuction = await fetch(
-    `https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/auctions/${auctionID}/finish`, requestOptions
+    `https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/auctions/${auctionID}/bids`, requestOptions
   );
 }
 
@@ -112,6 +112,10 @@ export default function AuctionBiddingDashboard({
       return () => clearInterval(intervalId);
     }
   });
+
+  useEffect(() => {
+
+  })
 
   const token = getToken();
   const decodedToken = jwtDecode<DecodedToken>(token);
