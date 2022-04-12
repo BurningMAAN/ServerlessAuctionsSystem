@@ -12,7 +12,7 @@ export default function AuctionInformationDashboard({
   name
 }: AuctionInformationDashboardProps) {
   return (
-    <Grid.Col span={7}>
+    <Grid.Col span={8}>
       <Title>{name}</Title>
       <Divider />
       <Carousel style={{ height: 450, width: 650, top: 25 }}>

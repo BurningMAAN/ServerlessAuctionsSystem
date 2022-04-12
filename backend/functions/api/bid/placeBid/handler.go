@@ -14,7 +14,6 @@ import (
 type request struct {
 	AuctionID string
 	Value     float64 `json:"value"`
-	UserID    string  `json:"userId"`
 }
 
 type response struct {
@@ -22,7 +21,6 @@ type response struct {
 	AuctionID string    `json:"auctionId"`
 	Timestamp time.Time `json:"timestamp"`
 	Value     float64   `json:"value"`
-	UserID    string    `json:"userId"`
 }
 
 type bidService interface {
@@ -47,6 +45,7 @@ func (h *handler) PlaceBid(ctx context.Context, event events.APIGatewayProxyRequ
 	if len(event.PathParameters["auctionId"]) <= 0 {
 		return utils.InternalError("auctionID not provided")
 	}
+
 	req := request{
 		AuctionID: event.PathParameters["auctionId"],
 	}
@@ -58,9 +57,9 @@ func (h *handler) PlaceBid(ctx context.Context, event events.APIGatewayProxyRequ
 
 	bid, err := h.bidService.PlaceBid(ctx, req.AuctionID, models.Bid{
 		Value:     req.Value,
-		UserID:    req.UserID,
 		AuctionID: req.AuctionID,
 		Timestamp: time.Now(),
+		UserID:    userConfig.Name,
 	})
 	if err != nil {
 		return utils.InternalError(err.Error())
@@ -71,7 +70,6 @@ func (h *handler) PlaceBid(ctx context.Context, event events.APIGatewayProxyRequ
 		AuctionID: bid.AuctionID,
 		Timestamp: bid.Timestamp,
 		Value:     bid.Value,
-		UserID:    userConfig.Name,
 	})
 	if err != nil {
 		return utils.InternalError(err.Error())

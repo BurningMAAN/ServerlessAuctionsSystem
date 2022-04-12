@@ -17,6 +17,22 @@ interface DecodedToken {
   username: string;
 }
 
+interface Bid{
+  bids: BidProps[] | null;
+}
+
+interface BidProps{
+  auctionId: string;
+  value: number;
+  timestamp: string;
+  userId: string;
+}
+
+interface PlaceBidRequest{
+  auctionId: string;
+  value: number;
+}
+
 const getToken = () => {
   let tokenas = "";
   const tokenString = sessionStorage.getItem("access_token");
@@ -33,17 +49,18 @@ const finishAuction = async (auctionID: string) => {
   };
   const finishedAuction = await fetch(
     `https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/auctions/${auctionID}/finish`, requestOptions
-  );
+  ).catch((error) => console.log(error));
 }
 
-const getLatestBid = async (auctionID: string) => {
+const placeBid = async (auctionID: string, bid: number) => {
   const requestOptions = {
-    method: "GET",
-    headers: {"access_token": unescape(getToken())},
+    method: "POST",
+    headers: { "Content-Type": "application/json", "access_token": unescape(getToken())},
+    body: JSON.stringify({value: bid})
   };
-  const finishedAuction = await fetch(
-    `https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/auctions/${auctionID}/bids`, requestOptions
-  );
+  await fetch(
+    `https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/auction/${auctionID}/bid`, requestOptions
+  ).catch((error) => console.log(error));
 }
 
 export default function AuctionBiddingDashboard({
@@ -60,6 +77,8 @@ export default function AuctionBiddingDashboard({
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
+  const [bids, setBids] = useState<Bid>({} as Bid)
+  const [nextBidValue, setNextBidValue] = useState(0);
   const [activeBiddingState, setActiveBiddingState] = useState(
     "bids_before_auction_start"
   );
@@ -102,8 +121,10 @@ export default function AuctionBiddingDashboard({
     }
     if (activeBiddingState === "bids_auction_start") {
       if (timeLeft == 0) {
-        setActiveBiddingState("bids_auction_finish");
-        return () => finishAuction(auctionID)
+        setTimeLeft(30)
+        return
+        // setActiveBiddingState("bids_auction_finish");
+        // return () => finishAuction(auctionID)
       }
 
       const intervalId = setInterval(() => {
@@ -113,9 +134,24 @@ export default function AuctionBiddingDashboard({
     }
   });
 
-  useEffect(() => {
+  
+  const getLatestBids = async (auctionID: string) => {
+    const requestOptions = {
+      method: "GET",
+      headers: {"access_token": unescape(getToken())},
+    };
+    const itemData = await fetch(
+      `https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/auction/${auctionID}/bids`, requestOptions
+    ).then((res) => res.json());
+    setBids(itemData);
+  }
 
-  })
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      getLatestBids(auctionID)
+    }, 1000);
+    return () => clearInterval(intervalId);
+  });
 
   const token = getToken();
   const decodedToken = jwtDecode<DecodedToken>(token);
@@ -130,7 +166,7 @@ export default function AuctionBiddingDashboard({
         <h4>Paskutinis statymas</h4>
       </Center>
       <Center>
-        <h1>{currentMaxBid} €</h1>
+        <h1>{bids.bids == null && bids.bids == undefined && '0' || bids.bids![0].value} €</h1>
       </Center>
       <Center>
         <ProgressCircle progressValue={timeLeft}></ProgressCircle>
@@ -143,7 +179,13 @@ export default function AuctionBiddingDashboard({
           <Button
             color="green"
             onClick={() => {
-              console.log("atliktas statymas");
+              if(bids.bids == null || bids.bids == undefined){
+                setNextBidValue(0 + bidIncrement)
+              }else{
+                setNextBidValue(bids.bids![0].value + bidIncrement)
+              }
+              console.log('bid placed: ', nextBidValue)
+              placeBid(auctionID, nextBidValue)
               setTimeLeft(30);
             }}
           >

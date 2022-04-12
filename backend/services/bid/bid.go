@@ -5,6 +5,7 @@ import (
 	"auctionsPlatform/models"
 	bidRepo "auctionsPlatform/repositories/bid"
 	"context"
+	"fmt"
 )
 
 type bidRepository interface {
@@ -38,12 +39,12 @@ func New(auctionRepository auctionRepository, bidRepository bidRepository, userR
 func (s *service) PlaceBid(ctx context.Context, auctionID string, bid models.Bid) (models.Bid, error) {
 	auction, err := s.auctionRepository.GetAuctionByID(ctx, auctionID)
 	if err != nil {
-		return models.Bid{}, err
+		return models.Bid{}, fmt.Errorf("auction err: %s", err.Error())
 	}
 
 	user, err := s.userRepository.GetUserByID(ctx, bid.UserID)
 	if err != nil {
-		return models.Bid{}, err
+		return models.Bid{}, fmt.Errorf("user err: %s", err.Error())
 	}
 
 	if auction.CreatorID == user.ID {

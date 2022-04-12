@@ -83,7 +83,7 @@ export default function AuctionCreateWizard({ onOpen, onClose }: AuctionProps) {
 
   const selectionItems: SelectItemProps[] = [];
   userItemsList.items?.map((userItem) => {
-    if(userItem.auctionId?.length <= 0){
+    if(!userItem.auctionId){
       selectionItems.push({ label: userItem.name, value: userItem.id });
     }
   });
