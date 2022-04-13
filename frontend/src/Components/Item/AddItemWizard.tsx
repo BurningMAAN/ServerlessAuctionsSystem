@@ -29,6 +29,7 @@ export default function ItemCreateWizard({ onOpen, onClose }: ItemCreateProps) {
   const theme = useMantineTheme();
   const [item, setItem] = useState<ItemCreateRequest>({} as ItemCreateRequest);
   const [uploadedImages, setUploadedImages] = useState<string[]>([])
+  let testImages = new FormData();
 
   return (
     <Modal opened={onOpen} onClose={() => {
@@ -46,6 +47,7 @@ export default function ItemCreateWizard({ onOpen, onClose }: ItemCreateProps) {
             name: event.currentTarget.value,
             description: item.description,
             category: item.category,
+            body: testImages,
           } as ItemCreateRequest)
         }
       />
@@ -58,6 +60,7 @@ export default function ItemCreateWizard({ onOpen, onClose }: ItemCreateProps) {
             name: item.name,
             description: item.description,
             category: selectedItem,
+            body: testImages,
           } as ItemCreateRequest);
         }}
         data={[{ value: "Transportas", label: "Transportas" }]}
@@ -70,6 +73,7 @@ export default function ItemCreateWizard({ onOpen, onClose }: ItemCreateProps) {
             name: item.name,
             description: event.currentTarget.value,
             category: item.category,
+            body: testImages,
           } as ItemCreateRequest)
         }
         required
@@ -98,6 +102,7 @@ export default function ItemCreateWizard({ onOpen, onClose }: ItemCreateProps) {
           images.map((image) => {
             const url = URL.createObjectURL(image)
             setUploadedImages([...uploadedImages, url])
+            testImages.append(image)
           })
         }}
         onReject={() => console.log("rejected files")}
