@@ -37,6 +37,7 @@ type handler struct {
 // Reik pridet kad eitu submitint nuotraukas
 func (h *handler) CreateItem(ctx context.Context, event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	log.Print("got headers", event.Headers)
+	log.Print("got event body", event.Body)
 	accessToken := event.Headers["access_token"]
 	if len(accessToken) <= 0 {
 		return utils.InternalError("token not provided")

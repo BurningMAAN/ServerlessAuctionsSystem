@@ -9,8 +9,10 @@ import {
   Group,
   Divider,
   useMantineTheme,
+  Grid,
   Textarea,
   MantineTheme,
+  Image,
   TextInput,
 } from "@mantine/core";
 import { Upload, Photo, X, Icon as TablerIcon } from "tabler-icons-react";
@@ -26,9 +28,13 @@ interface ItemCreateProps {
 export default function ItemCreateWizard({ onOpen, onClose }: ItemCreateProps) {
   const theme = useMantineTheme();
   const [item, setItem] = useState<ItemCreateRequest>({} as ItemCreateRequest);
+  const [uploadedImages, setUploadedImages] = useState<string[]>([])
 
   return (
-    <Modal opened={onOpen} onClose={onClose} size="xl">
+    <Modal opened={onOpen} onClose={() => {
+      setUploadedImages([])
+      onClose();
+    }} size="xl">
       <Title order={1} onClick={() => console.log(item)}>
         Inventoriaus pridėjimas
       </Title>
@@ -69,18 +75,41 @@ export default function ItemCreateWizard({ onOpen, onClose }: ItemCreateProps) {
         required
       />
       <Title order={3}>Nuotraukos</Title>
+      {uploadedImages.length > 0 && (
+        <Grid>
+          {
+            uploadedImages.map((image) => {
+              return (
+                <Grid.Col span={4}><Image
+                width={200}
+                height={120}
+                style={{maxHeight: 'auto', maxWidth: '100%', objectFit: 'fill'}}
+                src={image}
+                alt="With default placeholder"
+              /></Grid.Col>
+              )
+            })
+          }
+        </Grid>
+      )}
+      <Divider/>
       <Dropzone
-        onDrop={(item) => console.log(item)}
+        onDrop={ async (images)=> {
+          images.map((image) => {
+            const url = URL.createObjectURL(image)
+            setUploadedImages([...uploadedImages, url])
+          })
+        }}
         onReject={() => console.log("rejected files")}
         maxSize={3 * 1024 ** 2}
         accept={IMAGE_MIME_TYPE}
       >
         {(status) => dropzoneChildren(status, theme)}
       </Dropzone>
-      <Divider />
       <Center>
         <Button color="green" onClick={() => {
           createItem(item)
+          setUploadedImages([])
           onClose();
         }}>Patvirtinti</Button>
       </Center>
