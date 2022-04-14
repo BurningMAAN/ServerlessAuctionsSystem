@@ -22,7 +22,7 @@ type request struct {
 }
 
 type response struct {
-	Data map[string]auctionResponse
+	Data []auctionResponse
 }
 
 type auctionResponse struct {
@@ -67,12 +67,11 @@ func (h *handler) CreateAuction(ctx context.Context, event events.APIGatewayProx
 			return utils.InternalError(err.Error())
 		}
 		log.Print("bidResponse", bids)
-
-		response.Data[auction.Auction.ID] = auctionResponse{
+		response.Data = append(response.Data, auctionResponse{
 			Auction: auction.Auction,
 			Item:    item,
 			Bids:    bids,
-		}
+		})
 		log.Print("response", response)
 	}
 
