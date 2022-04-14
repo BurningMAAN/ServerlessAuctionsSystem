@@ -7,11 +7,15 @@ import {
   Checkbox,
   Button,
   Title,
+  Center,
+  Box,
   Text,
+  Group,
   Anchor,
+  Notification,
 } from "@mantine/core";
 import { Redirect } from 'react-router-dom';
-import { At } from "tabler-icons-react";
+import { useForm } from '@mantine/form';
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -64,6 +68,7 @@ interface AuthorizerUserResponse {
 }
 
 export default function AuthenticationImage() {
+  const [loginNotification, setLoginNotification] = useState(false)
   const { classes } = useStyles();
   const [token, setToken] = useState<AuthorizerUserResponse>(
     {} as AuthorizerUserResponse
@@ -74,6 +79,19 @@ export default function AuthenticationImage() {
   const [userInformation, setUserInformation] = useState<CreateUserRequest>(
     {} as CreateUserRequest
   );
+
+  const form = useForm({
+    initialValues: {
+      username: '',
+      password: '',
+      email: '',
+    },
+    validate: {
+      email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Neteisingas el.pašto formatas'),
+      username: (value) => value.length >= 6 ? null : 'Vartotojo vardas turi būti bent 6 simbolių',
+      password: (value) => value.length > 6 ? null : 'Vartotojo slapyvardis turi būti ilgesnis nei 6 simboliai'
+    }
+  })
 
   const registerUser = async (user: CreateUserRequest) => {
     const url =
@@ -88,13 +106,16 @@ export default function AuthenticationImage() {
     try {
       fetch(url, requestOptions).then((response) => {
         response.json();
+        if(response.status == 201){
+          setClickedRegister(false);
+        }
         console.log(response);
+
       });
     } catch (error) {
       console.log("failed to create user", error);
+      setLoginNotification(true)
     }
-
-    setClickedRegister(false);
   };
 
   const authorizeUser = async (user: AuthorizeUserRequest) => {
@@ -110,8 +131,9 @@ export default function AuthenticationImage() {
     try {
       const response = await fetch(url, requestOptions);
       const responseJSON = await response.json();
-      console.log(responseJSON);
-      setToken(responseJSON);
+      if(response.status == 200){
+        setToken(responseJSON);
+      }
     } catch (error) {
       console.log("failed to get data from api", error);
     }
@@ -182,82 +204,50 @@ export default function AuthenticationImage() {
       )}
       {clickedRegister && (
         <Paper className={classes.form} radius={0} p={30}>
-          <Title
-            order={2}
-            className={classes.title}
-            align="center"
-            mt="md"
-            mb={50}
-          >
-            Registracija
-          </Title>
-
-          <TextInput
-            label="Vartotojo slapyvardis"
-            placeholder="Vartotojas"
-            size="md"
-            onChange={(event) =>
-              setUserInformation({
-                username: event.currentTarget.value,
-                password: userInformation.password,
-                email: userInformation.email,
-              } as CreateUserRequest)
-            }
+        <Box sx={{ maxWidth: 300 }} mx="auto">
+        <form onSubmit={form.onSubmit((values) => {
+          registerUser(form.values)
+        })}>
+          <TextInput 
+          required
+          label="Vartotojo vardas"
+          placeholder="Vartotojo vardas"
+          {...form.getInputProps('username')}
           />
           <PasswordInput
-            label="Slaptažodis"
-            placeholder="Slaptažodis"
-            mt="md"
-            size="md"
-            onChange={(event) =>
-              setUserInformation({
-                username: userInformation.username,
-                password: event.currentTarget.value,
-                email: userInformation.email,
-              } as CreateUserRequest)
-            }
-          />
-          <PasswordInput
-            label="Patvirtinti slaptažodį"
-            placeholder="Patvirtinti slaptažodį"
-            mt="md"
-            size="md"
-          />
+          required
+          label="Slaptažodis"
+          placeholder="Slaptažodis"
+          {...form.getInputProps('password')} />
           <TextInput
+            required
             label="Elektroninis paštas"
             placeholder="Elektroninis paštas"
-            onChange={(event) =>
-              setUserInformation({
-                username: userInformation.username,
-                password: userInformation.password,
-                email: event.currentTarget.value,
-              } as CreateUserRequest)
-            }
-            icon={<At size={14} />}
+            {...form.getInputProps('email')}
           />
-          <Button
-            fullWidth
-            mt="xl"
-            size="md"
-            onClick={() => registerUser(userInformation)}
-          >
-            Registruotis
-          </Button>
-
-          <Text align="center" mt="md">
+  
+          <Group position="right" mt="md">
+            <Center>
+            <Button type="submit">Registruotis</Button>
+            </Center>
+          </Group>
+        </form>
+      </Box>
+      <Text align="center" mt="md">
             Turite paskyrą?{" "}
-            <Anchor<"a">
-              href="#"
-              weight={700}
+             <Anchor<"a">
+               href="#"
+             weight={700}
+              type="submit"
               onClick={(event) => {
                 event.preventDefault();
-                setClickedRegister(false);
-              }}
-            >
-              Prisijungti
-            </Anchor>
-          </Text>
-        </Paper>
+                 setClickedRegister(false);
+               }}
+             >
+               Prisijungti
+             </Anchor>
+           </Text>
+      </Paper>
       )}
       {token.access_token && <Redirect to="/"></Redirect>}
     </div>

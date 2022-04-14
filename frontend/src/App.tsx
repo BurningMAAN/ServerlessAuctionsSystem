@@ -4,9 +4,11 @@ import MyInventory from './Pages/myInventory';
 import AuctionView from './Pages/auction';
 import MyAuctions from './Pages/myAuctions';
 import AuthenticationImage from './Pages/login';
+import { NotificationsProvider } from '@mantine/notifications';
 
 function App() {
   return (
+    <NotificationsProvider>
     <div className="App">
       <header className="App-header">
         <BrowserRouter>
@@ -20,6 +22,7 @@ function App() {
         </BrowserRouter>
       </header>
     </div>
+    </NotificationsProvider>
   );
 }
 

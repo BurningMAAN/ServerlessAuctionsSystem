@@ -54,7 +54,6 @@ func (h *handler) CreateAuction(ctx context.Context, event events.APIGatewayProx
 	if err != nil {
 		return utils.InternalError(err.Error())
 	}
-
 	auction, err := h.auctionService.CreateAuction(ctx, models.Auction{
 		Type:         models.AuctionType(req.AuctionType),
 		StartDate:    req.AuctionDate,

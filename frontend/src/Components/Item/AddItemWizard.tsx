@@ -18,6 +18,7 @@ import {
 import { Upload, Photo, X, Icon as TablerIcon } from "tabler-icons-react";
 import { Dropzone, DropzoneStatus, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import {ItemCreateRequest, createItem} from "../../api/item";
+import { useForm } from '@mantine/form';
 
 interface ItemCreateProps {
   onOpen: boolean;
@@ -31,51 +32,48 @@ export default function ItemCreateWizard({ onOpen, onClose }: ItemCreateProps) {
   const [uploadedImages, setUploadedImages] = useState<string[]>([])
   let testImages = new FormData();
 
+  const form = useForm({
+    initialValues: {
+      name: '',
+      description: '',
+      category: '',
+      body: new FormData()
+    },
+    validate: {
+      name: (value) => value.length >= 4 ? null : 'Daikto pavadinimas turi būti bent 4 simbolių',
+      description: (value) => value.length > 10 ? null : 'Daikto aprašymas turi būti bent 10 simbolių',
+      category: (value) => value == 'Transportas' ? null : 'Pasirinkite tinkamą kategoriją'
+    }
+  })
   return (
     <Modal opened={onOpen} onClose={() => {
       setUploadedImages([])
       onClose();
     }} size="xl">
-      <Title order={1} onClick={() => console.log(item)}>
+      <form onSubmit={form.onSubmit((values) => {
+           setUploadedImages([])
+           createItem(values)
+           onClose();
+        })}>
+      <Title order={1} >
         Inventoriaus pridėjimas
       </Title>
       <TextInput
         label="Pavadinimas"
         description="Pavadinimas"
-        onChange={(event) =>
-          setItem({
-            name: event.currentTarget.value,
-            description: item.description,
-            category: item.category,
-            body: testImages,
-          } as ItemCreateRequest)
-        }
+        {...form.getInputProps('name')}
       />
       <Select
         label="Kategorija"
         placeholder="Pasirinkti"
         required
-        onChange={(selectedItem) => {
-          setItem({
-            name: item.name,
-            description: item.description,
-            category: selectedItem,
-            body: testImages,
-          } as ItemCreateRequest);
-        }}
+        {...form.getInputProps('category')}
         data={[{ value: "Transportas", label: "Transportas" }]}
       />
       <Textarea
         placeholder="Aprašymas"
         label="Aprašymas"
-        onChange={(event) =>
-          setItem({
-            name: item.name,
-            description: event.currentTarget.value,
-            category: item.category,
-            body: testImages,
-          } as ItemCreateRequest)
-        }
+        {...form.getInputProps('description')}
         required
       />
       <Title order={3}>Nuotraukos</Title>
@@ -102,7 +100,8 @@ export default function ItemCreateWizard({ onOpen, onClose }: ItemCreateProps) {
           images.map((image) => {
             const url = URL.createObjectURL(image)
             setUploadedImages([...uploadedImages, url])
-            testImages.append(image)
+            testImages.append('id', image)
+            console.log(testImages.get('id'))
           })
         }}
         onReject={() => console.log("rejected files")}
@@ -112,12 +111,9 @@ export default function ItemCreateWizard({ onOpen, onClose }: ItemCreateProps) {
         {(status) => dropzoneChildren(status, theme)}
       </Dropzone>
       <Center>
-        <Button color="green" onClick={() => {
-          createItem(item)
-          setUploadedImages([])
-          onClose();
-        }}>Patvirtinti</Button>
+        <Button color="green" type="submit">Patvirtinti</Button>
       </Center>
+      </form>
     </Modal>
   );
 }

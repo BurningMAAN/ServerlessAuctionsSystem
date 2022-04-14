@@ -20,5 +20,6 @@ type UserConfig struct {
 type Role string
 
 const (
-	UserRole Role = "standard_user"
+	UserRole     Role = "standard_user"
+	BugalterRole Role = "bugalter"
 )

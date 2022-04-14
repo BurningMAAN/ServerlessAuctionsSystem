@@ -43,6 +43,7 @@ func (s *service) Authorize(ctx context.Context, userName, password string) (mod
 	expirationTime := time.Now().Add(time.Duration(defaultExpirationTime) * time.Minute)
 	claims := &models.Claims{
 		Username: user.UserName,
+		Role:     models.Role(user.Role),
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),
 		},

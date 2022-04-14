@@ -10,6 +10,7 @@ import {
 } from "@mantine/core";
 import { useState, useEffect } from "react";
 import { DatePicker } from "@mantine/dates";
+import { useForm } from '@mantine/form';
 
 interface AuctionProps {
   onOpen: boolean;
@@ -88,7 +89,7 @@ export default function AuctionCreateWizard({ onOpen, onClose }: AuctionProps) {
     }
   });
 
-  const createAuction = async () => {
+  const createAuction = async (auction: CreateAuctionRequest) => {
     let tokenas: string = "";
     const token = sessionStorage.getItem("access_token");
     if (token) {
@@ -98,11 +99,11 @@ export default function AuctionCreateWizard({ onOpen, onClose }: AuctionProps) {
     const requestOptions = {
       method: "POST",
       headers: { access_token: unescape(tokenas) },
-      body: JSON.stringify(auctionMetadata)
+      body: JSON.stringify(auction)
     };
     const url =
       "https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/auction";
-  
+
     try {
       const response = await fetch(url, requestOptions);
       const responseJSON = await response.json();
@@ -111,10 +112,32 @@ export default function AuctionCreateWizard({ onOpen, onClose }: AuctionProps) {
     }
   };
 
-  const [pickedDate, setPickedDate] = useState<Date|null>(new Date());
+  const form = useForm({
+    initialValues: {
+      itemID: '',
+      auctionType: '',
+      auctionDate: '',
+      buyoutPrice: 0,
+      bidIncrement: 0,
+    },
+    validate: {
+      itemID: (value) => value.length >= 4 ? null : 'Daikto pavadinimas turi būti bent 4 simbolių',
+      auctionType: (value) => value == "AbsoluteAuction"? null : "Pasirinkite aukciono tipą",
+      auctionDate: (value) => {
+        const inputDate = Date.parse(value)
+        const currentDate = Date.now()
+        return inputDate - currentDate >= 0 ? null : "Data turi būti ateityje arba šios dienos data"
+      },
+      bidIncrement: (value) => value > 0 ? null: "Įveskite minimalaus statymo sumą"
+    }
+  })
 
   return (
     <Modal opened={onOpen} onClose={handleOnClose} size="xl">
+      <form onSubmit={form.onSubmit((values) => {
+        createAuction(values);
+        handleOnClose();
+        })}>
       <Stepper active={activeStep} color="green">
         <Stepper.Step label="Inventoriaus pasirinkimas"></Stepper.Step>
         <Stepper.Step label="Aukciono duomenys"></Stepper.Step>
@@ -128,15 +151,7 @@ export default function AuctionCreateWizard({ onOpen, onClose }: AuctionProps) {
             placeholder="Pasirinkti"
             data={selectionItems}
             required
-            onChange={(selectedItem) => {
-              setAuctionMetadata({
-                auctionDate: pickedDate?.toISOString(),
-                buyoutPrice: auctionMetadata.buyoutPrice,
-                auctionType: auctionMetadata.auctionType,
-                bidIncrement:auctionMetadata.bidIncrement,
-                itemID: selectedItem,
-              } as CreateAuctionRequest)
-            }}
+            {...form.getInputProps('itemID')}
           />
           <Divider />
           <Center>
@@ -151,38 +166,17 @@ export default function AuctionCreateWizard({ onOpen, onClose }: AuctionProps) {
             placeholder="Pasirinkti"
             required
             data={[{ value: "AbsoluteAuction", label: "Absoliutus" }]}
-            onChange={(selectedItem) => {
-              setAuctionMetadata({
-                auctionDate: auctionMetadata.auctionDate,
-                buyoutPrice: auctionMetadata.buyoutPrice,
-                auctionType: selectedItem,
-                bidIncrement:auctionMetadata.bidIncrement,
-                itemID: auctionMetadata.itemID,
-              } as CreateAuctionRequest)
-            }}
+            {...form.getInputProps('auctionType')}
           />
           <DatePicker placeholder="Pasirinkti" label="Aukciono data" required 
-          onChange={(date) =>  setPickedDate(date)}/>
+          onChange={(date) => {
+            form.setFieldValue("auctionDate", date?.toISOString()!)
+          }}
+          />
           <NumberInput label="Išpirkimo kaina" placeholder="Įvesti"
-          onChange={(inputValue) => {
-            setAuctionMetadata({
-              auctionDate: auctionMetadata.auctionDate,
-              buyoutPrice: inputValue?.valueOf(),
-              auctionType: auctionMetadata.auctionType,
-              bidIncrement:auctionMetadata.bidIncrement,
-              itemID: auctionMetadata.itemID,
-            } as CreateAuctionRequest)
-          }} />
+          {...form.getInputProps('buyoutPrice')} />
           <NumberInput label="Minimalus kėlimas" placeholder="Įvesti"
-          onChange={(inputValue) => {
-            setAuctionMetadata({
-              auctionDate: auctionMetadata.auctionDate,
-              buyoutPrice: auctionMetadata.buyoutPrice,
-              auctionType: auctionMetadata.auctionType,
-              bidIncrement:inputValue?.valueOf(),
-              itemID: auctionMetadata.itemID,
-            } as CreateAuctionRequest)
-          }}  />
+          {...form.getInputProps('bidIncrement')} />
           <Divider />
           <Center>
             <Button onClick={prevStep}>Atgal</Button>
@@ -196,15 +190,13 @@ export default function AuctionCreateWizard({ onOpen, onClose }: AuctionProps) {
           <Divider />
           <Center>
             <Button onClick={prevStep}>Atgal</Button>
-            <Button color="green" onClick={() => {
-              createAuction();
-              handleOnClose();
-            }}>
+            <Button color="green" type="submit">
               Patvirtinti
             </Button>
           </Center>
         </>
       )}
+      </form>
     </Modal>
   );
 }
