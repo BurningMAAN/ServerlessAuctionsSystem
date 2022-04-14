@@ -6,6 +6,7 @@ import (
 	"auctionsPlatform/utils"
 	"context"
 	"encoding/json"
+	"log"
 	"net/http"
 	"time"
 
@@ -59,17 +60,20 @@ func (h *handler) CreateAuction(ctx context.Context, event events.APIGatewayProx
 		if err != nil {
 			return utils.InternalError(err.Error())
 		}
+		log.Print("itemResponse", item)
 
 		bids, err := h.bidsRepository.GetLatestAuctionBids(ctx, auction.Auction.ID)
 		if err != nil {
 			return utils.InternalError(err.Error())
 		}
+		log.Print("bidResponse", bids)
 
 		response.Data[auction.Auction.ID] = auctionResponse{
 			Auction: auction.Auction,
 			Item:    item,
 			Bids:    bids,
 		}
+		log.Print("response", response)
 	}
 
 	respBody, err := json.Marshal(response)
