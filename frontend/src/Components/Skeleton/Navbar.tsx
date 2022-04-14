@@ -2,11 +2,20 @@ import { useState } from "react";
 import { createStyles, Navbar, Group, Code, Image } from "@mantine/core";
 import { Logout, Menu, Login } from "tabler-icons-react";
 import sebas from "../../shared/sebas.png";
+import jwtDecode, { JwtPayload } from "jwt-decode";
 import { Redirect } from 'react-router-dom';
 
+interface DecodedToken {
+  role: string;
+}
+
 const getToken = () => {
+  let tokenas = "";
   const tokenString = sessionStorage.getItem("access_token");
-  return tokenString;
+  if (tokenString) {
+    tokenas = tokenString;
+  }
+  return tokenas;
 };
 
 const useStyles = createStyles((theme, _params, getRef) => {
@@ -92,6 +101,7 @@ const useStyles = createStyles((theme, _params, getRef) => {
 export default function NavigationBar() {
   const { classes, cx } = useStyles();
   const token = getToken();
+  const decodedToken = jwtDecode<DecodedToken>(token);
 
   return (
     <Navbar height={700} width={{ sm: 300 }} p="md">
@@ -107,6 +117,10 @@ export default function NavigationBar() {
         <a className={cx(classes.link)} href="/myInventory" key="Mano inventorius"> <Menu className={classes.linkIcon} />
         <span>Mano inventorius</span></a>
         </>
+      )}
+      {token && decodedToken.role == "buhalteris" && (
+        <a className={cx(classes.link)} href="/generateData" key="Buhalterio meniu"> <Menu className={classes.linkIcon} />
+        <span>Buhalterio meniu</span></a>
       )}
       </Navbar.Section>
 

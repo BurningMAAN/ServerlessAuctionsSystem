@@ -403,3 +403,39 @@ Resources:
               Method: post
               RestApiId:
                 Ref: AuctionGateway
+
+  GenerateDataFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: main
+      Runtime: go1.x
+      AutoPublishAlias: live
+      Tracing: Active
+      MemorySize: 512
+      Timeout: 15
+      Description: Lambda function that authorizes user
+      CodeUri: backend/functions/api/generateData
+      Environment:
+        Variables:
+          DYNAMODB_TABLE: !Ref DynamoDBTable
+      Policies:
+        Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:Query
+              - dynamodb:GetItem
+              - dynamodb:PutItem
+              - dynamodb:Scan
+            Resource: 
+              - !GetAtt DynamoDBTable.Arn
+              - Fn::Sub:
+                  - '${DynamoDBTableArn}/index/GSI1'
+                  - DynamoDBTableArn: !GetAtt DynamoDBTable.Arn
+      Events:
+        ApiEvent:
+            Type: Api
+            Properties:
+              Path: /generateData
+              Method: get
+              RestApiId:
+                Ref: AuctionGateway

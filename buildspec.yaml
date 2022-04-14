@@ -56,6 +56,10 @@ phases:
       - cd $ROOTDIR/backend/functions/api/bid/placeBid
       - go build -o main
 
+      # Build GenerateData
+      - cd $ROOTDIR/backend/functions/api/generateData
+      - go build -o main
+
       - cd $ROOTDIR
       - echo ${PACKAGE_BUCKET}
       - aws cloudformation package --template-file backend_resources.yaml --s3-bucket ${PACKAGE_BUCKET} --output-template-file packaged-backend_resources.yaml
