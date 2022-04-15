@@ -186,7 +186,15 @@ export default function AuctionCreateWizard({ onOpen, onClose }: AuctionProps) {
       )}
       {activeStep == 2 && (
         <>
-          <Title order={1}>Step 3</Title>
+          <Title order={1}>
+            Ar tikrai norite kurti aukcioną?
+            {/* <ul>
+              <li>Aukciono tipas: {auctionMetadata.auctionType}</li>
+              <li>Minimalus statymas: {auctionMetadata.bidIncrement}</li>
+              <li>Aukciono data: {auctionMetadata.auctionDate}</li>
+              <li>Ispirkimo kaina: {auctionMetadata.buyoutPrice}</li>
+            </ul> */}
+          </Title>
           <Divider />
           <Center>
             <Button onClick={prevStep}>Atgal</Button>

@@ -39,12 +39,12 @@ func New(tableName string, db DB) *repository {
 }
 
 type ItemDB struct {
-	PK     string // Example: Item#{ItemID}
-	SK     string // Example: Metadata
-	GSI1PK string `dynamodbav:",omitempty"` // Example: User#{OwnerID}
-	GSI1SK string `dynamodbav:",omitempty"` // Example: Category#{Category}
-	// GSI2PK      string `dynamodbav:",omitempty"` // Example: Auction#{AuctionID}
-	// GSI2SK      string `dynamodbav:",omitempty"` // Example: Metadata
+	PK          string // Example: Item#{ItemID}
+	SK          string // Example: Metadata
+	GSI1PK      string `dynamodbav:",omitempty"` // Example: User#{OwnerID}
+	GSI1SK      string `dynamodbav:",omitempty"` // Example: Category#{Category}
+	GSI2PK      string `dynamodbav:",omitempty"` // Example: Auction#{AuctionID}
+	GSI2SK      string `dynamodbav:",omitempty"` // Example: Metadata
 	PhotoURLs   []string
 	Description string
 	Name        string
