@@ -101,7 +101,10 @@ const useStyles = createStyles((theme, _params, getRef) => {
 export default function NavigationBar() {
   const { classes, cx } = useStyles();
   const token = getToken();
-  const decodedToken = jwtDecode<DecodedToken>(token);
+  let decodedToken: DecodedToken = {} as DecodedToken
+  if(token){
+    decodedToken =  jwtDecode<DecodedToken>(token);
+  }
 
   return (
     <Navbar height={700} width={{ sm: 300 }} p="md">
