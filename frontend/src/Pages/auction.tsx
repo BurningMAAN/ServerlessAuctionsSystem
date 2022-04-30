@@ -27,9 +27,9 @@ interface AuctionItemProps {
 }
 
 interface AuctionWorkerData {
-  AuctionID: string;
-  Status: string;
-  EndDate: string;
+  id: string;
+  status: string;
+  endDate: string;
 }
 
 interface AuctionViewProps {}
@@ -69,9 +69,9 @@ export default function AuctionView({}: AuctionViewProps) {
           description={item.description}
         ></AuctionInformationDashboard>
         <AuctionBiddingDashboard
-          status={auctionWorker.Status}
+          status={auctionWorker.status}
           auctionID={auction.id}
-          startDate={auctionWorker.EndDate}
+          startDate={auctionWorker.endDate}
           auctionType={auction.auctionType}
           currentMaxBid={auction.bidIncrement} // pakeisti i max bid ar dar kazka
           bidIncrement={auction.bidIncrement}

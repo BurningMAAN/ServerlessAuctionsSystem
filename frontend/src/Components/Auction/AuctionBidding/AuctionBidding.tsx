@@ -64,49 +64,46 @@ export default function AuctionBiddingDashboard({
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
   const [bids, setBids] = useState<Bid>({} as Bid)
-  const [activeBiddingState, setActiveBiddingState] = useState(
-    "bids_before_auction_start"
-  );
 
   useInterval(() => {
-    // if (activeBiddingState === "bids_before_auction_start") {
-    //     const targetDate = new Date(startDate);
-    //     const now = new Date();
-    //     const difference = targetDate.getTime() - now.getTime();
+    if (status === "STATUS_ACCEPTING_BIDS") {
+        const targetDate = new Date(startDate);
+        const now = new Date();
+        const difference = targetDate.getTime() - now.getTime();
 
-    //     const d = Math.floor(difference / (1000 * 60 * 60 * 24));
-    //     setDays(d);
+        const d = Math.floor(difference / (1000 * 60 * 60 * 24));
+        setDays(d);
 
-    //     const h = Math.floor(
-    //       (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-    //     );
-    //     setHours(h);
+        const h = Math.floor(
+          (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
+        setHours(h);
 
-    //     const m = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-    //     setMinutes(m);
+        const m = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+        setMinutes(m);
 
-    //     const s = Math.floor((difference % (1000 * 60)) / 1000);
-    //     setSeconds(s);
+        const s = Math.floor((difference % (1000 * 60)) / 1000);
+        setSeconds(s);
 
-    //     if (d <= 0 && h <= 0 && m <= 0 && s <= 0) {
-    //       setActiveBiddingState("bids_auction_start");
-    //     }
-    // }
+        if (d <= 0 && h <= 0 && m <= 0 && s <= 0) {
+          console.log("Baigesi")
+        }
+    }
   }, 500);
 
-  useInterval(() => {
-    // if(isFinished){
-    //   setTimeLeft(0)
-    //   return
-    // }
-    // if (activeBiddingState === "bids_auction_start") {
-    //   if (timeLeft == 0) {
-    //     setActiveBiddingState("bids_auction_finish");
-    //     return finishAuction(auctionID)
-    //   }
-    //   setTimeLeft(timeLeft - 1);
-    // }
-  }, 1000);
+  // useInterval(() => {
+  //   // if(isFinished){
+  //   //   setTimeLeft(0)
+  //   //   return
+  //   // }
+  //   // if (activeBiddingState === "bids_auction_start") {
+  //   //   if (timeLeft == 0) {
+  //   //     setActiveBiddingState("bids_auction_finish");
+  //   //     return finishAuction(auctionID)
+  //   //   }
+  //   //   setTimeLeft(timeLeft - 1);
+  //   // }
+  // }, 1000);
 
   
   const getLatestBids = async (auctionID: string) => {
@@ -152,8 +149,8 @@ export default function AuctionBiddingDashboard({
         <Text>Minimalus kėlimas: {bidIncrement} €</Text>
       </Center>
       <Center>
-        <Title>{status}</Title>
-        {/* {!isFinished && (timeLeft !== 0 && token && decodedToken.username != creatorID && (
+        {/* <Title>{status}</Title> */}
+        {(timeLeft !== 0 && token && decodedToken.username != creatorID && (
           <Button
             color="green"
             onClick={() => {
@@ -177,7 +174,7 @@ export default function AuctionBiddingDashboard({
             + {bidIncrement}
           </Button>
         )) ||
-          (isFinished && token && decodedToken.username != creatorID && (
+          (token && decodedToken.username != creatorID && (
             <Button color="grey" disabled>
               Aukcionas baigėsi
             </Button>
@@ -189,13 +186,13 @@ export default function AuctionBiddingDashboard({
           ))}
       </Center>
       <Center>
-        {!isFinished && activeBiddingState === "bids_before_auction_start" && (
+        {status === "STATUS_ACCEPTING_BIDS" && (
           <Title order={6}>
             Aukcionas prasideda už {days} dienų {hours} valandų {minutes}{" "}
             minučių {seconds} sekundžių
           </Title>
         )}
-        {!isFinished && activeBiddingState === "bids_auction_start" && (
+        {/* {!isFinished && activeBiddingState === "bids_auction_start" && (
           <Title order={6}>
             Aukcionas šiuo metu vyksta
           </Title>

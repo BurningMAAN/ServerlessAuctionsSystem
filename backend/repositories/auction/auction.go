@@ -89,7 +89,7 @@ func (r *repository) CreateAuction(ctx context.Context, auction models.Auction) 
 	}
 	auction.ID = auctionID
 
-	err = r.CreateAuctionWorker(ctx, auction.ID, "STATUS_ACCEPTING_BIDS", auction.EndDate)
+	err = r.CreateAuctionWorker(ctx, auction.ID, "STATUS_ACCEPTING_BIDS", auction.StartDate)
 	if err != nil {
 
 		return auction, err
