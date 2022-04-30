@@ -29,3 +29,9 @@ type AuctionListView struct {
 	Auction Auction
 	Item    Item
 }
+
+type AuctionWorker struct {
+	AuctionID string
+	Status    string
+	EndDate   time.Time
+}

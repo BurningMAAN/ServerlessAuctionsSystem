@@ -240,3 +240,24 @@ func (r *repository) UpdateAuctionWorker(ctx context.Context, auctionID string, 
 
 	return err
 }
+
+func (r *repository) GetAuctionWorker(ctx context.Context, auctionID string) (models.AuctionWorker, error) {
+	query := &dynamodb.GetItemInput{
+		TableName: aws.String(r.tableName),
+		Key: map[string]types.AttributeValue{
+			"PK": &types.AttributeValueMemberS{Value: utils.Make("AuctionWorker", auctionID)},
+			"SK": &types.AttributeValueMemberS{Value: "Metadata"},
+		},
+	}
+
+	result, err := r.DB.GetItem(ctx, query)
+	if err != nil {
+		return models.AuctionWorker{}, err
+	}
+
+	if result.Item == nil {
+		return models.AuctionWorker{}, errors.New("resource does not exist")
+	}
+
+	return ExtractAuctionWorker(result.Item)
+}

@@ -8,6 +8,9 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import { Link } from "react-router-dom";
+import UpdateItem from "./UpdateItemModal";
+import { useState } from "react";
+import DeleteItem from "./DeleteItemModal";
 
 export interface ItemProps {
   id: string;
@@ -25,6 +28,9 @@ export default function ItemCard({
   const theme = useMantineTheme();
   const secondaryColor =
     theme.colorScheme === "dark" ? theme.colors.dark[1] : theme.colors.gray[7];
+
+  const [updateOpen, setUpdateOpen] = useState(false)
+  const [deleteOpen, setDeleteOpen] = useState(false)
   return (
     <div style={{ width: 340, margin: "auto" }}>
       <Card shadow="sm" p="lg">
@@ -49,16 +55,25 @@ export default function ItemCard({
         <Text size="sm" style={{ color: secondaryColor, lineHeight: 1.5 }}>
           <b>Aprašymas</b>: {description}
         </Text>
-
         <Button
-          variant="light"
-          color="blue"
-          fullWidth
-          style={{ marginTop: 14 }}
-        >
-          <Link to={`/items/${id}`}>Peržiūrėti</Link>
+        variant="light"
+        color="blue"
+        fullWidth
+        style={{marginTop: 14}}
+        onClick={() => setUpdateOpen(true)}>
+          Atnaujinti
+        </Button>
+        <Button
+        variant="light"
+        color="red"
+        fullWidth
+        style={{marginTop: 14}}
+        onClick={() => setDeleteOpen(true)}>
+          Panaikinti
         </Button>
       </Card>
+      <UpdateItem onOpen={updateOpen} onClose={() => setUpdateOpen(false)}/>
+      <DeleteItem onOpen={deleteOpen} onClose={() => setDeleteOpen(false)}></DeleteItem>
     </div>
   );
 }

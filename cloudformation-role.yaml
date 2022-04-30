@@ -93,6 +93,8 @@ Resources:
                   - dynamodb:CreateTable
                   - dynamodb:DeleteTable
                   - dynamodb:UpdateTable
+                  - dynamodb:DescribeTimeToLive
+                  - dynamodb:UpdateTimeToLive
                 Resource: '*'
               - Effect: Allow
                 Action:
