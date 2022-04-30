@@ -4,9 +4,14 @@
 package main
 
 import (
+	"context"
 	"log"
 
+	auctionsRepository "auctionsPlatform/repositories/auction"
+
 	"github.com/aws/aws-lambda-go/lambda"
+	awsconfig "github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/kelseyhightower/envconfig"
 )
 
@@ -21,10 +26,17 @@ func main() {
 		log.Fatalf("failed to read environment variables: %v", err)
 	}
 
-	// awsCfg, err := awsconfig.LoadDefaultConfig(context.TODO())
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
+	awsCfg, err := awsconfig.LoadDefaultConfig(context.TODO())
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	lambda.Start(HandleAuction)
+	db := dynamodb.NewFromConfig(awsCfg)
+	auctionRepository := auctionsRepository.New(cfg.TableName, db)
+
+	h := handler{
+		auctionRepo: auctionRepository,
+	}
+
+	lambda.Start(h.HandleAuction)
 }

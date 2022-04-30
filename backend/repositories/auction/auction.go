@@ -89,7 +89,7 @@ func (r *repository) CreateAuction(ctx context.Context, auction models.Auction) 
 	}
 	auction.ID = auctionID
 
-	err = r.CreateAuctionWorker(ctx, auction.ID, auction.StartDate, auctionDB.AuctionEndDate)
+	err = r.CreateAuctionWorker(ctx, auction.ID, "STATUS_ACCEPTING_BIDS", auction.StartDate, auction.EndDate)
 	if err != nil {
 
 		return auction, err
@@ -181,11 +181,11 @@ type auctionWorkerDB struct {
 	EndDate   time.Time
 }
 
-func (r *repository) CreateAuctionWorker(ctx context.Context, auctionID string, startDate, endDate time.Time) error {
+func (r *repository) CreateAuctionWorker(ctx context.Context, auctionID string, status string, startDate, endDate time.Time) error {
 	auctionWorkerDB := auctionWorkerDB{
 		PK:        utils.Make("AuctionWorker", auctionID),
 		SK:        "Metadata",
-		Status:    "STATUS_ACCEPTING_BIDS",
+		Status:    status,
 		StartDate: startDate,
 		EndDate:   endDate,
 	}
