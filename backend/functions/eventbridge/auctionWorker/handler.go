@@ -41,6 +41,6 @@ func HandleAuction(ctx context.Context, event events.DynamoDBEvent) {
 			panic(err)
 		}
 
-		log.Print(jsonas)
+		log.Print(string(jsonas))
 	}
 }
