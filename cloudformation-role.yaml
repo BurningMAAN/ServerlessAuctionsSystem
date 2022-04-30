@@ -98,6 +98,8 @@ Resources:
                 Action:
                   - lambda:CreateFunction
                   - lambda:GetFunction
+                  - lambda:CreateEventSourceMapping
+                  - lambda:GetEventSourceMapping
                   - lambda:GetFunctionCodeSigningConfig
                   - lambda:GetFunctionConfiguration
                   - lambda:DeleteFunction
