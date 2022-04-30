@@ -25,7 +25,7 @@ func HandleAuction(ctx context.Context, event events.DynamoDBEvent) {
 	eventJSON, _ := json.Marshal(event)
 	log.Print(string(eventJSON))
 	for _, eventRecord := range event.Records {
-		if eventRecord.EventName == "RETURN" {
+		if eventRecord.EventName == "REMOVE" {
 			pk := eventRecord.Change.Keys["PK"].String()
 			status := eventRecord.Change.OldImage["Status"].String()
 			auctionStartDate, err := time.Parse(time.RFC3339, eventRecord.Change.OldImage["StartDate"].String())
