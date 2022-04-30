@@ -56,6 +56,17 @@ Resources:
         StreamViewType: NEW_IMAGE
       TableName: "AuctionsTable"
 
+  DynamoDBTableStream:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties:
+      # The maximum number of DB items to send to Lambda
+      BatchSize: 1
+      Enabled: True
+      EventSourceArn: !GetAtt DynamoDBTable.StreamArn
+      FunctionName: !GetAtt HandleAuctionFunction.Arn
+      # Always start at the tail of the Stream
+      StartingPosition: LATEST
+
   AuctionGateway:
     Type: AWS::Serverless::Api
     Properties:
@@ -65,6 +76,37 @@ Resources:
         AllowOrigin: "'*'"
         AllowMethods: "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'"
         AllowHeaders: "'X-Amz-Date,X-Api-Key,X-Amz-Security-Token,access_token,X-Requested-With,X-Auth-Token,Referer,User-Agent,Origin,Content-Type,Authorization,Accept,Access-Control-Allow-Methods,Access-Control-Allow-Origin,Access-Control-Allow-Headers'"
+
+  # Auction Handler function
+  HandleAuctionFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: main
+      Runtime: go1.x
+      AutoPublishAlias: live
+      Tracing: Active
+      MemorySize: 512
+      Timeout: 15
+      Description: Lambda function that handles auction lifeline
+      CodeUri: backend/functions/eventbridge/auctionWorker
+      Environment:
+        Variables:
+          DYNAMODB_TABLE: !Ref DynamoDBTable
+      Policies:
+        Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:DescribeStream
+              - dynamodb:GetRecords
+              - dynamodb:GetShardIterator
+              - dynamodb:ListStreams
+            Resource: "*"
+          - Effect: Allow
+            Action:
+              - dynamodb:PutItem
+              - dynamodb:GetItem
+              - dynamodb:UpdateItem
+            Resource: !GetAtt DynamoDBTable.Arn
   # Auction Lambda Functions
   CreateAuctionFunction:
     Type: AWS::Serverless::Function
