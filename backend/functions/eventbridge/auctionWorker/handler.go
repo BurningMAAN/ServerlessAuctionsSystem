@@ -23,7 +23,7 @@ type Record struct {
 
 func HandleAuction(ctx context.Context, event events.DynamoDBEvent) {
 	eventJSON, _ := json.Marshal(event)
-	log.Print(eventJSON)
+	log.Print(string(eventJSON))
 	for _, eventRecord := range event.Records {
 		pk := eventRecord.Change.Keys["PK"].String()
 		status := eventRecord.Change.OldImage["Status"].String()
