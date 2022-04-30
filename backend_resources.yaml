@@ -54,6 +54,9 @@ Resources:
         WriteCapacityUnits: "5"
       StreamSpecification:
         StreamViewType: NEW_AND_OLD_IMAGES
+      TimeToLiveSpecification:
+        AttributeName: "EndDate"
+        Enabled: true
       TableName: "AuctionsTable"
 
   DynamoDBTableStream:
