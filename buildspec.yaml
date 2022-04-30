@@ -61,7 +61,7 @@ phases:
       - go build -o main
 
       # Build HandleAuctionFunction
-      - cd $ROOTDIR/backend/eventbridge/auctionWorker
+      - cd $ROOTDIR/backend/functions/eventbridge/auctionWorker
       - go build -o main
 
       - cd $ROOTDIR
