@@ -10,5 +10,5 @@ import (
 
 func HandleAuction(ctx context.Context, event events.DynamoDBStreamRecord) {
 	testString, _ := json.Marshal(event)
-	log.Print(testString)
+	log.Print(string(testString))
 }
