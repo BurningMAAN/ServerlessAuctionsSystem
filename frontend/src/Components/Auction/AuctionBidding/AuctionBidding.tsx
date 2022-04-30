@@ -11,7 +11,7 @@ interface AuctionBiddingProps {
   startDate: string;
   creatorID: string;
   auctionID: string;
-  isFinished: boolean;
+  status: string;
 }
 
 interface DecodedToken {
@@ -38,16 +38,6 @@ const getToken = () => {
   return tokenas;
 };
 
-const finishAuction = async (auctionID: string) => {
-  const requestOptions = {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "access_token": unescape(getToken())},
-  };
-  const finishedAuction = await fetch(
-    `https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/auctions/${auctionID}/finish`, requestOptions
-  ).catch((error) => console.log(error));
-}
-
 const placeBid = async (auctionID: string, bid: number) => {
   const requestOptions = {
     method: "POST",
@@ -65,7 +55,7 @@ export default function AuctionBiddingDashboard({
   bidIncrement,
   startDate,
   creatorID,
-  isFinished,
+  status,
   auctionID
 }: AuctionBiddingProps) {
   const [timeLeft, setTimeLeft] = useState(30);
@@ -79,43 +69,43 @@ export default function AuctionBiddingDashboard({
   );
 
   useInterval(() => {
-    if (activeBiddingState === "bids_before_auction_start") {
-        const targetDate = new Date(startDate);
-        const now = new Date();
-        const difference = targetDate.getTime() - now.getTime();
+    // if (activeBiddingState === "bids_before_auction_start") {
+    //     const targetDate = new Date(startDate);
+    //     const now = new Date();
+    //     const difference = targetDate.getTime() - now.getTime();
 
-        const d = Math.floor(difference / (1000 * 60 * 60 * 24));
-        setDays(d);
+    //     const d = Math.floor(difference / (1000 * 60 * 60 * 24));
+    //     setDays(d);
 
-        const h = Math.floor(
-          (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-        );
-        setHours(h);
+    //     const h = Math.floor(
+    //       (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+    //     );
+    //     setHours(h);
 
-        const m = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-        setMinutes(m);
+    //     const m = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+    //     setMinutes(m);
 
-        const s = Math.floor((difference % (1000 * 60)) / 1000);
-        setSeconds(s);
+    //     const s = Math.floor((difference % (1000 * 60)) / 1000);
+    //     setSeconds(s);
 
-        if (d <= 0 && h <= 0 && m <= 0 && s <= 0) {
-          setActiveBiddingState("bids_auction_start");
-        }
-    }
+    //     if (d <= 0 && h <= 0 && m <= 0 && s <= 0) {
+    //       setActiveBiddingState("bids_auction_start");
+    //     }
+    // }
   }, 500);
 
   useInterval(() => {
-    if(isFinished){
-      setTimeLeft(0)
-      return
-    }
-    if (activeBiddingState === "bids_auction_start") {
-      if (timeLeft == 0) {
-        setActiveBiddingState("bids_auction_finish");
-        return finishAuction(auctionID)
-      }
-      setTimeLeft(timeLeft - 1);
-    }
+    // if(isFinished){
+    //   setTimeLeft(0)
+    //   return
+    // }
+    // if (activeBiddingState === "bids_auction_start") {
+    //   if (timeLeft == 0) {
+    //     setActiveBiddingState("bids_auction_finish");
+    //     return finishAuction(auctionID)
+    //   }
+    //   setTimeLeft(timeLeft - 1);
+    // }
   }, 1000);
 
   
@@ -130,15 +120,15 @@ export default function AuctionBiddingDashboard({
     setBids(itemData);
   }
 
-  let getLatestBidsDelay: number | null = 300
-   useInterval(() => {
-     if(isFinished && auctionID){
-      getLatestBids(auctionID)
-      getLatestBidsDelay = null
-      return
-     }
-      getLatestBids(auctionID)
-  }, getLatestBidsDelay)
+  // let getLatestBidsDelay: number | null = 300
+  //  useInterval(() => {
+  //    if(isFinished && auctionID){
+  //     getLatestBids(auctionID)
+  //     getLatestBidsDelay = null
+  //     return
+  //    }
+  //     getLatestBids(auctionID)
+  // }, getLatestBidsDelay)
 
   const token = getToken();
   const decodedToken = jwtDecode<DecodedToken>(token);
@@ -162,7 +152,8 @@ export default function AuctionBiddingDashboard({
         <Text>Minimalus kėlimas: {bidIncrement} €</Text>
       </Center>
       <Center>
-        {!isFinished && (timeLeft !== 0 && token && decodedToken.username != creatorID && (
+        <Title>{status}</Title>
+        {/* {!isFinished && (timeLeft !== 0 && token && decodedToken.username != creatorID && (
           <Button
             color="green"
             onClick={() => {
@@ -213,7 +204,7 @@ export default function AuctionBiddingDashboard({
           <Title order={6}>
             Aukcionas baigtas
           </Title>
-        )}
+        )} */}
       </Center>
     </Grid.Col>
   );

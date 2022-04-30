@@ -150,7 +150,7 @@ func (r *repository) FinishAuction(ctx context.Context, auctionID string) error 
 }
 
 func (r *repository) GetAllAuctions(ctx context.Context, optFns ...func(*OptionalGetParameters)) ([]models.Auction, error) {
-	filter := expression.Name("PK").BeginsWith(string(models.AuctionEntityType))
+	filter := expression.Name("PK").BeginsWith(string(models.AuctionEntityType) + "#")
 
 	expr, err := expression.NewBuilder().WithFilter(filter).Build()
 	if err != nil {

@@ -26,11 +26,18 @@ interface AuctionItemProps {
   name: string;
 }
 
+interface AuctionWorkerData {
+  AuctionID: string;
+  Status: string;
+  EndDate: string;
+}
+
 interface AuctionViewProps {}
 
 export default function AuctionView({}: AuctionViewProps) {
   const { auctionID } = useParams<{ auctionID: string }>();
   const [auction, setAuction] = useState<AuctionProps>({} as AuctionProps);
+  const [auctionWorker, setAuctionWorker] = useState<AuctionWorkerData>({} as AuctionWorkerData)
   const [item, setItem] = useState<AuctionItemProps>({} as AuctionItemProps);
 
   const getData = async () => {
@@ -43,6 +50,10 @@ export default function AuctionView({}: AuctionViewProps) {
       `https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/items/${auctionData.itemId}`
     ).then((res) => res.json());
     setItem(itemData);
+    const workerData = await fetch(
+      `https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/auctions/${auctionID}/worker`
+    ).then((res) => res.json());
+    setAuctionWorker(workerData)
   };
 
   useEffect(() => {
@@ -58,9 +69,9 @@ export default function AuctionView({}: AuctionViewProps) {
           description={item.description}
         ></AuctionInformationDashboard>
         <AuctionBiddingDashboard
-          isFinished={auction.isFinished}
+          status={auctionWorker.Status}
           auctionID={auction.id}
-          startDate={auction.auctionDate}
+          startDate={auctionWorker.EndDate}
           auctionType={auction.auctionType}
           currentMaxBid={auction.bidIncrement} // pakeisti i max bid ar dar kazka
           bidIncrement={auction.bidIncrement}
