@@ -24,7 +24,7 @@ func HandleAuction(ctx context.Context, event events.DynamoDBEvent) {
 	for _, eventRecord := range event.Records {
 		pk := eventRecord.Change.Keys["PK"].String()
 		status := eventRecord.Change.OldImage["Status"].String()
-		auctionEndDate, err := time.Parse(time.RFC3339, eventRecord.Change.OldImage["AuctionEndDate"].String())
+		auctionEndDate, err := time.Parse(time.RFC3339, eventRecord.Change.OldImage["EndDate"].String())
 		if err != nil {
 			panic("invalidi data")
 		}
