@@ -21,18 +21,19 @@ type Record struct {
 }
 
 func HandleAuction(ctx context.Context, event events.DynamoDBEvent) {
+	log.Print(event)
 	for _, eventRecord := range event.Records {
 		pk := eventRecord.Change.Keys["PK"].String()
 		status := eventRecord.Change.OldImage["Status"].String()
-		auctionEndDate, err := time.Parse(time.RFC3339, eventRecord.Change.OldImage["EndDate"].String())
-		if err != nil {
-			panic("invalidi data")
-		}
+		// auctionEndDate, err := time.Parse(time.RFC3339, eventRecord.Change.OldImage["EndDate"].String())
+		// if err != nil {
+		// 	panic("invalidi data")
+		// }
 
 		transformedRecord := Record{
-			AuctionID:      utils.Extract("Auction", pk),
-			Status:         status,
-			AuctionEndDate: auctionEndDate,
+			AuctionID: utils.Extract("Auction", pk),
+			Status:    status,
+			// AuctionEndDate: auctionEndDate,
 		}
 
 		jsonas, err := json.Marshal(transformedRecord)
