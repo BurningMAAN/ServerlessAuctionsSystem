@@ -53,7 +53,7 @@ Resources:
         ReadCapacityUnits: "5"
         WriteCapacityUnits: "5"
       StreamSpecification:
-        StreamViewType: NEW_IMAGE
+        StreamViewType: NEW_AND_OLD_IMAGES
       TableName: "AuctionsTable"
 
   DynamoDBTableStream:
