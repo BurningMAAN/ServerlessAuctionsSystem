@@ -89,7 +89,7 @@ func (r *repository) CreateAuction(ctx context.Context, auction models.Auction) 
 	}
 	auction.ID = auctionID
 
-	err = r.CreateAuctionWorker(ctx, auction.ID, "STATUS_ACCEPTING_BIDS", auction.StartDate, auction.EndDate)
+	err = r.CreateAuctionWorker(ctx, auction.ID, "STATUS_ACCEPTING_BIDS", auction.EndDate)
 	if err != nil {
 
 		return auction, err
@@ -174,20 +174,18 @@ func (r *repository) GetAllAuctions(ctx context.Context, optFns ...func(*Optiona
 }
 
 type auctionWorkerDB struct {
-	PK        string
-	SK        string
-	Status    string
-	StartDate time.Time
-	EndDate   time.Time
+	PK      string
+	SK      string
+	Status  string
+	EndDate time.Time
 }
 
-func (r *repository) CreateAuctionWorker(ctx context.Context, auctionID string, status string, startDate, endDate time.Time) error {
+func (r *repository) CreateAuctionWorker(ctx context.Context, auctionID string, status string, endDate time.Time) error {
 	auctionWorkerDB := auctionWorkerDB{
-		PK:        utils.Make("AuctionWorker", auctionID),
-		SK:        "Metadata",
-		Status:    status,
-		StartDate: startDate,
-		EndDate:   endDate,
+		PK:      utils.Make("AuctionWorker", auctionID),
+		SK:      "Metadata",
+		Status:  status,
+		EndDate: endDate,
 	}
 
 	auctionAttributeValues, err := attributevalue.MarshalMap(auctionWorkerDB)
@@ -211,15 +209,9 @@ func (r *repository) CreateAuctionWorker(ctx context.Context, auctionID string, 
 	return nil
 }
 
-func (r *repository) UpdateAuctionWorker(ctx context.Context, auctionID string, updateModel models.AuctionWorkerUpdateModel) error {
+func (r *repository) UpdateAuctionWorker(ctx context.Context, auctionID string, endDate time.Time) error {
 	updateExpression := expression.UpdateBuilder{}
-	if updateModel.StartDate != nil {
-		updateExpression = updateExpression.Set(expression.Name("StartDate"), expression.Value(&updateModel.StartDate))
-	}
-
-	if updateModel.EndDate != nil {
-		updateExpression = updateExpression.Set(expression.Name("EndDate"), expression.Value(&updateModel.EndDate))
-	}
+	updateExpression = updateExpression.Set(expression.Name("EndDate"), expression.Value(endDate))
 
 	express, err := expression.NewBuilder().WithUpdate(updateExpression).Build()
 	if err != nil {

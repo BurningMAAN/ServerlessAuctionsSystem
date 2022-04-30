@@ -11,7 +11,7 @@ import (
 )
 
 type auctionRepository interface {
-	CreateAuctionWorker(ctx context.Context, auctionID string, status string, startDate, endDate time.Time) error
+	CreateAuctionWorker(ctx context.Context, auctionID string, status string, endDate time.Time) error
 	FinishAuction(ctx context.Context, auctionID string) error
 }
 
@@ -20,10 +20,9 @@ type DynamoDBEvent struct {
 }
 
 type Record struct {
-	AuctionID        string    `json:"auctionId"`
-	Status           string    `json:"status"`
-	AuctionStartDate time.Time `json:"auctionStartDate"`
-	AuctionEndDate   time.Time `json:"auctionEndDate"`
+	AuctionID      string    `json:"auctionId"`
+	Status         string    `json:"status"`
+	AuctionEndDate time.Time `json:"auctionEndDate"`
 }
 
 type handler struct {
@@ -41,7 +40,7 @@ func (h *handler) HandleAuction(ctx context.Context, event events.DynamoDBEvent)
 			case "STATUS_ACCEPTING_BIDS":
 				// Create Worker entity with startDate = null, endDate = currentTime + 33s
 				endDate := time.Now().Add(33 * time.Second)
-				err := h.auctionRepo.CreateAuctionWorker(ctx, record.AuctionID, "STATUS_AUCTION_ONGOING", time.Now().Add(5*time.Hour), endDate)
+				err := h.auctionRepo.CreateAuctionWorker(ctx, record.AuctionID, "STATUS_AUCTION_ONGOING", endDate)
 				if err != nil {
 					log.Print(err.Error())
 				}

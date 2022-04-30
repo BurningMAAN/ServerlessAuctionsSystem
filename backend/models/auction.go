@@ -29,8 +29,3 @@ type AuctionListView struct {
 	Auction Auction
 	Item    Item
 }
-
-type AuctionWorkerUpdateModel struct {
-	StartDate *time.Time
-	EndDate   *time.Time
-}
