@@ -27,6 +27,11 @@ func HandleAuction(ctx context.Context, event events.DynamoDBEvent) {
 	for _, eventRecord := range event.Records {
 		pk := eventRecord.Change.Keys["PK"].String()
 		status := eventRecord.Change.OldImage["Status"].String()
+		auctionStartDate, err := time.Parse(time.RFC3339, eventRecord.Change.OldImage["StartDate"].String())
+		if err != nil {
+			log.Printf("Nepavyko patraukt datos, gavom data: %s, err: %s", auctionStartDate.String(), err.Error())
+		}
+
 		auctionEndDate, err := time.Parse(time.RFC3339, eventRecord.Change.OldImage["EndDate"].String())
 		if err != nil {
 			log.Printf("Nepavyko patraukt datos, gavom data: %s, err: %s", auctionEndDate.String(), err.Error())
