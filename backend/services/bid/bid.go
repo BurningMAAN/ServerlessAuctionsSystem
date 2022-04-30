@@ -6,6 +6,7 @@ import (
 	bidRepo "auctionsPlatform/repositories/bid"
 	"context"
 	"fmt"
+	"time"
 )
 
 type bidRepository interface {
@@ -16,6 +17,7 @@ type bidRepository interface {
 
 type auctionRepository interface {
 	GetAuctionByID(ctx context.Context, auctionID string) (models.Auction, error)
+	UpdateAuctionWorker(ctx context.Context, auctionID string, updateModel models.AuctionWorkerUpdateModel) error
 }
 
 type userRepository interface {
@@ -63,7 +65,21 @@ func (s *service) PlaceBid(ctx context.Context, auctionID string, bid models.Bid
 		}
 	}
 
-	return s.bidRepository.CreateBid(ctx, auction.ID, bid)
+	placedBid, err := s.bidRepository.CreateBid(ctx, auction.ID, bid)
+	if err != nil {
+		return models.Bid{}, err
+	}
+
+	newEndDate := time.Now().Add(33 * time.Second)
+	err = s.auctionRepository.UpdateAuctionWorker(ctx, auction.ID, models.AuctionWorkerUpdateModel{
+		EndDate: &newEndDate,
+	})
+
+	if err != nil {
+		return placedBid, err
+	}
+
+	return placedBid, err
 }
 
 func (s *service) GetBidByID(ctx context.Context, bidID string) (models.Bid, error) {

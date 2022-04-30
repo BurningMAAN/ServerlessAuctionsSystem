@@ -210,3 +210,41 @@ func (r *repository) CreateAuctionWorker(ctx context.Context, auctionID string, 
 	}
 	return nil
 }
+
+func (r *repository) UpdateAuctionWorker(ctx context.Context, auctionID string, updateModel models.AuctionWorkerUpdateModel) error {
+	updateExpression := expression.UpdateBuilder{}
+	if updateModel.StartDate != nil {
+		updateExpression = updateExpression.Set(expression.Name("StartDate"), expression.Value(&updateModel.StartDate))
+	}
+
+	if updateModel.EndDate != nil {
+		updateExpression = updateExpression.Set(expression.Name("EndDate"), expression.Value(&updateModel.EndDate))
+	}
+
+	express, err := expression.NewBuilder().WithUpdate(updateExpression).Build()
+	if err != nil {
+		return err
+	}
+	input := &dynamodb.UpdateItemInput{
+		TableName:                 aws.String(r.tableName),
+		ReturnValues:              types.ReturnValueAllNew,
+		ExpressionAttributeValues: express.Values(),
+		ExpressionAttributeNames:  express.Names(),
+		Key: map[string]types.AttributeValue{
+			"PK": &types.AttributeValueMemberS{
+				Value: utils.Make("AuctionWorker", auctionID),
+			},
+			"SK": &types.AttributeValueMemberS{
+				Value: "Metadata",
+			},
+		},
+		UpdateExpression: express.Update(),
+	}
+
+	_, err = r.DB.UpdateItem(ctx, input)
+	if err != nil {
+		return err
+	}
+
+	return err
+}
