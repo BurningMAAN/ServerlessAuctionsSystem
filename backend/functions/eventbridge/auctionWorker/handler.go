@@ -25,29 +25,31 @@ func HandleAuction(ctx context.Context, event events.DynamoDBEvent) {
 	eventJSON, _ := json.Marshal(event)
 	log.Print(string(eventJSON))
 	for _, eventRecord := range event.Records {
-		pk := eventRecord.Change.Keys["PK"].String()
-		status := eventRecord.Change.OldImage["Status"].String()
-		auctionStartDate, err := time.Parse(time.RFC3339, eventRecord.Change.OldImage["StartDate"].String())
-		if err != nil {
-			log.Printf("Nepavyko patraukt datos, gavom data: %s, err: %s", auctionStartDate.String(), err.Error())
-		}
+		if eventRecord.EventName == "RETURN" {
+			pk := eventRecord.Change.Keys["PK"].String()
+			status := eventRecord.Change.OldImage["Status"].String()
+			auctionStartDate, err := time.Parse(time.RFC3339, eventRecord.Change.OldImage["StartDate"].String())
+			if err != nil {
+				log.Printf("Nepavyko patraukt datos, gavom data: %s, err: %s", auctionStartDate.String(), err.Error())
+			}
 
-		auctionEndDate, err := time.Parse(time.RFC3339, eventRecord.Change.OldImage["EndDate"].String())
-		if err != nil {
-			log.Printf("Nepavyko patraukt datos, gavom data: %s, err: %s", auctionEndDate.String(), err.Error())
-		}
+			auctionEndDate, err := time.Parse(time.RFC3339, eventRecord.Change.OldImage["EndDate"].String())
+			if err != nil {
+				log.Printf("Nepavyko patraukt datos, gavom data: %s, err: %s", auctionEndDate.String(), err.Error())
+			}
 
-		transformedRecord := Record{
-			AuctionID:      utils.Extract("AuctionWorker", pk),
-			Status:         status,
-			AuctionEndDate: auctionEndDate,
-		}
+			transformedRecord := Record{
+				AuctionID:      utils.Extract("AuctionWorker", pk),
+				Status:         status,
+				AuctionEndDate: auctionEndDate,
+			}
 
-		jsonas, err := json.Marshal(transformedRecord)
-		if err != nil {
-			panic(err)
-		}
+			jsonas, err := json.Marshal(transformedRecord)
+			if err != nil {
+				panic(err)
+			}
 
-		log.Print(string(jsonas))
+			log.Print(string(jsonas))
+		}
 	}
 }
