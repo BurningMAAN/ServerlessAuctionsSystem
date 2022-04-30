@@ -176,6 +176,7 @@ func (r *repository) GetAllAuctions(ctx context.Context, optFns ...func(*Optiona
 type auctionWorkerDB struct {
 	PK        string
 	SK        string
+	Status    string
 	StartDate time.Time
 	EndDate   time.Time
 }
@@ -184,6 +185,7 @@ func (r *repository) CreateAuctionWorker(ctx context.Context, auctionID string, 
 	auctionWorkerDB := auctionWorkerDB{
 		PK:        utils.Make("AuctionWorker", auctionID),
 		SK:        "Metadata",
+		Status:    "STATUS_ACCEPTING_BIDS",
 		StartDate: startDate,
 		EndDate:   endDate,
 	}

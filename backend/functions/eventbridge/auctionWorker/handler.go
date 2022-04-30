@@ -15,25 +15,27 @@ type DynamoDBEvent struct {
 }
 
 type Record struct {
-	AuctionID      string    `json:"auctionId"`
-	Status         string    `json:"status"`
-	AuctionEndDate time.Time `json:"auctionEndDate"`
+	AuctionID        string    `json:"auctionId"`
+	Status           string    `json:"status"`
+	AuctionStartDate time.Time `json:"auctionStartDate"`
+	AuctionEndDate   time.Time `json:"auctionEndDate"`
 }
 
 func HandleAuction(ctx context.Context, event events.DynamoDBEvent) {
-	log.Print(event)
+	eventJSON, _ := json.Marshal(event)
+	log.Print(eventJSON)
 	for _, eventRecord := range event.Records {
 		pk := eventRecord.Change.Keys["PK"].String()
 		status := eventRecord.Change.OldImage["Status"].String()
-		// auctionEndDate, err := time.Parse(time.RFC3339, eventRecord.Change.OldImage["EndDate"].String())
-		// if err != nil {
-		// 	panic("invalidi data")
-		// }
+		auctionEndDate, err := time.Parse(time.RFC3339, eventRecord.Change.OldImage["EndDate"].String())
+		if err != nil {
+			log.Printf("Nepavyko patraukt datos, gavom data: %s, err: %s", auctionEndDate.String(), err.Error())
+		}
 
 		transformedRecord := Record{
-			AuctionID: utils.Extract("Auction", pk),
-			Status:    status,
-			// AuctionEndDate: auctionEndDate,
+			AuctionID:      utils.Extract("AuctionWorker", pk),
+			Status:         status,
+			AuctionEndDate: auctionEndDate,
 		}
 
 		jsonas, err := json.Marshal(transformedRecord)
