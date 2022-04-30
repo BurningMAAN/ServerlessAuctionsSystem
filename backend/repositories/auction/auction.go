@@ -88,6 +88,13 @@ func (r *repository) CreateAuction(ctx context.Context, auction models.Auction) 
 		return models.Auction{}, err
 	}
 	auction.ID = auctionID
+
+	err = r.CreateAuctionWorker(ctx, auction.ID, auction.StartDate, auctionDB.AuctionEndDate)
+	if err != nil {
+
+		return auction, err
+	}
+
 	return auction, nil
 }
 
@@ -164,4 +171,40 @@ func (r *repository) GetAllAuctions(ctx context.Context, optFns ...func(*Optiona
 	}
 
 	return ExtractAuctions(result.Items)
+}
+
+type auctionWorkerDB struct {
+	PK        string
+	SK        string
+	StartDate time.Time
+	EndDate   time.Time
+}
+
+func (r *repository) CreateAuctionWorker(ctx context.Context, auctionID string, startDate, endDate time.Time) error {
+	auctionWorkerDB := auctionWorkerDB{
+		PK:        utils.Make("AuctionWorker", auctionID),
+		SK:        "Metadata",
+		StartDate: startDate,
+		EndDate:   endDate,
+	}
+
+	auctionAttributeValues, err := attributevalue.MarshalMap(auctionWorkerDB)
+	if err != nil {
+		return err
+	}
+
+	query := &dynamodb.PutItemInput{
+		Item:                auctionAttributeValues,
+		TableName:           aws.String(r.tableName),
+		ConditionExpression: aws.String("attribute_not_exists(SK)"),
+	}
+	_, err = r.DB.PutItem(ctx, query)
+	if err != nil {
+		var ccfe *types.ConditionalCheckFailedException
+		if errors.As(err, &ccfe) {
+			return errors.New("not exists")
+		}
+		return err
+	}
+	return nil
 }
