@@ -119,6 +119,8 @@ export default function NavigationBar() {
         <span>Mano aukcionai</span></a>
         <a className={cx(classes.link)} href="/myInventory" key="Mano inventorius"> <Menu className={classes.linkIcon} />
         <span>Mano inventorius</span></a>
+        <a className={cx(classes.link)} href="/userdashboard" key="Vartotojo valdymas"> <Menu className={classes.linkIcon} />
+        <span>Vartotojo valdymas</span></a>
         </>
       )}
       {token && decodedToken.role == "buhalteris" && (

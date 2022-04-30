@@ -29,7 +29,6 @@ const Dashboard: FC<TitleProps> = ({}) => {
       style={{
           overflow: 'hidden'
       }}
-    //   header={<HeaderMiddle></HeaderMiddle>}
       fixed
     >
         <div>

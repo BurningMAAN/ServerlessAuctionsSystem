@@ -6,6 +6,7 @@ import MyAuctions from './Pages/myAuctions';
 import AuthenticationImage from './Pages/login';
 import { NotificationsProvider } from '@mantine/notifications';
 import BugalterDashboard from './Pages/buhalter';
+import UserDashboard from './Pages/userDashboard';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             <Route path="/login" component={AuthenticationImage}></Route>
             <Route path="/myInventory" component={MyInventory}></Route>
             <Route path="/generateData" component={BugalterDashboard}></Route>
+            <Route path="/userdashboard" component={UserDashboard}></Route>
             <Route path="/myAuctions" component={MyAuctions}></Route>
             <Route path="/auctions/:auctionID" component={AuctionView}></Route>
             <Route path="/" component={Dashboard}></Route>

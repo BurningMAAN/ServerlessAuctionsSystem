@@ -15,6 +15,7 @@ type Auction struct {
 	BidIncrement float64
 	CreatorID    string
 	ItemID       string
+	EndDate      time.Time
 	// Category string Prideti kategorija (nes rodome korteleje)
 }
 
