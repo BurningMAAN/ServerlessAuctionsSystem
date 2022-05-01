@@ -8,6 +8,7 @@ import (
 	"log"
 
 	bidRepo "auctionsPlatform/repositories/bid"
+	"auctionsPlatform/repositories/eventbridge"
 	bidSvc "auctionsPlatform/services/bid"
 
 	userRepo "auctionsPlatform/repositories/user"
@@ -16,6 +17,7 @@ import (
 
 	"github.com/aws/aws-lambda-go/lambda"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/cloudwatchevents"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/kelseyhightower/envconfig"
 )
@@ -40,9 +42,10 @@ func main() {
 	bidRepository := bidRepo.New(cfg.TableName, db)
 	userRepository := userRepo.New(cfg.TableName, db)
 	auctionRepository := auctionRepo.New(cfg.TableName, db)
+	clClient := cloudwatchevents.NewFromConfig(awsCfg)
 
 	c := handler{
-		bidService: bidSvc.New(auctionRepository, bidRepository, userRepository),
+		bidService: bidSvc.New(auctionRepository, bidRepository, userRepository, eventbridge.New(clClient)),
 	}
 	lambda.Start(c.PlaceBid)
 }

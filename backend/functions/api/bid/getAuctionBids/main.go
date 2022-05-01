@@ -42,7 +42,7 @@ func main() {
 	auctionRepository := auctionRepo.New(cfg.TableName, db)
 
 	c := handler{
-		bidService: bidSvc.New(auctionRepository, bidRepository, userRepository),
+		bidService: bidSvc.New(auctionRepository, bidRepository, userRepository, nil),
 	}
 	lambda.Start(c.PlaceBid)
 }
