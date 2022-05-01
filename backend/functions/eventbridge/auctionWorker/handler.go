@@ -29,7 +29,7 @@ type handler struct {
 	auctionRepo auctionRepository
 }
 
-func (h *handler) HandleAuction(ctx context.Context, event events.DynamoDBEvent) {
+func (h *handler) HandleAuction(ctx context.Context, event events.CloudWatchEvent) {
 	eventJSON, _ := json.Marshal(event)
 	log.Print(string(eventJSON))
 	// for _, eventRecord := range event.Records {
