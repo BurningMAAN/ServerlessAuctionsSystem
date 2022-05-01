@@ -69,6 +69,7 @@ func (r *repository) CreateAuction(ctx context.Context, auction models.Auction) 
 		ItemID:         auction.ItemID,
 		IsFinished:     false,
 		AuctionEndDate: auction.StartDate.Add(time.Duration(5 * time.Second)),
+		Stage:          "STAGE_ACCEPTING_BIDS",
 	}
 	auctionAttributeValues, err := attributevalue.MarshalMap(auctionDB)
 	if err != nil {
