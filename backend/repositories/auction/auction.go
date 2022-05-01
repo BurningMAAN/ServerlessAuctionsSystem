@@ -105,7 +105,7 @@ func (r *repository) CreateAuction(ctx context.Context, auction models.Auction) 
 	_, err = r.EventWorker.PutRule(ctx, &cloudwatchevents.PutRuleInput{
 		Name:               aws.String(fmt.Sprintf("auction-event-%s", auctionID)),
 		EventPattern:       aws.String(`{"auctionID": ["exampleID"]}`),
-		ScheduleExpression: aws.String("cron(0 20 * * ? *)"),
+		ScheduleExpression: aws.String("rate(1 minutes)"),
 	})
 	if err != nil {
 		return auction, err
