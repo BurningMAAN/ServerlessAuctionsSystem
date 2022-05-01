@@ -4,13 +4,13 @@ go 1.17
 
 require (
 	github.com/aws/aws-lambda-go v1.29.0
+	github.com/aws/aws-sdk-go v1.44.4
 	github.com/aws/aws-sdk-go-v2 v1.16.3
 	github.com/aws/aws-sdk-go-v2/config v1.15.3
 	github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue v1.8.4
 	github.com/aws/aws-sdk-go-v2/feature/dynamodb/expression v1.4.5
 	github.com/aws/aws-sdk-go-v2/service/cloudwatchevents v1.14.5
 	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.15.3
-	github.com/aws/aws-sdk-go-v2/service/eventbridge v1.16.1
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/google/uuid v1.3.0
 	github.com/kelseyhightower/envconfig v1.4.0
