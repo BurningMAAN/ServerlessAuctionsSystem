@@ -8,9 +8,11 @@ import (
 	"log"
 
 	auctionsRepository "auctionsPlatform/repositories/auction"
+	"auctionsPlatform/repositories/eventbridge"
 
 	"github.com/aws/aws-lambda-go/lambda"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/cloudwatchevents"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/kelseyhightower/envconfig"
 )
@@ -33,9 +35,10 @@ func main() {
 
 	db := dynamodb.NewFromConfig(awsCfg)
 	auctionRepository := auctionsRepository.New(cfg.TableName, db, nil)
-
+	clClient := cloudwatchevents.NewFromConfig(awsCfg)
 	h := handler{
-		auctionRepo: auctionRepository,
+		auctionRepo:     auctionRepository,
+		eventRepository: eventbridge.New(clClient),
 	}
 
 	lambda.Start(h.HandleAuction)
