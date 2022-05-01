@@ -35,7 +35,7 @@ type AuctionEvent struct {
 	EndDate   time.Time `json:"endDate"`
 }
 
-func (h *handler) HandleAuction(ctx context.Context, event AuctionEvent) {
+func (h *handler) HandleAuction(ctx context.Context, event interface{}) {
 	eventJSON, _ := json.Marshal(event)
 	log.Print(string(eventJSON))
 	// for _, eventRecord := range event.Records {
