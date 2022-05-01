@@ -133,6 +133,10 @@ Resources:
               - dynamodb:GetItem
               - dynamodb:UpdateItem
             Resource: !GetAtt DynamoDBTable.Arn
+          - Effect: Allow
+            Action:
+              - cloudwatchevents:PutRule
+            Resource: "*"
       Events:
         ApiEvent:
             Type: Api

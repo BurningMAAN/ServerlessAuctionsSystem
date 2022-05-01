@@ -14,6 +14,7 @@ import (
 
 	"github.com/aws/aws-lambda-go/lambda"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/cloudwatchevents"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/kelseyhightower/envconfig"
 )
@@ -35,7 +36,8 @@ func main() {
 	}
 
 	db := dynamodb.NewFromConfig(awsCfg)
-	auctionRepository := auctionsRepository.New(cfg.TableName, db)
+	clClient := cloudwatchevents.NewFromConfig(awsCfg)
+	auctionRepository := auctionsRepository.New(cfg.TableName, db, clClient)
 	itemRepository := itemsRepository.New(cfg.TableName, db)
 
 	c := handler{

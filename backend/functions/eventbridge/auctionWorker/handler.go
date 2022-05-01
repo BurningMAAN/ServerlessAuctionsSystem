@@ -32,29 +32,29 @@ type handler struct {
 func (h *handler) HandleAuction(ctx context.Context, event events.DynamoDBEvent) {
 	eventJSON, _ := json.Marshal(event)
 	log.Print(string(eventJSON))
-	for _, eventRecord := range event.Records {
-		if eventRecord.EventName == "REMOVE" {
-			record := unmarshalEvent(eventRecord)
+	// for _, eventRecord := range event.Records {
+	// 	if eventRecord.EventName == "REMOVE" {
+	// 		record := unmarshalEvent(eventRecord)
 
-			switch record.Status {
-			case "STATUS_ACCEPTING_BIDS":
-				// Create Worker entity with startDate = null, endDate = currentTime + 33s
-				endDate := time.Now().Add(33 * time.Second)
-				err := h.auctionRepo.CreateAuctionWorker(ctx, record.AuctionID, "STATUS_AUCTION_ONGOING", endDate)
-				if err != nil {
-					log.Print(err.Error())
-				}
+	// 		switch record.Status {
+	// 		case "STATUS_ACCEPTING_BIDS":
+	// 			// Create Worker entity with startDate = null, endDate = currentTime + 33s
+	// 			endDate := time.Now().Add(33 * time.Second)
+	// 			err := h.auctionRepo.CreateAuctionWorker(ctx, record.AuctionID, "STATUS_AUCTION_ONGOING", endDate)
+	// 			if err != nil {
+	// 				log.Print(err.Error())
+	// 			}
 
-			case "STATUS_AUCTION_ONGOING":
-				err := h.auctionRepo.FinishAuction(ctx, record.AuctionID)
-				if err != nil {
-					log.Print(err.Error())
-				}
-			default:
-				log.Printf("unsupported entity status: %s", record.Status)
-			}
-		}
-	}
+	// 		case "STATUS_AUCTION_ONGOING":
+	// 			err := h.auctionRepo.FinishAuction(ctx, record.AuctionID)
+	// 			if err != nil {
+	// 				log.Print(err.Error())
+	// 			}
+	// 		default:
+	// 			log.Printf("unsupported entity status: %s", record.Status)
+	// 		}
+	// 	}
+	// }
 }
 
 func unmarshalEvent(eventRecord events.DynamoDBEventRecord) Record {

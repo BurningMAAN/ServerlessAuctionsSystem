@@ -11,6 +11,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/expression"
+	"github.com/aws/aws-sdk-go-v2/service/cloudwatchevents"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"github.com/google/uuid"
@@ -27,15 +28,21 @@ type DB interface {
 	Scan(ctx context.Context, params *dynamodb.ScanInput, optFns ...func(*dynamodb.Options)) (*dynamodb.ScanOutput, error)
 }
 
-type repository struct {
-	tableName string
-	DB        DB
+type EventWorker interface {
+	PutRule(ctx context.Context, params *cloudwatchevents.PutRuleInput, optFns ...func(*cloudwatchevents.Options)) (*cloudwatchevents.PutRuleOutput, error)
 }
 
-func New(tableName string, db DB) *repository {
+type repository struct {
+	tableName   string
+	DB          DB
+	EventWorker EventWorker
+}
+
+func New(tableName string, db DB, eventWorker EventWorker) *repository {
 	return &repository{
-		tableName: tableName,
-		DB:        db,
+		tableName:   tableName,
+		DB:          db,
+		EventWorker: eventWorker,
 	}
 }
 
@@ -89,9 +96,18 @@ func (r *repository) CreateAuction(ctx context.Context, auction models.Auction) 
 	}
 	auction.ID = auctionID
 
-	err = r.CreateAuctionWorker(ctx, auction.ID, "STATUS_ACCEPTING_BIDS", auction.StartDate)
-	if err != nil {
+	// err = r.CreateAuctionWorker(ctx, auction.ID, "STATUS_ACCEPTING_BIDS", auction.StartDate)
+	// if err != nil {
 
+	// 	return auction, err
+	// }
+
+	_, err = r.EventWorker.PutRule(ctx, &cloudwatchevents.PutRuleInput{
+		Name:               aws.String(fmt.Sprintf("auction-event-%s", auctionID)),
+		EventPattern:       aws.String("{}"),
+		ScheduleExpression: aws.String("cron(0 20 * * ? *)"),
+	})
+	if err != nil {
 		return auction, err
 	}
 

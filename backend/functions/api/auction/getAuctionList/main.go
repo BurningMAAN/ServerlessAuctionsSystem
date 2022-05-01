@@ -35,7 +35,7 @@ func main() {
 	}
 
 	db := dynamodb.NewFromConfig(awsCfg)
-	auctionRepository := auctionsRepository.New(cfg.TableName, db)
+	auctionRepository := auctionsRepository.New(cfg.TableName, db, nil)
 	itemRepository := itemsRepository.New(cfg.TableName, db)
 
 	c := handler{
