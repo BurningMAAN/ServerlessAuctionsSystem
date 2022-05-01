@@ -4,6 +4,7 @@ import (
 	"auctionsPlatform/models"
 	"auctionsPlatform/utils"
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"time"
@@ -12,6 +13,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/expression"
 	"github.com/aws/aws-sdk-go-v2/service/cloudwatchevents"
+	cloudwatchTypes "github.com/aws/aws-sdk-go-v2/service/cloudwatchevents/types"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"github.com/google/uuid"
@@ -30,6 +32,7 @@ type DB interface {
 
 type EventWorker interface {
 	PutRule(ctx context.Context, params *cloudwatchevents.PutRuleInput, optFns ...func(*cloudwatchevents.Options)) (*cloudwatchevents.PutRuleOutput, error)
+	PutTargets(ctx context.Context, params *cloudwatchevents.PutTargetsInput, optFns ...func(*cloudwatchevents.Options)) (*cloudwatchevents.PutTargetsOutput, error)
 }
 
 type repository struct {
@@ -60,6 +63,12 @@ type AuctionDB struct {
 }
 
 type OptionalGetParameters struct{}
+
+type AuctionEvent struct {
+	AuctionID string    `json:"id"`
+	Stage     string    `json:"stage"`
+	EndDate   time.Time `json:"endDate"`
+}
 
 func (r *repository) CreateAuction(ctx context.Context, auction models.Auction) (models.Auction, error) {
 	auctionID := uuid.New().String()
@@ -105,6 +114,28 @@ func (r *repository) CreateAuction(ctx context.Context, auction models.Auction) 
 	_, err = r.EventWorker.PutRule(ctx, &cloudwatchevents.PutRuleInput{
 		Name:               aws.String(fmt.Sprintf("auction-event-%s", auctionID)),
 		ScheduleExpression: aws.String("rate(2 minutes)"),
+	})
+	if err != nil {
+		return auction, err
+	}
+
+	eventInput, err := json.Marshal(AuctionEvent{
+		AuctionID: auctionID,
+		Stage:     "STAGE_ACCEPTING_BIDS",
+		EndDate:   auction.StartDate,
+	})
+	if err != nil {
+		return auction, err
+	}
+	_, err = r.EventWorker.PutTargets(ctx, &cloudwatchevents.PutTargetsInput{
+		Rule: aws.String(fmt.Sprintf("auction-event-%s", auctionID)),
+		Targets: []cloudwatchTypes.Target{
+			{
+				Arn:   aws.String("arn:aws:lambda:us-east-1:102336894219:function:test-backend-HandleAuctionFunction-Oa1T2FivSffq"),
+				Id:    aws.String("test-backend-HandleAuctionFunction-Oa1T2FivSffq"),
+				Input: aws.String(string(eventInput)),
+			},
+		},
 	})
 	if err != nil {
 		return auction, err

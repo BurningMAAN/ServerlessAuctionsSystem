@@ -29,7 +29,13 @@ type handler struct {
 	auctionRepo auctionRepository
 }
 
-func (h *handler) HandleAuction(ctx context.Context, event events.CloudWatchEvent) {
+type AuctionEvent struct {
+	AuctionID string    `json:"id"`
+	Stage     string    `json:"stage"`
+	EndDate   time.Time `json:"endDate"`
+}
+
+func (h *handler) HandleAuction(ctx context.Context, event AuctionEvent) {
 	eventJSON, _ := json.Marshal(event)
 	log.Print(string(eventJSON))
 	// for _, eventRecord := range event.Records {
