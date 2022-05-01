@@ -5,7 +5,6 @@ import (
 	"auctionsPlatform/utils"
 	"context"
 	"encoding/json"
-	"log"
 	"net/http"
 	"time"
 
@@ -28,6 +27,7 @@ type response struct {
 	BidIncrement float64   `json:"bidIncrement"`
 	CreatorName  string    `json:"creatorName"`
 	ItemID       string    `json:"itemId"`
+	EndDate      time.Time `json:"endDate"`
 }
 
 type auctionService interface {
@@ -43,7 +43,6 @@ func (h *handler) CreateAuction(ctx context.Context, event events.APIGatewayProx
 		return utils.InternalError("no auth token provided")
 	}
 
-	log.Print(event)
 	userConfig, err := utils.GetUserConfig(event.Headers["access_token"])
 	if err != nil {
 		return utils.InternalError(err.Error())
@@ -73,6 +72,7 @@ func (h *handler) CreateAuction(ctx context.Context, event events.APIGatewayProx
 		BidIncrement: auction.BidIncrement,
 		CreatorName:  auction.CreatorID,
 		ItemID:       auction.ItemID,
+		EndDate:      auction.EndDate,
 	})
 	if err != nil {
 		return utils.InternalError(err.Error())

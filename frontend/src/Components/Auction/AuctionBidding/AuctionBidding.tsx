@@ -12,6 +12,7 @@ interface AuctionBiddingProps {
   creatorID: string;
   auctionID: string;
   stage: string;
+  endDate: string;
 }
 
 interface DecodedToken {
@@ -56,6 +57,7 @@ export default function AuctionBiddingDashboard({
   startDate,
   creatorID,
   auctionID,
+  endDate,
   stage,
 }: AuctionBiddingProps) {
   const [timeLeft, setTimeLeft] = useState(30);
@@ -89,6 +91,8 @@ export default function AuctionBiddingDashboard({
   }, refreshTime);
 
   useInterval(() => {
+    const endDateTime = new Date(endDate);
+    var secondBetweenTwoDate = Math.abs((new Date().getTime() - endDateTime.getTime()) / 1000);
     if(stage == "STAGE_AUCTION_FINISHED"){
       setTimeLeft(0)
       return
@@ -97,7 +101,7 @@ export default function AuctionBiddingDashboard({
       if (timeLeft == 0) {
         return
       }
-      setTimeLeft(timeLeft - 1);
+      setTimeLeft(secondBetweenTwoDate - 1);
     }
   }, 1000);
 

@@ -18,7 +18,7 @@ func unmarshalAuction(auctionDB AuctionDB) (models.Auction, error) {
 		CreatorID:    auctionDB.CreatorID,
 		IsFinished:   auctionDB.IsFinished,
 		ItemID:       auctionDB.ItemID,
-		EndDate:      auctionDB.AuctionEndDate,
+		EndDate:      auctionDB.EndDate,
 		Stage:        auctionDB.Stage,
 	}, nil
 }

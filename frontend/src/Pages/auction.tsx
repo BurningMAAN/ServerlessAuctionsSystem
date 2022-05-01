@@ -17,6 +17,7 @@ interface AuctionProps {
   itemId: string;
   stage: string;
   startDate: string;
+  endDate: string;
   isFinished: boolean;
   id: string;
 }
@@ -39,7 +40,6 @@ export default function AuctionView({}: AuctionViewProps) {
     const auctionData = await fetch(
       `https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/auctions/${auctionID}`
     ).then((res) => res.json());
-    console.log("parsing auction");
     setAuction(auctionData);
     console.log(auction)
     const itemData = await fetch(
@@ -49,7 +49,6 @@ export default function AuctionView({}: AuctionViewProps) {
   };
 
   useEffect(() => {
-    console.log(auction.auctionType)
     getData();
   }, []);
 
@@ -68,6 +67,7 @@ export default function AuctionView({}: AuctionViewProps) {
           currentMaxBid={auction.bidIncrement} // pakeisti i max bid ar dar kazka
           bidIncrement={auction.bidIncrement}
           creatorID={auction.creatorId}
+          endDate={auction.endDate}
         ></AuctionBiddingDashboard>
         <Grid.Col span={10}>
           <Divider />

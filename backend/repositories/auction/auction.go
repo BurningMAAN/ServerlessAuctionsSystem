@@ -40,17 +40,17 @@ func New(tableName string, db DB) *repository {
 }
 
 type AuctionDB struct {
-	PK             string // Example: Auction#{AuctionID}
-	SK             string // Example: Metadata
-	BuyoutPrice    *float64
-	StartDate      time.Time
-	BidIncrement   float64
-	AuctionEndDate time.Time
-	CreatorID      string
-	Type           string
-	IsFinished     bool
-	ItemID         string
-	Stage          string
+	PK           string // Example: Auction#{AuctionID}
+	SK           string // Example: Metadata
+	BuyoutPrice  *float64
+	StartDate    time.Time
+	BidIncrement float64
+	EndDate      time.Time
+	CreatorID    string
+	Type         string
+	IsFinished   bool
+	ItemID       string
+	Stage        string
 }
 
 type OptionalGetParameters struct{}
@@ -59,17 +59,17 @@ func (r *repository) CreateAuction(ctx context.Context, auction models.Auction) 
 	auctionID := uuid.New().String()
 
 	auctionDB := AuctionDB{
-		PK:             utils.Make(models.AuctionEntityType, auctionID),
-		SK:             "Metadata",
-		BuyoutPrice:    auction.BuyoutPrice,
-		StartDate:      auction.StartDate,
-		BidIncrement:   auction.BidIncrement,
-		CreatorID:      auction.CreatorID,
-		Type:           string(auction.Type),
-		ItemID:         auction.ItemID,
-		IsFinished:     false,
-		AuctionEndDate: auction.StartDate.Add(time.Duration(5 * time.Second)),
-		Stage:          "STAGE_ACCEPTING_BIDS",
+		PK:           utils.Make(models.AuctionEntityType, auctionID),
+		SK:           "Metadata",
+		BuyoutPrice:  auction.BuyoutPrice,
+		StartDate:    auction.StartDate,
+		BidIncrement: auction.BidIncrement,
+		CreatorID:    auction.CreatorID,
+		Type:         string(auction.Type),
+		ItemID:       auction.ItemID,
+		IsFinished:   false,
+		EndDate:      auction.StartDate.Add(time.Duration(5 * time.Second)),
+		Stage:        "STAGE_ACCEPTING_BIDS",
 	}
 	auctionAttributeValues, err := attributevalue.MarshalMap(auctionDB)
 	if err != nil {
