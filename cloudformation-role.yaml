@@ -110,6 +110,7 @@ Resources:
                   - lambda:UpdateFunctionCode
                   - lambda:ListTags
                   - lambda:TagResource
+                  - lambda:InvokeFunction
                   - lambda:UntagResource
                   - lambda:ListVersionsByFunction
                   - lambda:PublishVersion

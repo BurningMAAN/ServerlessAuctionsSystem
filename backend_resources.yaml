@@ -138,6 +138,10 @@ Resources:
               - events:PutRule
               - events:PutTargets
             Resource: "*"
+          - Effect: Allow
+            Action:
+              - iam:PassRole
+            Resource: "*"
       Events:
         ApiEvent:
             Type: Api
