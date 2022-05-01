@@ -6,6 +6,8 @@ import (
 	bidRepo "auctionsPlatform/repositories/bid"
 	"context"
 	"fmt"
+	"log"
+	"time"
 )
 
 type bidRepository interface {
@@ -16,23 +18,30 @@ type bidRepository interface {
 
 type auctionRepository interface {
 	GetAuctionByID(ctx context.Context, auctionID string) (models.Auction, error)
+	UpdateAuctionEndDate(ctx context.Context, auctionID string, endDate time.Time) error
 }
 
 type userRepository interface {
 	GetUserByID(ctx context.Context, userID string) (models.User, error)
 }
 
+type eventRepository interface {
+	UpdateEventRule(ctx context.Context, auctionID string) error
+}
+
 type service struct {
 	auctionRepository auctionRepository
 	bidRepository     bidRepository
 	userRepository    userRepository
+	eventRepository   eventRepository
 }
 
-func New(auctionRepository auctionRepository, bidRepository bidRepository, userRepository userRepository) *service {
+func New(auctionRepository auctionRepository, bidRepository bidRepository, userRepository userRepository, eventRepository eventRepository) *service {
 	return &service{
 		auctionRepository: auctionRepository,
 		bidRepository:     bidRepository,
 		userRepository:    userRepository,
+		eventRepository:   eventRepository,
 	}
 }
 
@@ -66,6 +75,17 @@ func (s *service) PlaceBid(ctx context.Context, auctionID string, bid models.Bid
 	placedBid, err := s.bidRepository.CreateBid(ctx, auction.ID, bid)
 	if err != nil {
 		return models.Bid{}, err
+	}
+
+	err = s.auctionRepository.UpdateAuctionEndDate(ctx, auctionID, time.Now().Add(33*time.Second))
+	if err != nil {
+		return models.Bid{}, err
+	}
+
+	err = s.eventRepository.UpdateEventRule(ctx, auction.ID)
+	if err != nil {
+		log.Printf("failed to place bid on auctionID: %s, error: %s", auction.ID, err.Error())
+		return placedBid, nil
 	}
 
 	return placedBid, err

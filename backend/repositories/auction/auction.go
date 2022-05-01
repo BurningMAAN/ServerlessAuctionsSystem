@@ -200,3 +200,35 @@ func (r *repository) UpdateAuctionStage(ctx context.Context, auctionID string, s
 
 	return err
 }
+
+func (r *repository) UpdateAuctionEndDate(ctx context.Context, auctionID string, endDate time.Time) error {
+	updateExpression := expression.UpdateBuilder{}
+	updateExpression = updateExpression.Set(expression.Name("EndDate"), expression.Value(endDate))
+
+	express, err := expression.NewBuilder().WithUpdate(updateExpression).Build()
+	if err != nil {
+		return err
+	}
+	input := &dynamodb.UpdateItemInput{
+		TableName:                 aws.String(r.tableName),
+		ReturnValues:              types.ReturnValueAllNew,
+		ExpressionAttributeValues: express.Values(),
+		ExpressionAttributeNames:  express.Names(),
+		Key: map[string]types.AttributeValue{
+			"PK": &types.AttributeValueMemberS{
+				Value: utils.Make("Auction", auctionID),
+			},
+			"SK": &types.AttributeValueMemberS{
+				Value: "Metadata",
+			},
+		},
+		UpdateExpression: express.Update(),
+	}
+
+	_, err = r.DB.UpdateItem(ctx, input)
+	if err != nil {
+		return err
+	}
+
+	return err
+}

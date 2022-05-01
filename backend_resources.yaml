@@ -391,8 +391,14 @@ Resources:
         Statement:
           - Effect: Allow
             Action:
+              - events:PutRule
+              - events:PutTargets
+            Resource: "*"
+          - Effect: Allow
+            Action:
               - dynamodb:Query
               - dynamodb:GetItem
+              - dynamodb:UpdateItem
               - dynamodb:PutItem
             Resource: 
               - !GetAtt DynamoDBTable.Arn

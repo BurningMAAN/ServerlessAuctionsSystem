@@ -65,10 +65,10 @@ export default function AuctionBiddingDashboard({
   const [seconds, setSeconds] = useState(0);
   const [bids, setBids] = useState<Bid>({} as Bid)
 
+  let refreshTime: number | null = 300
   useInterval(() => {
     if (stage === "STAGE_ACCEPTING_BIDS") {
         const targetDate = new Date(startDate);
-        console.log(startDate)
         const now = new Date();
         const difference = targetDate.getTime() - now.getTime();
 
@@ -85,15 +85,11 @@ export default function AuctionBiddingDashboard({
 
         const s = Math.floor((difference % (1000 * 60)) / 1000);
         setSeconds(s);
-
-        if (d <= 0 && h <= 0 && m <= 0 && s <= 0) {
-          console.log("Baigesi")
-        }
     }
-  }, 500);
+  }, refreshTime);
 
   useInterval(() => {
-    if(stage == "STAGE_AUCTION_COMPLETED"){
+    if(stage == "STAGE_AUCTION_FINISHED"){
       setTimeLeft(0)
       return
     }
@@ -185,18 +181,18 @@ export default function AuctionBiddingDashboard({
           ))}
       </Center>
       <Center>
-        {/* {stage === "STATUS_ACCEPTING_BIDS" && ( */}
+        {stage === "STATUS_ACCEPTING_BIDS" && (
           <Title order={6}>
             Aukcionas prasideda už {days} dienų {hours} valandų {minutes}{" "}
             minučių {seconds} sekundžių
           </Title>
-        {/* )} */}
-        {stage === "STATUS_AUCTION_ONGOING" && (
+        )}
+        {stage === "STAGE_AUCTION_ONGOING" && (
           <Title order={6}>
             Aukcionas šiuo metu vyksta
           </Title>
         )}
-        {stage === "STATUS_AUCTION_FINISHED" &&  (
+        {stage === "STAGE_AUCTION_FINISHED" &&  (
           <Title order={6}>
             Aukcionas baigtas
           </Title>
