@@ -11,7 +11,7 @@ interface AuctionBiddingProps {
   startDate: string;
   creatorID: string;
   auctionID: string;
-  status: string;
+  stage: string;
 }
 
 interface DecodedToken {
@@ -55,8 +55,8 @@ export default function AuctionBiddingDashboard({
   bidIncrement,
   startDate,
   creatorID,
-  status,
-  auctionID
+  auctionID,
+  stage,
 }: AuctionBiddingProps) {
   const [timeLeft, setTimeLeft] = useState(30);
   const [days, setDays] = useState(0);
@@ -66,8 +66,9 @@ export default function AuctionBiddingDashboard({
   const [bids, setBids] = useState<Bid>({} as Bid)
 
   useInterval(() => {
-    if (status === "STATUS_ACCEPTING_BIDS") {
+    if (stage === "STAGE_ACCEPTING_BIDS") {
         const targetDate = new Date(startDate);
+        console.log(startDate)
         const now = new Date();
         const difference = targetDate.getTime() - now.getTime();
 
@@ -91,19 +92,18 @@ export default function AuctionBiddingDashboard({
     }
   }, 500);
 
-  // useInterval(() => {
-  //   // if(isFinished){
-  //   //   setTimeLeft(0)
-  //   //   return
-  //   // }
-  //   // if (activeBiddingState === "bids_auction_start") {
-  //   //   if (timeLeft == 0) {
-  //   //     setActiveBiddingState("bids_auction_finish");
-  //   //     return finishAuction(auctionID)
-  //   //   }
-  //   //   setTimeLeft(timeLeft - 1);
-  //   // }
-  // }, 1000);
+  useInterval(() => {
+    if(stage == "STAGE_AUCTION_COMPLETED"){
+      setTimeLeft(0)
+      return
+    }
+    if (stage === "STAGE_AUCTION_ONGOING") {
+      if (timeLeft == 0) {
+        return
+      }
+      setTimeLeft(timeLeft - 1);
+    }
+  }, 1000);
 
   
   const getLatestBids = async (auctionID: string) => {
@@ -117,15 +117,15 @@ export default function AuctionBiddingDashboard({
     setBids(itemData);
   }
 
-  // let getLatestBidsDelay: number | null = 300
-  //  useInterval(() => {
-  //    if(isFinished && auctionID){
-  //     getLatestBids(auctionID)
-  //     getLatestBidsDelay = null
-  //     return
-  //    }
-  //     getLatestBids(auctionID)
-  // }, getLatestBidsDelay)
+  let getLatestBidsDelay: number | null = 300
+   useInterval(() => {
+     if(auctionID){
+      getLatestBids(auctionID)
+      getLatestBidsDelay = null
+      return
+     }
+      getLatestBids(auctionID)
+  }, getLatestBidsDelay)
 
   const token = getToken();
   const decodedToken = jwtDecode<DecodedToken>(token);
@@ -149,7 +149,6 @@ export default function AuctionBiddingDashboard({
         <Text>Minimalus kėlimas: {bidIncrement} €</Text>
       </Center>
       <Center>
-        <Title>{status}</Title>
         {(timeLeft !== 0 && token && decodedToken.username != creatorID && (
           <Button
             color="green"
@@ -186,22 +185,22 @@ export default function AuctionBiddingDashboard({
           ))}
       </Center>
       <Center>
-        {status === "STATUS_ACCEPTING_BIDS" && (
+        {/* {stage === "STATUS_ACCEPTING_BIDS" && ( */}
           <Title order={6}>
             Aukcionas prasideda už {days} dienų {hours} valandų {minutes}{" "}
             minučių {seconds} sekundžių
           </Title>
-        )}
-        {/* {!isFinished && activeBiddingState === "bids_auction_start" && (
+        {/* )} */}
+        {stage === "STATUS_AUCTION_ONGOING" && (
           <Title order={6}>
             Aukcionas šiuo metu vyksta
           </Title>
         )}
-        {isFinished && (
+        {stage === "STATUS_AUCTION_FINISHED" &&  (
           <Title order={6}>
             Aukcionas baigtas
           </Title>
-        )} */}
+        )}
       </Center>
     </Grid.Col>
   );

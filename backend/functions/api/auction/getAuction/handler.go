@@ -25,6 +25,7 @@ type response struct {
 	IsFinished   bool      `json:"isFinished"`
 	ItemID       string    `json:"itemId"`
 	Stage        string    `json:"stage"`
+	StartDate    time.Time `json:"startDate"`
 }
 
 type auctionService interface {
@@ -59,6 +60,7 @@ func (h *handler) GetAuction(ctx context.Context, event events.APIGatewayProxyRe
 		ItemID:       auction.ItemID,
 		IsFinished:   auction.IsFinished,
 		Stage:        auction.Stage,
+		StartDate:    auction.StartDate,
 	})
 	if err != nil {
 		return utils.InternalError(err.Error())
