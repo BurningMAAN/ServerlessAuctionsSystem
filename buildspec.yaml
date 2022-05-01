@@ -64,10 +64,6 @@ phases:
       - cd $ROOTDIR/backend/functions/eventbridge/auctionWorker
       - go build -o main
 
-      # Build GetAuctionWorkerFunction
-      - cd $ROOTDIR/backend/functions/api/auction/worker/getWorkerByAuctionID
-      - go build -o main
-
       - cd $ROOTDIR
       - echo ${PACKAGE_BUCKET}
       - aws cloudformation package --template-file backend_resources.yaml --s3-bucket ${PACKAGE_BUCKET} --output-template-file packaged-backend_resources.yaml
