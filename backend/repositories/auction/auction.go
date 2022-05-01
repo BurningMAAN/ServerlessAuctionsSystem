@@ -131,9 +131,10 @@ func (r *repository) CreateAuction(ctx context.Context, auction models.Auction) 
 		Rule: aws.String(fmt.Sprintf("auction-event-%s", auctionID)),
 		Targets: []cloudwatchTypes.Target{
 			{
-				Arn:   aws.String("arn:aws:lambda:us-east-1:102336894219:function:test-backend-HandleAuctionFunction-Oa1T2FivSffq"),
-				Id:    aws.String("test-backend-HandleAuctionFunction-Oa1T2FivSffq"),
-				Input: aws.String(string(eventInput)),
+				Arn:     aws.String("arn:aws:lambda:us-east-1:102336894219:function:test-backend-HandleAuctionFunction-Oa1T2FivSffq"),
+				Id:      aws.String("test-backend-HandleAuctionFunction-Oa1T2FivSffq"),
+				Input:   aws.String(string(eventInput)),
+				RoleArn: aws.String("arn:aws:iam::102336894219:role/test-cloudformation-role"),
 			},
 		},
 	})
