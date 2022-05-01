@@ -135,7 +135,7 @@ Resources:
             Resource: !GetAtt DynamoDBTable.Arn
           - Effect: Allow
             Action:
-              - cloudwatchevents:PutRule
+              - events:PutRule
             Resource: "*"
       Events:
         ApiEvent:
