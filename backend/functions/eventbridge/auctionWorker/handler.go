@@ -1,32 +1,21 @@
 package main
 
 import (
-	"auctionsPlatform/utils"
 	"context"
-	"encoding/json"
-	"log"
 	"time"
-
-	"github.com/aws/aws-lambda-go/events"
 )
 
 type auctionRepository interface {
-	CreateAuctionWorker(ctx context.Context, auctionID string, status string, endDate time.Time) error
-	FinishAuction(ctx context.Context, auctionID string) error
+	UpdateAuctionStage(ctx context.Context, auctionID string, stage string) error
 }
 
-type DynamoDBEvent struct {
-	EventName string `json:"eventName"`
-}
-
-type Record struct {
-	AuctionID      string    `json:"auctionId"`
-	Status         string    `json:"status"`
-	AuctionEndDate time.Time `json:"auctionEndDate"`
+type eventRepository interface {
+	UpdateEventRule(ctx context.Context, auctionID string) error
 }
 
 type handler struct {
-	auctionRepo auctionRepository
+	auctionRepo     auctionRepository
+	eventRepository eventRepository
 }
 
 type AuctionEvent struct {
@@ -35,9 +24,20 @@ type AuctionEvent struct {
 	EndDate   time.Time `json:"endDate"`
 }
 
-func (h *handler) HandleAuction(ctx context.Context, event interface{}) {
-	eventJSON, _ := json.Marshal(event)
-	log.Print(string(eventJSON))
+func (h *handler) HandleAuction(ctx context.Context, event AuctionEvent) error {
+	switch event.Stage {
+	case "STAGE_ACCEPTING_BIDS":
+		err := h.auctionRepo.UpdateAuctionStage(ctx, event.AuctionID, "STAGE_AUCTION_ONGOING")
+		if err != nil {
+			return err
+		}
+
+		err = h.eventRepository.UpdateEventRule(ctx, event.AuctionID)
+		if err != nil {
+			return err
+		}
+
+	}
 	// for _, eventRecord := range event.Records {
 	// 	if eventRecord.EventName == "REMOVE" {
 	// 		record := unmarshalEvent(eventRecord)
@@ -61,24 +61,5 @@ func (h *handler) HandleAuction(ctx context.Context, event interface{}) {
 	// 		}
 	// 	}
 	// }
-}
-
-func unmarshalEvent(eventRecord events.DynamoDBEventRecord) Record {
-	pk := eventRecord.Change.Keys["PK"].String()
-	status := eventRecord.Change.OldImage["Status"].String()
-	auctionStartDate, err := time.Parse(time.RFC3339, eventRecord.Change.OldImage["StartDate"].String())
-	if err != nil {
-		log.Printf("Nepavyko patraukt datos, gavom data: %s, err: %s", auctionStartDate.String(), err.Error())
-	}
-
-	auctionEndDate, err := time.Parse(time.RFC3339, eventRecord.Change.OldImage["EndDate"].String())
-	if err != nil {
-		log.Printf("Nepavyko patraukt datos, gavom data: %s, err: %s", auctionEndDate.String(), err.Error())
-	}
-
-	return Record{
-		AuctionID:      utils.Extract("AuctionWorker", pk),
-		Status:         status,
-		AuctionEndDate: auctionEndDate,
-	}
+	return nil
 }

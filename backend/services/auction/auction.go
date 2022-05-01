@@ -12,7 +12,6 @@ type auctionRepository interface {
 	GetAuctionByID(ctx context.Context, auctionID string) (models.Auction, error)
 	GetAllAuctions(ctx context.Context, optFns ...func(*auction.OptionalGetParameters)) ([]models.Auction, error)
 	FinishAuction(ctx context.Context, auctionID string) error
-	GetAuctionWorker(ctx context.Context, auctionID string) (models.AuctionWorker, error)
 }
 
 type itemRepository interface {
@@ -88,8 +87,4 @@ func (s *service) FinishAuction(ctx context.Context, auctionID string) error {
 	}
 
 	return s.auctionRepository.FinishAuction(ctx, auctionID)
-}
-
-func (s *service) GetAuctionWorker(ctx context.Context, auctionID string) (models.AuctionWorker, error) {
-	return s.auctionRepository.GetAuctionWorker(ctx, auctionID)
 }

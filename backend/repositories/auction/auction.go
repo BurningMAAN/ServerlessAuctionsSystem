@@ -60,6 +60,7 @@ type AuctionDB struct {
 	Type           string
 	IsFinished     bool
 	ItemID         string
+	Stage          string
 }
 
 type OptionalGetParameters struct{}
@@ -226,38 +227,9 @@ type auctionWorkerDB struct {
 	EndDate time.Time
 }
 
-func (r *repository) CreateAuctionWorker(ctx context.Context, auctionID string, status string, endDate time.Time) error {
-	auctionWorkerDB := auctionWorkerDB{
-		PK:      utils.Make("AuctionWorker", auctionID),
-		SK:      "Metadata",
-		Status:  status,
-		EndDate: endDate,
-	}
-
-	auctionAttributeValues, err := attributevalue.MarshalMap(auctionWorkerDB)
-	if err != nil {
-		return err
-	}
-
-	query := &dynamodb.PutItemInput{
-		Item:                auctionAttributeValues,
-		TableName:           aws.String(r.tableName),
-		ConditionExpression: aws.String("attribute_not_exists(SK)"),
-	}
-	_, err = r.DB.PutItem(ctx, query)
-	if err != nil {
-		var ccfe *types.ConditionalCheckFailedException
-		if errors.As(err, &ccfe) {
-			return errors.New("not exists")
-		}
-		return err
-	}
-	return nil
-}
-
-func (r *repository) UpdateAuctionWorker(ctx context.Context, auctionID string, endDate time.Time) error {
+func (r *repository) UpdateAuctionStage(ctx context.Context, auctionID string, stage string) error {
 	updateExpression := expression.UpdateBuilder{}
-	updateExpression = updateExpression.Set(expression.Name("EndDate"), expression.Value(endDate))
+	updateExpression = updateExpression.Set(expression.Name("Stage"), expression.Value(stage))
 
 	express, err := expression.NewBuilder().WithUpdate(updateExpression).Build()
 	if err != nil {
@@ -270,7 +242,7 @@ func (r *repository) UpdateAuctionWorker(ctx context.Context, auctionID string, 
 		ExpressionAttributeNames:  express.Names(),
 		Key: map[string]types.AttributeValue{
 			"PK": &types.AttributeValueMemberS{
-				Value: utils.Make("AuctionWorker", auctionID),
+				Value: utils.Make("Auction", auctionID),
 			},
 			"SK": &types.AttributeValueMemberS{
 				Value: "Metadata",
@@ -285,25 +257,4 @@ func (r *repository) UpdateAuctionWorker(ctx context.Context, auctionID string, 
 	}
 
 	return err
-}
-
-func (r *repository) GetAuctionWorker(ctx context.Context, auctionID string) (models.AuctionWorker, error) {
-	query := &dynamodb.GetItemInput{
-		TableName: aws.String(r.tableName),
-		Key: map[string]types.AttributeValue{
-			"PK": &types.AttributeValueMemberS{Value: utils.Make("AuctionWorker", auctionID)},
-			"SK": &types.AttributeValueMemberS{Value: "Metadata"},
-		},
-	}
-
-	result, err := r.DB.GetItem(ctx, query)
-	if err != nil {
-		return models.AuctionWorker{}, err
-	}
-
-	if result.Item == nil {
-		return models.AuctionWorker{}, errors.New("resource does not exist")
-	}
-
-	return ExtractAuctionWorker(result.Item)
 }

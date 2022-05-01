@@ -16,6 +16,7 @@ type Auction struct {
 	CreatorID    string
 	ItemID       string
 	EndDate      time.Time
+	Stage        string
 	// Category string Prideti kategorija (nes rodome korteleje)
 }
 
