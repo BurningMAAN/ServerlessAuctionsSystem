@@ -244,35 +244,7 @@ Resources:
               Method: post
               RestApiId:
                 Ref: AuctionGateway
-  
-  GetAuctionWorkerFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler: main
-      Runtime: go1.x
-      AutoPublishAlias: live
-      Tracing: Active
-      MemorySize: 512
-      Timeout: 15
-      Description: Lambda function that gets auction worker
-      CodeUri: backend/functions/api/auction/worker/getWorkerByAuctionID
-      Environment:
-        Variables:
-          DYNAMODB_TABLE: !Ref DynamoDBTable
-      Policies:
-        Statement:
-          - Effect: Allow
-            Action:
-              - dynamodb:GetItem
-            Resource: !GetAtt DynamoDBTable.Arn
-      Events:
-        ApiEvent:
-            Type: Api
-            Properties:
-              Path: /auctions/{auctionId}/worker
-              Method: get
-              RestApiId:
-                Ref: AuctionGateway
+
   # Item Lambda Functions
   CreateItemFunction:
     Type: AWS::Serverless::Function
