@@ -34,7 +34,7 @@ func (r *repository) CreateEventRule(ctx context.Context, auctionID string, star
 	hour, min, _ := startDate.Clock()
 	_, err := r.eventClient.PutRule(ctx, &cloudwatchevents.PutRuleInput{
 		Name:               aws.String(fmt.Sprintf("auction-event-%s", auctionID)),
-		ScheduleExpression: aws.String(fmt.Sprintf("cron(%d %d %d %d %d)", min, hour, day, month, year)),
+		ScheduleExpression: aws.String(fmt.Sprintf("cron(%d %d %d %d ? %d)", min, hour, day, month, year)),
 	})
 	if err != nil {
 		return err
