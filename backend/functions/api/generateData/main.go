@@ -46,7 +46,7 @@ func main() {
 	c := handler{
 		auctionService: auctionsService.New(auctionRepository, itemService.New(itemRepository, auctionRepository), nil),
 		itemRepository: itemService.New(itemRepository, auctionRepository),
-		bidsRepository: bidService.New(auctionRepository, bidRepository, userRepository),
+		bidsRepository: bidService.New(auctionRepository, bidRepository, userRepository, nil),
 	}
 	lambda.Start(c.CreateAuction)
 }
