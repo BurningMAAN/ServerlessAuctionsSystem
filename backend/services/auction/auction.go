@@ -5,6 +5,8 @@ import (
 	"auctionsPlatform/models"
 	"auctionsPlatform/repositories/auction"
 	"context"
+	"log"
+	"time"
 )
 
 type auctionRepository interface {
@@ -19,15 +21,21 @@ type itemRepository interface {
 	GetItemByID(ctx context.Context, itemID string) (models.Item, error)
 }
 
+type eventRepository interface {
+	CreateEventRule(ctx context.Context, auctionID string, startDate time.Time) error
+}
+
 type service struct {
 	itemRepository    itemRepository
 	auctionRepository auctionRepository
+	eventRepository   eventRepository
 }
 
-func New(auctionRepository auctionRepository, itemRepository itemRepository) *service {
+func New(auctionRepository auctionRepository, itemRepository itemRepository, eventRepository eventRepository) *service {
 	return &service{
 		auctionRepository: auctionRepository,
 		itemRepository:    itemRepository,
+		eventRepository:   eventRepository,
 	}
 }
 
@@ -45,6 +53,12 @@ func (s *service) CreateAuction(ctx context.Context, auction models.Auction, ite
 	err = s.itemRepository.AssignItem(ctx, auction.ID, item.ID)
 	if err != nil {
 		return models.Auction{}, err
+	}
+
+	err = s.eventRepository.CreateEventRule(ctx, auction.ID, auction.StartDate)
+	if err != nil {
+		log.Printf("failed to publish event for auctionID: %s", auction.ID)
+		return auction, nil
 	}
 
 	return auction, err

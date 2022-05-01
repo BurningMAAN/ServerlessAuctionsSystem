@@ -39,7 +39,7 @@ func main() {
 	db := dynamodb.NewFromConfig(awsCfg)
 	bidRepository := bidRepo.New(cfg.TableName, db)
 	userRepository := userRepo.New(cfg.TableName, db)
-	auctionRepository := auctionRepo.New(cfg.TableName, db, nil)
+	auctionRepository := auctionRepo.New(cfg.TableName, db)
 
 	c := handler{
 		bidService: bidSvc.New(auctionRepository, bidRepository, userRepository),

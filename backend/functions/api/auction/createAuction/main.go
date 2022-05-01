@@ -8,6 +8,7 @@ import (
 	"log"
 
 	auctionsRepository "auctionsPlatform/repositories/auction"
+	"auctionsPlatform/repositories/eventbridge"
 	itemsRepository "auctionsPlatform/repositories/item"
 	auctionsService "auctionsPlatform/services/auction"
 	itemService "auctionsPlatform/services/item"
@@ -37,11 +38,11 @@ func main() {
 
 	db := dynamodb.NewFromConfig(awsCfg)
 	clClient := cloudwatchevents.NewFromConfig(awsCfg)
-	auctionRepository := auctionsRepository.New(cfg.TableName, db, clClient)
+	auctionRepository := auctionsRepository.New(cfg.TableName, db)
 	itemRepository := itemsRepository.New(cfg.TableName, db)
 
 	c := handler{
-		auctionService: auctionsService.New(auctionRepository, itemService.New(itemRepository, auctionRepository)),
+		auctionService: auctionsService.New(auctionRepository, itemService.New(itemRepository, auctionRepository), eventbridge.New(clClient)),
 	}
 	lambda.Start(c.CreateAuction)
 }

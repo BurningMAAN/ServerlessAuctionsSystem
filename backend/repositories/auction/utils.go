@@ -51,17 +51,3 @@ func ExtractAuctions(items []map[string]types.AttributeValue) ([]models.Auction,
 
 	return auctions, nil
 }
-
-func ExtractAuctionWorker(item map[string]types.AttributeValue) (models.AuctionWorker, error) {
-	auctionWorkerDB := auctionWorkerDB{}
-	err := attributevalue.UnmarshalMap(item, &auctionWorkerDB)
-	if err != nil {
-		return models.AuctionWorker{}, err
-	}
-
-	return models.AuctionWorker{
-		AuctionID: utils.Extract("AuctionWorker", auctionWorkerDB.PK),
-		Status:    auctionWorkerDB.Status,
-		EndDate:   auctionWorkerDB.EndDate,
-	}, nil
-}

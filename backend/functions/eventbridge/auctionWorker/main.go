@@ -34,7 +34,7 @@ func main() {
 	}
 
 	db := dynamodb.NewFromConfig(awsCfg)
-	auctionRepository := auctionsRepository.New(cfg.TableName, db, nil)
+	auctionRepository := auctionsRepository.New(cfg.TableName, db)
 	clClient := cloudwatchevents.NewFromConfig(awsCfg)
 	h := handler{
 		auctionRepo:     auctionRepository,

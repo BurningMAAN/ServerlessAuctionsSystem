@@ -1,9 +1,9 @@
 package main
 
 import (
+	"auctionsPlatform/models"
 	"context"
 	"log"
-	"time"
 )
 
 type auctionRepository interface {
@@ -20,13 +20,7 @@ type handler struct {
 	eventRepository eventRepository
 }
 
-type AuctionEvent struct {
-	AuctionID string    `json:"id"`
-	Stage     string    `json:"stage"`
-	EndDate   time.Time `json:"endDate"`
-}
-
-func (h *handler) HandleAuction(ctx context.Context, event AuctionEvent) error {
+func (h *handler) HandleAuction(ctx context.Context, event models.AuctionEvent) error {
 	log.Printf("got event: %s", event)
 	switch event.Stage {
 	case "STAGE_ACCEPTING_BIDS":

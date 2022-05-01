@@ -31,8 +31,8 @@ type AuctionListView struct {
 	Item    Item
 }
 
-type AuctionWorker struct {
-	AuctionID string
-	Status    string
-	EndDate   time.Time
+type AuctionEvent struct {
+	AuctionID string    `json:"id"`
+	Stage     string    `json:"stage"`
+	EndDate   time.Time `json:"endDate"`
 }

@@ -4,7 +4,6 @@ import (
 	"auctionsPlatform/models"
 	"auctionsPlatform/utils"
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"time"
@@ -12,8 +11,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/expression"
-	"github.com/aws/aws-sdk-go-v2/service/cloudwatchevents"
-	cloudwatchTypes "github.com/aws/aws-sdk-go-v2/service/cloudwatchevents/types"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"github.com/google/uuid"
@@ -30,22 +27,15 @@ type DB interface {
 	Scan(ctx context.Context, params *dynamodb.ScanInput, optFns ...func(*dynamodb.Options)) (*dynamodb.ScanOutput, error)
 }
 
-type EventWorker interface {
-	PutRule(ctx context.Context, params *cloudwatchevents.PutRuleInput, optFns ...func(*cloudwatchevents.Options)) (*cloudwatchevents.PutRuleOutput, error)
-	PutTargets(ctx context.Context, params *cloudwatchevents.PutTargetsInput, optFns ...func(*cloudwatchevents.Options)) (*cloudwatchevents.PutTargetsOutput, error)
-}
-
 type repository struct {
-	tableName   string
-	DB          DB
-	EventWorker EventWorker
+	tableName string
+	DB        DB
 }
 
-func New(tableName string, db DB, eventWorker EventWorker) *repository {
+func New(tableName string, db DB) *repository {
 	return &repository{
-		tableName:   tableName,
-		DB:          db,
-		EventWorker: eventWorker,
+		tableName: tableName,
+		DB:        db,
 	}
 }
 
@@ -64,12 +54,6 @@ type AuctionDB struct {
 }
 
 type OptionalGetParameters struct{}
-
-type AuctionEvent struct {
-	AuctionID string    `json:"id"`
-	Stage     string    `json:"stage"`
-	EndDate   time.Time `json:"endDate"`
-}
 
 func (r *repository) CreateAuction(ctx context.Context, auction models.Auction) (models.Auction, error) {
 	auctionID := uuid.New().String()
@@ -105,42 +89,6 @@ func (r *repository) CreateAuction(ctx context.Context, auction models.Auction) 
 		return models.Auction{}, err
 	}
 	auction.ID = auctionID
-
-	// err = r.CreateAuctionWorker(ctx, auction.ID, "STATUS_ACCEPTING_BIDS", auction.StartDate)
-	// if err != nil {
-
-	// 	return auction, err
-	// }
-
-	_, err = r.EventWorker.PutRule(ctx, &cloudwatchevents.PutRuleInput{
-		Name:               aws.String(fmt.Sprintf("auction-event-%s", auctionID)),
-		ScheduleExpression: aws.String("rate(2 minutes)"),
-	})
-	if err != nil {
-		return auction, err
-	}
-
-	eventInput, err := json.Marshal(AuctionEvent{
-		AuctionID: auctionID,
-		Stage:     "STAGE_ACCEPTING_BIDS",
-		EndDate:   auction.StartDate,
-	})
-	if err != nil {
-		return auction, err
-	}
-	_, err = r.EventWorker.PutTargets(ctx, &cloudwatchevents.PutTargetsInput{
-		Rule: aws.String(fmt.Sprintf("auction-event-%s", auctionID)),
-		Targets: []cloudwatchTypes.Target{
-			{
-				Arn:   aws.String("arn:aws:lambda:us-east-1:102336894219:function:test-backend-HandleAuctionFunction-Oa1T2FivSffq"),
-				Id:    aws.String("test-backend-HandleAuctionFunction-Oa1T2FivSffq"),
-				Input: aws.String(string(eventInput)),
-			},
-		},
-	})
-	if err != nil {
-		return auction, err
-	}
 
 	return auction, nil
 }
@@ -218,13 +166,6 @@ func (r *repository) GetAllAuctions(ctx context.Context, optFns ...func(*Optiona
 	}
 
 	return ExtractAuctions(result.Items)
-}
-
-type auctionWorkerDB struct {
-	PK      string
-	SK      string
-	Status  string
-	EndDate time.Time
 }
 
 func (r *repository) UpdateAuctionStage(ctx context.Context, auctionID string, stage string) error {
