@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"log"
 	"time"
 )
 
@@ -25,15 +26,18 @@ type AuctionEvent struct {
 }
 
 func (h *handler) HandleAuction(ctx context.Context, event AuctionEvent) error {
+	log.Printf("got event: %s", event)
 	switch event.Stage {
 	case "STAGE_ACCEPTING_BIDS":
 		err := h.auctionRepo.UpdateAuctionStage(ctx, event.AuctionID, "STAGE_AUCTION_ONGOING")
 		if err != nil {
+			log.Print(err.Error())
 			return err
 		}
 
 		err = h.eventRepository.UpdateEventRule(ctx, event.AuctionID)
 		if err != nil {
+			log.Print(err.Error())
 			return err
 		}
 
