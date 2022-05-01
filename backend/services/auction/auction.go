@@ -58,6 +58,7 @@ func (s *service) CreateAuction(ctx context.Context, auction models.Auction, ite
 	err = s.eventRepository.CreateEventRule(ctx, auction.ID, auction.StartDate)
 	if err != nil {
 		log.Printf("failed to publish event for auctionID: %s", auction.ID)
+		log.Printf("got error: %s", err.Error())
 		return auction, nil
 	}
 
