@@ -120,6 +120,7 @@ func (r *repository) CreateBidEvent(ctx context.Context, auctionID string) error
 		},
 	})
 
-	log.Print(output)
+	outputBytes, _ := json.Marshal(output)
+	log.Print(string(outputBytes))
 	return err
 }
