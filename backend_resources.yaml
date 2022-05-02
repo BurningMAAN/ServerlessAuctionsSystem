@@ -66,7 +66,7 @@ Resources:
       BatchSize: 1
       Enabled: True
       EventSourceArn: !GetAtt DynamoDBTable.StreamArn
-      FunctionName: !GetAtt HandleAuctionFunction.Arn
+      FunctionName: !GetAtt HandleBidFunction.Arn
       # Always start at the tail of the Stream
       StartingPosition: LATEST
 
