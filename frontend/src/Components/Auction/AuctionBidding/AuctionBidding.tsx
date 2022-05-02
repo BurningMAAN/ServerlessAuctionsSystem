@@ -67,7 +67,6 @@ export default function AuctionBiddingDashboard({
 
   useEffect(() => {
     getData();
-    console.log(auction)
   });
   const [timeLeft, setTimeLeft] = useState(30);
   const [days, setDays] = useState(0);
@@ -96,23 +95,35 @@ export default function AuctionBiddingDashboard({
 
         const s = Math.floor((difference % (1000 * 60)) / 1000);
         setSeconds(s);
+    } else {
+      refreshTime = null
     }
   }, refreshTime);
 
+  let timerInterval: number | null = 1000
+  if (auction.stage === "STAGE_AUCTION_FINISHED"){
+    timerInterval = null
+  }
   useInterval(() => {
     const endDateTime = new Date(auction.endDate);
-    var secondBetweenTwoDate = Math.abs((new Date().getTime() - endDateTime.getTime()) / 1000);
+    const now = new Date();
+    const difference = endDateTime.getTime() - now.getTime();
+    const s = Math.floor((difference % (1000 * 60)) / 1000);
+    console.log(s)
+    if (s <= 0){
+      setTimeLeft(0)
+    }
     if(auction.stage == "STAGE_AUCTION_FINISHED"){
       setTimeLeft(0)
       return
     }
     if (auction.stage === "STAGE_AUCTION_ONGOING") {
-      if (timeLeft == 0) {
+      if (timeLeft <= 0) {
         return
       }
-      setTimeLeft(secondBetweenTwoDate - 1);
+      setTimeLeft(s - 1);
     }
-  }, 1000);
+  }, timerInterval);
 
   
   const getLatestBids = async (auctionID: string) => {
@@ -158,7 +169,7 @@ export default function AuctionBiddingDashboard({
         <Text>Minimalus kėlimas: {auction.bidIncrement} €</Text>
       </Center>
       <Center>
-        {(timeLeft !== 0 && token && decodedToken.username != auction.creatorID && (
+        {(auction.stage != "STAGE_AUCTION_FINISHED" && timeLeft !== 0 && token && decodedToken.username != auction.creatorID && (
           <Button
             color="green"
             onClick={() => {

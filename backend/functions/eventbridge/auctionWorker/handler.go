@@ -9,6 +9,7 @@ import (
 
 type auctionRepository interface {
 	UpdateAuctionStage(ctx context.Context, auctionID string, stage string) error
+	UpdateAuctionEndDate(ctx context.Context, auctionID string, endDate time.Time) error
 }
 
 type eventRepository interface {
@@ -27,6 +28,11 @@ func (h *handler) HandleAuction(ctx context.Context, event models.AuctionEvent) 
 		err := h.auctionRepo.UpdateAuctionStage(ctx, event.AuctionID, "STAGE_AUCTION_ONGOING")
 		if err != nil {
 			log.Print(err.Error())
+			return err
+		}
+		newEndTime := time.Now().Add(33 * time.Second)
+		err = h.auctionRepo.UpdateAuctionEndDate(ctx, event.AuctionID, newEndTime)
+		if err != nil {
 			return err
 		}
 
