@@ -75,55 +75,55 @@ export default function AuctionBiddingDashboard({
   const [seconds, setSeconds] = useState(0);
   const [bids, setBids] = useState<Bid>({} as Bid)
 
-  let refreshTime: number | null = 300
-  useInterval(() => {
-    if (auction.stage === "STAGE_ACCEPTING_BIDS") {
-        const targetDate = new Date(auction.startDate);
-        const now = new Date();
-        const difference = targetDate.getTime() - now.getTime();
+  // let refreshTime: number | null = 300
+  // useInterval(() => {
+  //   if (auction.stage === "STAGE_ACCEPTING_BIDS") {
+  //       const targetDate = new Date(auction.startDate);
+  //       const now = new Date();
+  //       const difference = targetDate.getTime() - now.getTime()-45000;
 
-        const d = Math.floor(difference / (1000 * 60 * 60 * 24));
-        setDays(d);
+  //       const d = Math.floor(difference / (1000 * 60 * 60 * 24));
+  //       setDays(d);
 
-        const h = Math.floor(
-          (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-        );
-        setHours(h);
+  //       const h = Math.floor(
+  //         (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+  //       );
+  //       setHours(h);
 
-        const m = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-        setMinutes(m);
+  //       const m = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+  //       setMinutes(m);
 
-        const s = Math.floor((difference % (1000 * 60)) / 1000);
-        setSeconds(s);
-    } else {
-      refreshTime = null
-    }
-  }, refreshTime);
+  //       const s = Math.floor((difference % (1000 * 60)) / 1000);
+  //       setSeconds(s);
+  //   } else {
+  //     refreshTime = null
+  //   }
+  // }, refreshTime);
 
-  let timerInterval: number | null = 1000
-  if (auction.stage === "STAGE_AUCTION_FINISHED"){
-    timerInterval = null
-  }
-  useInterval(() => {
-    const endDateTime = new Date(auction.endDate);
-    const now = new Date();
-    const difference = endDateTime.getTime() - now.getTime();
-    const s = Math.floor((difference % (1000 * 60)) / 1000);
-    console.log(s)
-    if (s <= 0){
-      setTimeLeft(0)
-    }
-    if(auction.stage == "STAGE_AUCTION_FINISHED"){
-      setTimeLeft(0)
-      return
-    }
-    if (auction.stage === "STAGE_AUCTION_ONGOING") {
-      if (timeLeft <= 0) {
-        return
-      }
-      setTimeLeft(s - 1);
-    }
-  }, timerInterval);
+  // let timerInterval: number | null = 1000
+  // if (auction.stage === "STAGE_AUCTION_FINISHED"){
+  //   timerInterval = null
+  // }
+  // useInterval(() => {
+  //   const endDateTime = new Date(auction.endDate);
+  //   const now = new Date();
+  //   const difference = endDateTime.getTime() - now.getTime();
+  //   const s = Math.floor((difference % (1000 * 60)) / 1000);
+  //   console.log(s)
+  //   if (s <= 0){
+  //     setTimeLeft(0)
+  //   }
+  //   if(auction.stage == "STAGE_AUCTION_FINISHED"){
+  //     setTimeLeft(0)
+  //     return
+  //   }
+  //   if (auction.stage === "STAGE_AUCTION_ONGOING") {
+  //     if (timeLeft <= 0) {
+  //       return
+  //     }
+  //     setTimeLeft(s - 1);
+  //   }
+  // }, timerInterval);
 
   
   const getLatestBids = async (auctionID: string) => {
@@ -169,7 +169,7 @@ export default function AuctionBiddingDashboard({
         <Text>Minimalus kėlimas: {auction.bidIncrement} €</Text>
       </Center>
       <Center>
-        {(auction.stage != "STAGE_AUCTION_FINISHED" && timeLeft !== 0 && token && decodedToken.username != auction.creatorID && (
+        {/* {(auction.stage != "STAGE_AUCTION_FINISHED" && timeLeft !== 0 && token && decodedToken.username != auction.creatorID && ( */}
           <Button
             color="green"
             onClick={() => {
@@ -188,7 +188,7 @@ export default function AuctionBiddingDashboard({
           >
             + {auction.bidIncrement}
           </Button>
-        )) ||
+        {/* )) ||
           (auction.stage == "STAGE_AUCTION_FINISHED" && token && decodedToken.username != auction.creatorID && (
             <Button color="grey" disabled>
               Aukcionas baigėsi
@@ -198,10 +198,15 @@ export default function AuctionBiddingDashboard({
             <Button color="grey" disabled>
               Tik registruotiems nariams
             </Button>
-          ))}
+          ))} */}
       </Center>
       <Center>
-        {auction.stage === "STAGE_ACCEPTING_BIDS" && (
+        <Title order={6}>
+          {auction.endDate}
+          <br></br>
+          {auction.stage}
+        </Title>
+        {/* {auction.stage === "STAGE_ACCEPTING_BIDS" && (
           <Title order={6}>
             Aukcionas prasideda už {days} dienų {hours} valandų {minutes}{" "}
             minučių {seconds} sekundžių
@@ -216,7 +221,7 @@ export default function AuctionBiddingDashboard({
           <Title order={6}>
             Aukcionas baigtas
           </Title>
-        )}
+        )} */}
       </Center>
     </Grid.Col>
   );

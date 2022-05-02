@@ -36,8 +36,8 @@ Resources:
           Projection:
             ProjectionType: ALL
           ProvisionedThroughput: 
-            ReadCapacityUnits: "5"
-            WriteCapacityUnits: "5"
+            ReadCapacityUnits: "10"
+            WriteCapacityUnits: "10"
         # - IndexName: GSI2
         #   KeySchema:
         #     - AttributeName: GSI2PK
@@ -50,8 +50,8 @@ Resources:
         #     ReadCapacityUnits: "5"
         #     WriteCapacityUnits: "5"
       ProvisionedThroughput: 
-        ReadCapacityUnits: "5"
-        WriteCapacityUnits: "5"
+        ReadCapacityUnits: "10"
+        WriteCapacityUnits: "10"
       StreamSpecification:
         StreamViewType: NEW_AND_OLD_IMAGES
       TimeToLiveSpecification:
