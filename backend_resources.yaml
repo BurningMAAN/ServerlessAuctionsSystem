@@ -102,7 +102,44 @@ Resources:
               - events:PutRule
               - events:DeleteRule
               - events:PutTargets
-              - events:DeleteTargets
+              - events:RemoveTargets
+            Resource: "*"
+          - Effect: Allow
+            Action:
+              - dynamodb:DescribeStream
+              - dynamodb:GetRecords
+              - dynamodb:GetShardIterator
+              - dynamodb:ListStreams
+            Resource: "*"
+          - Effect: Allow
+            Action:
+              - dynamodb:PutItem
+              - dynamodb:GetItem
+              - dynamodb:UpdateItem
+            Resource: !GetAtt DynamoDBTable.Arn
+  # Bid Handler function
+  HandleBidFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: main
+      Runtime: go1.x
+      AutoPublishAlias: live
+      Tracing: Active
+      MemorySize: 512
+      Timeout: 15
+      Description: Lambda function that handles bid events
+      CodeUri: backend/functions/eventbridge/bidWorker
+      Environment:
+        Variables:
+          DYNAMODB_TABLE: !Ref DynamoDBTable
+      Policies:
+        Statement:
+          - Effect: Allow
+            Action:
+              - events:PutRule
+              - events:DeleteRule
+              - events:PutTargets
+              - events:RemoveTargets
             Resource: "*"
           - Effect: Allow
             Action:
