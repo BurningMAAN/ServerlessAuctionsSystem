@@ -1,9 +1,13 @@
 package main
 
 import (
+	"auctionsPlatform/models"
+	"auctionsPlatform/utils"
 	"context"
-	"encoding/json"
+	"errors"
 	"log"
+
+	"github.com/aws/aws-lambda-go/events"
 )
 
 type auctionRepository interface {
@@ -20,38 +24,46 @@ type handler struct {
 	eventRepository eventRepository
 }
 
-func (h *handler) HandleAuction(ctx context.Context, gotEvent interface{}) error {
-	eventBytes, _ := json.Marshal(gotEvent)
-	log.Printf("got event: %s", string(eventBytes))
+func (h *handler) HandleAuction(ctx context.Context, event interface{}) error {
+	switch v := event.(type) {
+	case models.AuctionEvent:
+		switch v.Stage {
+		case "STAGE_ACCEPTING_BIDS":
+			err := h.auctionRepo.UpdateAuctionStage(ctx, v.AuctionID, "STAGE_AUCTION_ONGOING")
+			if err != nil {
+				log.Print(err.Error())
+				return err
+			}
 
-	// event := models.AuctionEvent{}
-	// err := json.Unmarshal([]byte(gotEvent), )
-	// switch event.Stage {
-	// case "STAGE_ACCEPTING_BIDS":
-	// 	err := h.auctionRepo.UpdateAuctionStage(ctx, event.AuctionID, "STAGE_AUCTION_ONGOING")
-	// 	if err != nil {
-	// 		log.Print(err.Error())
-	// 		return err
-	// 	}
+			err = h.eventRepository.UpdateEventRule(ctx, v.AuctionID)
+			if err != nil {
+				log.Print(err.Error())
+				return err
+			}
+		case "STAGE_AUCTION_ONGOING":
+			err := h.auctionRepo.UpdateAuctionStage(ctx, v.AuctionID, "STAGE_AUCTION_FINISHED")
+			if err != nil {
+				log.Print(err.Error())
+				return err
+			}
 
-	// 	err = h.eventRepository.UpdateEventRule(ctx, event.AuctionID)
-	// 	if err != nil {
-	// 		log.Print(err.Error())
-	// 		return err
-	// 	}
-	// case "STAGE_AUCTION_ONGOING":
-	// 	err := h.auctionRepo.UpdateAuctionStage(ctx, event.AuctionID, "STAGE_AUCTION_FINISHED")
-	// 	if err != nil {
-	// 		log.Print(err.Error())
-	// 		return err
-	// 	}
+			err = h.eventRepository.DeleteEventRule(ctx, v.AuctionID)
+			if err != nil {
+				return err
+			}
+		}
+	case events.DynamoDBStreamRecord:
+		bidID := utils.Extract("Bid", v.Keys["PK"].String())
+		if len(bidID) <= 0 {
+			return nil
+		}
 
-	// 	err = h.eventRepository.DeleteEventRule(ctx, event.AuctionID)
-	// 	if err != nil {
-	// 		return err
-	// 	}
-	// case "AUCTION_BID_PLACED":
-	// 	// paupdeitinam endDate auctionDB ir atnaujinam data auction controller event'o
-	// }
+		auctionID := utils.Extract("Auction", v.NewImage["GSI1PK"].String())
+		if len(auctionID) <= 0 {
+			return errors.New("failed to retrieve auctionID for bid")
+		}
+
+		log.Print(bidID, auctionID)
+	}
 	return nil
 }
