@@ -115,8 +115,9 @@ func (r *repository) CreateBidEvent(ctx context.Context, auctionID string) error
 	output, err := r.eventClient.PutEvents(ctx, &cloudwatchevents.PutEventsInput{
 		Entries: []cloudwatchTypes.PutEventsRequestEntry{
 			{
-				Detail: aws.String(fmt.Sprintf(`{"auctionID": "%s"}`, auctionID)),
-				Source: aws.String("bid.lambda"),
+				Detail:     aws.String(fmt.Sprintf(`{"auctionID": "%s"}`, auctionID)),
+				Source:     aws.String("bid.lambda"),
+				DetailType: aws.String("AUCTION_BID"),
 			},
 		},
 	})
