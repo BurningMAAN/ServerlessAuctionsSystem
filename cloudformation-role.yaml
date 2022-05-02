@@ -120,6 +120,7 @@ Resources:
                   - lambda:GetAlias
                   - lambda:UpdateAlias
                   - lambda:UpdateFunctionConfiguration
+                  - lambda:UpdateEventSourceMapping 
                 Resource: '*'
               - Effect: Allow
                 Action:

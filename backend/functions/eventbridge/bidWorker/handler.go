@@ -22,7 +22,7 @@ type handler struct {
 	eventRepository eventRepository
 }
 
-func (h *handler) HandleBid(ctx context.Context, event events.CloudWatchEvent) error {
+func (h *handler) HandleBid(ctx context.Context, event events.DynamoDBEvent) error {
 	eventBytes, _ := json.Marshal(event)
 	log.Print(string(eventBytes))
 	return nil
