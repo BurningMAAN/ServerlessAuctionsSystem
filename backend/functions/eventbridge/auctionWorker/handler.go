@@ -4,6 +4,7 @@ import (
 	"auctionsPlatform/models"
 	"context"
 	"log"
+	"time"
 )
 
 type auctionRepository interface {
@@ -11,7 +12,7 @@ type auctionRepository interface {
 }
 
 type eventRepository interface {
-	UpdateEventRule(ctx context.Context, auctionID string) error
+	UpdateEventRule(ctx context.Context, auctionID string, newDate time.Time) error
 	DeleteEventRule(ctx context.Context, auctionID string) error
 }
 
@@ -29,7 +30,8 @@ func (h *handler) HandleAuction(ctx context.Context, event models.AuctionEvent) 
 			return err
 		}
 
-		err = h.eventRepository.UpdateEventRule(ctx, event.AuctionID)
+		newEndDate := time.Now().Add(33 * time.Second)
+		err = h.eventRepository.UpdateEventRule(ctx, event.AuctionID, newEndDate)
 		if err != nil {
 			log.Print(err.Error())
 			return err
