@@ -180,11 +180,7 @@ export default function AuctionBiddingDashboard({
                 bidValue = bids.bids![0].value + auction.bidIncrement
               }
               placeBid(auctionID, bidValue)
-              .then((response) => {
-                if(response.status === 201){
-                  setTimeLeft(30);
-                }
-              })
+              .then((response) => {})
               .catch((error) => {
                 console.log(error)
               })
@@ -193,7 +189,7 @@ export default function AuctionBiddingDashboard({
             + {auction.bidIncrement}
           </Button>
         )) ||
-          (token && decodedToken.username != auction.creatorID && (
+          (auction.stage == "STAGE_AUCTION_FINISHED" && token && decodedToken.username != auction.creatorID && (
             <Button color="grey" disabled>
               Aukcionas baigėsi
             </Button>

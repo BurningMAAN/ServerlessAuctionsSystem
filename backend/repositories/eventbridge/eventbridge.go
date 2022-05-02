@@ -68,7 +68,7 @@ func (r *repository) UpdateEventRule(ctx context.Context, auctionID string, newD
 	hour, min, _ := newDate.Clock()
 	_, err := r.eventClient.PutRule(ctx, &cloudwatchevents.PutRuleInput{
 		Name:               aws.String(fmt.Sprintf("auction-event-%s", auctionID)),
-		ScheduleExpression: aws.String(fmt.Sprintf("cron(%d %d %d %d ? %d)", min+1, hour, day, month, year)),
+		ScheduleExpression: aws.String(fmt.Sprintf("cron(%d %d %d %d ? %d)", min, hour, day, month, year)),
 	})
 	if err != nil {
 		return err
@@ -77,7 +77,7 @@ func (r *repository) UpdateEventRule(ctx context.Context, auctionID string, newD
 	eventInput, err := json.Marshal(models.AuctionEvent{
 		AuctionID: auctionID,
 		Stage:     "STAGE_AUCTION_ONGOING",
-		EndDate:   time.Now().Add(33 * time.Second),
+		EndDate:   newDate,
 	})
 	if err != nil {
 		return err
