@@ -78,16 +78,17 @@ func (s *service) PlaceBid(ctx context.Context, auctionID string, bid models.Bid
 		return models.Bid{}, err
 	}
 
-	err = s.auctionRepository.UpdateAuctionEndDate(ctx, auctionID, time.Now().Add(33*time.Second))
-	if err != nil {
-		return models.Bid{}, err
-	}
+	// sitas turi but workeryje
+	// err = s.auctionRepository.UpdateAuctionEndDate(ctx, auctionID, time.Now().Add(33*time.Second))
+	// if err != nil {
+	// 	return models.Bid{}, err
+	// }
 
-	err = s.eventRepository.UpdateEventRule(ctx, auction.ID)
-	if err != nil {
-		log.Printf("failed to place bid on auctionID: %s, error: %s", auction.ID, err.Error())
-		return placedBid, nil
-	}
+	// err = s.eventRepository.UpdateEventRule(ctx, auction.ID)
+	// if err != nil {
+	// 	log.Printf("failed to place bid on auctionID: %s, error: %s", auction.ID, err.Error())
+	// 	return placedBid, nil
+	// }
 
 	err = s.eventRepository.CreateBidEvent(ctx, auction.ID)
 	if err != nil {

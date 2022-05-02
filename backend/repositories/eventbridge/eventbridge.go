@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/cloudwatchevents"
@@ -110,14 +111,15 @@ func (r *repository) DeleteEventRule(ctx context.Context, auctionID string) erro
 }
 
 func (r *repository) CreateBidEvent(ctx context.Context, auctionID string) error {
-	// issiunciam eventa, jog buvo aukcionui atliktas statymas
-	// sita funkcija turi issiusti eventa su aukcionoID, kuriam buvo atliktas statymas
-	_, err := r.eventClient.PutEvents(ctx, &cloudwatchevents.PutEventsInput{
+	log.Print("sending bid event to event bus")
+	output, err := r.eventClient.PutEvents(ctx, &cloudwatchevents.PutEventsInput{
 		Entries: []cloudwatchTypes.PutEventsRequestEntry{
 			{
 				Detail: aws.String(fmt.Sprintf(`{"auctionID": "%s"}`, auctionID)),
 			},
 		},
 	})
+
+	log.Print(output)
 	return err
 }
