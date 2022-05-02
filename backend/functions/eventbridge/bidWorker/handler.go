@@ -39,6 +39,7 @@ func (h *handler) HandleBid(ctx context.Context, event events.DynamoDBEvent) err
 		return errors.New("failed to parse auctionID")
 	}
 
+	log.Printf("auctionID: %s", auctionID)
 	auction, err := h.auctionRepo.GetAuctionByID(ctx, auctionID)
 	if err != nil {
 		return err
