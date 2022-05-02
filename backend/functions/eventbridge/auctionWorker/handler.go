@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"log"
 )
 
@@ -20,7 +21,8 @@ type handler struct {
 }
 
 func (h *handler) HandleAuction(ctx context.Context, gotEvent interface{}) error {
-	log.Printf("got event: %s", gotEvent)
+	eventBytes, _ := json.Marshal(gotEvent)
+	log.Printf("got event: %s", string(eventBytes))
 
 	// event := models.AuctionEvent{}
 	// err := json.Unmarshal([]byte(gotEvent), )
