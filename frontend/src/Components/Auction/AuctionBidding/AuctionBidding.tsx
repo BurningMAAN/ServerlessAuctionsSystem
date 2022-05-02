@@ -4,9 +4,12 @@ import ProgressCircle from "../../General/ProgressCircle";
 import jwtDecode, { JwtPayload } from "jwt-decode";
 import { useInterval } from 'usehooks-ts'
 
-interface AuctionBiddingProps {
+interface AuctionInput{
+  auctionID: string;
+}
+
+interface GetAuctionResponse{
   auctionType: string;
-  currentMaxBid: number;
   bidIncrement: number;
   startDate: string;
   creatorID: string;
@@ -51,15 +54,21 @@ const placeBid = async (auctionID: string, bid: number) => {
 }
 
 export default function AuctionBiddingDashboard({
-  auctionType,
-  currentMaxBid,
-  bidIncrement,
-  startDate,
-  creatorID,
   auctionID,
-  endDate,
-  stage,
-}: AuctionBiddingProps) {
+}: AuctionInput) {
+  // Cia programuoju naujai
+  const [auction, setAuction] = useState<GetAuctionResponse>({} as GetAuctionResponse)
+  const getData = async () => {
+    const auctionData = await fetch(
+      `https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/auctions/${auctionID}`
+    ).then((res) => res.json());
+    setAuction(auctionData);
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+  // END
   const [timeLeft, setTimeLeft] = useState(30);
   const [days, setDays] = useState(0);
   const [hours, setHours] = useState(0);
@@ -69,8 +78,8 @@ export default function AuctionBiddingDashboard({
 
   let refreshTime: number | null = 300
   useInterval(() => {
-    if (stage === "STAGE_ACCEPTING_BIDS") {
-        const targetDate = new Date(startDate);
+    if (auction.stage === "STAGE_ACCEPTING_BIDS") {
+        const targetDate = new Date(auction.startDate);
         const now = new Date();
         const difference = targetDate.getTime() - now.getTime();
 
@@ -91,13 +100,13 @@ export default function AuctionBiddingDashboard({
   }, refreshTime);
 
   useInterval(() => {
-    const endDateTime = new Date(endDate);
+    const endDateTime = new Date(auction.endDate);
     var secondBetweenTwoDate = Math.abs((new Date().getTime() - endDateTime.getTime()) / 1000);
-    if(stage == "STAGE_AUCTION_FINISHED"){
+    if(auction.stage == "STAGE_AUCTION_FINISHED"){
       setTimeLeft(0)
       return
     }
-    if (stage === "STAGE_AUCTION_ONGOING") {
+    if (auction.stage === "STAGE_AUCTION_ONGOING") {
       if (timeLeft == 0) {
         return
       }
@@ -132,8 +141,8 @@ export default function AuctionBiddingDashboard({
   return (
     <Grid.Col span={4}>
       <Center>
-        {auctionType == "AbsoluteAuction" && <Title>Absoliutus aukcionas</Title>}
-        {auctionType == "reserved" && <Title>Rezervinis aukcionas</Title>}
+        {auction.auctionType == "AbsoluteAuction" && <Title>Absoliutus aukcionas</Title>}
+        {auction.auctionType == "reserved" && <Title>Rezervinis aukcionas</Title>}
       </Center>
       <Divider />
       <Center>
@@ -146,18 +155,18 @@ export default function AuctionBiddingDashboard({
         <ProgressCircle progressValue={timeLeft}></ProgressCircle>
       </Center>
       <Center>
-        <Text>Minimalus kėlimas: {bidIncrement} €</Text>
+        <Text>Minimalus kėlimas: {auction.bidIncrement} €</Text>
       </Center>
       <Center>
-        {(timeLeft !== 0 && token && decodedToken.username != creatorID && (
+        {(timeLeft !== 0 && token && decodedToken.username != auction.creatorID && (
           <Button
             color="green"
             onClick={() => {
               let bidValue: number;
               if(bids.bids == null || bids.bids == undefined){
-                bidValue = 0 + bidIncrement
+                bidValue = 0 + auction.bidIncrement
               }else{
-                bidValue = bids.bids![0].value + bidIncrement
+                bidValue = bids.bids![0].value + auction.bidIncrement
               }
               placeBid(auctionID, bidValue)
               .then((response) => {
@@ -170,33 +179,33 @@ export default function AuctionBiddingDashboard({
               })
             }}
           >
-            + {bidIncrement}
+            + {auction.bidIncrement}
           </Button>
         )) ||
-          (token && decodedToken.username != creatorID && (
+          (token && decodedToken.username != auction.creatorID && (
             <Button color="grey" disabled>
               Aukcionas baigėsi
             </Button>
           )) ||
-          (!token && decodedToken.username != creatorID && (
+          (!token && decodedToken.username != auction.creatorID && (
             <Button color="grey" disabled>
               Tik registruotiems nariams
             </Button>
           ))}
       </Center>
       <Center>
-        {stage === "STATUS_ACCEPTING_BIDS" && (
+        {auction.stage === "STAGE_ACCEPTING_BIDS" && (
           <Title order={6}>
             Aukcionas prasideda už {days} dienų {hours} valandų {minutes}{" "}
             minučių {seconds} sekundžių
           </Title>
         )}
-        {stage === "STAGE_AUCTION_ONGOING" && (
+        {auction.stage === "STAGE_AUCTION_ONGOING" && (
           <Title order={6}>
             Aukcionas šiuo metu vyksta
           </Title>
         )}
-        {stage === "STAGE_AUCTION_FINISHED" &&  (
+        {auction.stage === "STAGE_AUCTION_FINISHED" &&  (
           <Title order={6}>
             Aukcionas baigtas
           </Title>

@@ -17,6 +17,7 @@ type eventClient interface {
 	PutTargets(ctx context.Context, params *cloudwatchevents.PutTargetsInput, optFns ...func(*cloudwatchevents.Options)) (*cloudwatchevents.PutTargetsOutput, error)
 	DeleteRule(ctx context.Context, params *cloudwatchevents.DeleteRuleInput, optFns ...func(*cloudwatchevents.Options)) (*cloudwatchevents.DeleteRuleOutput, error)
 	RemoveTargets(ctx context.Context, params *cloudwatchevents.RemoveTargetsInput, optFns ...func(*cloudwatchevents.Options)) (*cloudwatchevents.RemoveTargetsOutput, error)
+	PutEvents(ctx context.Context, params *cloudwatchevents.PutEventsInput, optFns ...func(*cloudwatchevents.Options)) (*cloudwatchevents.PutEventsOutput, error)
 }
 
 type repository struct {
@@ -69,6 +70,9 @@ func (r *repository) UpdateEventRule(ctx context.Context, auctionID string) erro
 		Name:               aws.String(fmt.Sprintf("auction-event-%s", auctionID)),
 		ScheduleExpression: aws.String(fmt.Sprintf("cron(%d %d %d %d ? %d)", min+1, hour, day, month, year)),
 	})
+	if err != nil {
+		return err
+	}
 
 	eventInput, err := json.Marshal(models.AuctionEvent{
 		AuctionID: auctionID,
@@ -96,8 +100,24 @@ func (r *repository) DeleteEventRule(ctx context.Context, auctionID string) erro
 		Rule: aws.String(fmt.Sprintf("auction-event-%s", auctionID)),
 		Ids:  []string{"test-backend-HandleAuctionFunction-Oa1T2FivSffq"},
 	})
+	if err != nil {
+		return err
+	}
 	_, err = r.eventClient.DeleteRule(ctx, &cloudwatchevents.DeleteRuleInput{
 		Name: aws.String(fmt.Sprintf("auction-event-%s", auctionID)),
+	})
+	return err
+}
+
+func (r *repository) CreateBidEvent(ctx context.Context, auctionID string) error {
+	// issiunciam eventa, jog buvo aukcionui atliktas statymas
+	// sita funkcija turi issiusti eventa su aukcionoID, kuriam buvo atliktas statymas
+	_, err := r.eventClient.PutEvents(ctx, &cloudwatchevents.PutEventsInput{
+		Entries: []cloudwatchTypes.PutEventsRequestEntry{
+			{
+				Detail: aws.String(fmt.Sprintf(`{"auctionID": "%s"}`, auctionID)),
+			},
+		},
 	})
 	return err
 }

@@ -27,6 +27,7 @@ type userRepository interface {
 
 type eventRepository interface {
 	UpdateEventRule(ctx context.Context, auctionID string) error
+	CreateBidEvent(ctx context.Context, auctionID string) error
 }
 
 type service struct {
@@ -88,6 +89,11 @@ func (s *service) PlaceBid(ctx context.Context, auctionID string, bid models.Bid
 		return placedBid, nil
 	}
 
+	err = s.eventRepository.CreateBidEvent(ctx, auction.ID)
+	if err != nil {
+		log.Printf("failed to create bid entry for auction ID: %s, error: %s", auction.ID, err.Error())
+		return placedBid, nil
+	}
 	return placedBid, err
 }
 

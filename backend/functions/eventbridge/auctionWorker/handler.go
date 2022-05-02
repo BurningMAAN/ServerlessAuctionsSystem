@@ -46,6 +46,8 @@ func (h *handler) HandleAuction(ctx context.Context, event models.AuctionEvent) 
 		if err != nil {
 			return err
 		}
+	case "AUCTION_BID_PLACED":
+		// paupdeitinam endDate auctionDB ir atnaujinam data auction controller event'o
 	}
 	return nil
 }

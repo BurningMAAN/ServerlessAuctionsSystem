@@ -393,6 +393,7 @@ Resources:
             Action:
               - events:PutRule
               - events:PutTargets
+              - events:PutEvents
             Resource: "*"
           - Effect: Allow
             Action:

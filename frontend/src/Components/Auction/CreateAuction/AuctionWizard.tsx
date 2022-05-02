@@ -9,7 +9,7 @@ import {
   Divider,
 } from "@mantine/core";
 import { useState, useEffect } from "react";
-import { DatePicker } from "@mantine/dates";
+import { DatePicker, TimeInput } from "@mantine/dates";
 import { useForm } from '@mantine/form';
 
 interface AuctionProps {
@@ -173,6 +173,14 @@ export default function AuctionCreateWizard({ onOpen, onClose }: AuctionProps) {
             form.setFieldValue("auctionDate", date?.toISOString()!)
           }}
           />
+          <TimeInput label="Laikas"
+          placeholder="12:00"
+          onChange={(time) => {
+           let dateSelected = new Date(form.getInputProps("auctionDate").value)
+           dateSelected.setHours(time.getHours(), time.getMinutes())
+           form.setFieldValue("auctionDate", dateSelected.toISOString())
+          }}
+          required></TimeInput>
           <NumberInput label="Išpirkimo kaina" placeholder="Įvesti"
           {...form.getInputProps('buyoutPrice')} />
           <NumberInput label="Minimalus kėlimas" placeholder="Įvesti"
