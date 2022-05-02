@@ -67,8 +67,8 @@ export default function AuctionBiddingDashboard({
 
   useEffect(() => {
     getData();
-  }, []);
-  // END
+    console.log(auction)
+  });
   const [timeLeft, setTimeLeft] = useState(30);
   const [days, setDays] = useState(0);
   const [hours, setHours] = useState(0);
