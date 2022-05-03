@@ -64,9 +64,9 @@ export default function AuctionCard({
           <b>Aukciono pradžia</b>:{" "}
           {(isFinished && "Aukcionas baigtas") || auctionDate}
           <br />
-          <b>Aprašymas</b>: {description}
-          <br />
           <b>Minimalus kėlimas</b>: {bidIncrement}
+          <br />
+          <b>Aukciono tipas</b>: Absoliutus
         </Text>
 
         <Button

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { createStyles, Navbar, Group, Code, Image } from "@mantine/core";
-import { Logout, Menu, Login } from "tabler-icons-react";
+import { createStyles, Navbar, Group, Code, Image, Avatar, Center, Title } from "@mantine/core";
+import { Logout, Menu, Login, CurrencyEuro} from "tabler-icons-react";
 import sebas from "../../shared/sebas.png";
 import jwtDecode, { JwtPayload } from "jwt-decode";
 import { Redirect } from 'react-router-dom';
@@ -108,7 +108,12 @@ export default function NavigationBar() {
 
   return (
     <Navbar height={700} width={{ sm: 300 }} p="md">
-      <Image src={sebas}></Image>
+      <Center>
+       <Avatar radius="xl"/> <b>Tomas Bumbulis</b>
+      </Center>
+      <Center>
+        <CurrencyEuro color="green"/>500.00
+      </Center>
       <Navbar.Section grow>
         <Group className={classes.header} position="apart"></Group>
         <a className={cx(classes.link)} href="/" key="Visi aukcionai"> <Menu className={classes.linkIcon} />

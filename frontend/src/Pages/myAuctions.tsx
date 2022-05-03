@@ -4,6 +4,7 @@ import { AppShell, Tabs, Grid, Title } from "@mantine/core";
 import AuctionCard from "../Components/Auction/AuctionItem";
 import jwtDecode, { JwtPayload } from "jwt-decode";
 import { Photo, MessageCircle } from "tabler-icons-react";
+import MyAuctionCard from "../Components/Auction/AuctionCard"
 interface TitleProps {}
 
 export interface AuctionList {
@@ -16,7 +17,6 @@ export interface AuctionList {
       bidIncrement: number;
       creatorId: string;
       isFinished: boolean;
-      description: string;
       item: {
         category: string;
         name: string;
@@ -74,16 +74,15 @@ const MyAuctions: FC<TitleProps> = ({}) => {
                 <>
                   {auctionItem.creatorId == decodedToken.username && (
                     <Grid.Col span={4}>
-                      <AuctionCard
+                      <MyAuctionCard
                         isFinished={auctionItem.isFinished}
                         auctionID={auctionItem.id}
                         auctionDate={auctionItem.auctionDate}
                         buyoutPrice={auctionItem.buyoutPrice}
                         auctionName={auctionItem.item.name}
                         category={auctionItem.item.category}
-                        description={auctionItem.description}
                         bidIncrement={auctionItem.bidIncrement}
-                      ></AuctionCard>
+                      ></MyAuctionCard>
                     </Grid.Col>
                   )}
                 </>
@@ -92,6 +91,9 @@ const MyAuctions: FC<TitleProps> = ({}) => {
           </Grid>
         </Tabs.Tab>
         <Tabs.Tab label="Baigęsi Aukcionai" icon={<MessageCircle size={14} />}>
+          <Title>Bye bye</Title>
+        </Tabs.Tab>
+        <Tabs.Tab label="Laimėti Aukcionai" icon={<MessageCircle size={14} />}>
           <Title>Bye bye</Title>
         </Tabs.Tab>
       </Tabs>

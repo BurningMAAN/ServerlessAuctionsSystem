@@ -51,10 +51,6 @@ export default function ItemCard({
             {category}
           </Badge>
         </Group>
-
-        <Text size="sm" style={{ color: secondaryColor, lineHeight: 1.5 }}>
-          <b>Aprašymas</b>: {description}
-        </Text>
         <Button
         variant="light"
         color="blue"
@@ -73,7 +69,7 @@ export default function ItemCard({
         </Button>
       </Card>
       <UpdateItem onOpen={updateOpen} onClose={() => setUpdateOpen(false)}/>
-      <DeleteItem onOpen={deleteOpen} onClose={() => setDeleteOpen(false)}></DeleteItem>
+      <DeleteItem onOpen={deleteOpen} onClose={() => setDeleteOpen(false)} itemID={id} itemName={name}></DeleteItem>
     </div>
   );
 }

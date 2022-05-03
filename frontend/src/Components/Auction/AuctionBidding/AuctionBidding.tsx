@@ -75,30 +75,30 @@ export default function AuctionBiddingDashboard({
   const [seconds, setSeconds] = useState(0);
   const [bids, setBids] = useState<Bid>({} as Bid)
 
-  let refreshTime: number | null = 300
-  useInterval(() => {
-    if (auction.stage === "STAGE_ACCEPTING_BIDS") {
-        const targetDate = new Date(auction.startDate);
-        const now = new Date();
-        const difference = targetDate.getTime() - now.getTime()-45000;
+  // let refreshTime: number | null = 300
+  // useInterval(() => {
+  //   if (auction.stage === "STAGE_ACCEPTING_BIDS") {
+  //       const targetDate = new Date(auction.startDate);
+  //       const now = new Date();
+  //       const difference = targetDate.getTime() - now.getTime()-45000;
 
-        const d = Math.floor(difference / (1000 * 60 * 60 * 24));
-        setDays(d);
+  //       const d = Math.floor(difference / (1000 * 60 * 60 * 24));
+  //       setDays(d);
 
-        const h = Math.floor(
-          (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-        );
-        setHours(h);
+  //       const h = Math.floor(
+  //         (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+  //       );
+  //       setHours(h);
 
-        const m = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-        setMinutes(m);
+  //       const m = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+  //       setMinutes(m);
 
-        const s = Math.floor((difference % (1000 * 60)) / 1000);
-        setSeconds(s);
-    } else {
-      refreshTime = null
-    }
-  }, refreshTime);
+  //       const s = Math.floor((difference % (1000 * 60)) / 1000);
+  //       setSeconds(s);
+  //   } else {
+  //     refreshTime = null
+  //   }
+  // }, refreshTime);
 
   // let timerInterval: number | null = 1000
   // if (auction.stage === "STAGE_AUCTION_FINISHED"){

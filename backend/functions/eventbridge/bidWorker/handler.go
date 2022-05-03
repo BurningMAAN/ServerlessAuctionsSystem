@@ -4,6 +4,7 @@ import (
 	"auctionsPlatform/models"
 	"auctionsPlatform/utils"
 	"context"
+	"encoding/json"
 	"errors"
 	"log"
 	"time"
@@ -28,6 +29,8 @@ type handler struct {
 }
 
 func (h *handler) HandleBid(ctx context.Context, event events.DynamoDBEvent) error {
+	eventBytes, _ := json.Marshal(event)
+	log.Print(string(eventBytes))
 	bidID := utils.Extract("Bid", event.Records[0].Change.Keys["PK"].String())
 	if len(bidID) == 0 {
 		return nil

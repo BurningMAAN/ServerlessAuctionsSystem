@@ -56,3 +56,5 @@ func (h *handler) HandleAuction(ctx context.Context, event models.AuctionEvent) 
 	}
 	return nil
 }
+
+// padaryti activity uml diagrama
