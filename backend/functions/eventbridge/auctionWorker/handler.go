@@ -3,6 +3,7 @@ package main
 import (
 	"auctionsPlatform/models"
 	"context"
+	"encoding/json"
 	"log"
 	"time"
 )
@@ -23,6 +24,8 @@ type handler struct {
 }
 
 func (h *handler) HandleAuction(ctx context.Context, event models.AuctionEvent) error {
+	eventBytes, _ := json.Marshal(event)
+	log.Print(string(eventBytes))
 	switch event.Stage {
 	case "STAGE_ACCEPTING_BIDS":
 		err := h.auctionRepo.UpdateAuctionStage(ctx, event.AuctionID, "STAGE_AUCTION_ONGOING")
