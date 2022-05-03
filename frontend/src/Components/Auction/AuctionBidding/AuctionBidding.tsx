@@ -169,7 +169,7 @@ export default function AuctionBiddingDashboard({
         <Text>Minimalus kėlimas: {auction.bidIncrement} €</Text>
       </Center>
       <Center>
-        {(auction.stage != "STAGE_AUCTION_FINISHED" && timeLeft !== 0 && token && decodedToken.username != auction.creatorID && (
+        {(auction.stage != "STAGE_AUCTION_FINISHED" && token && decodedToken.username != auction.creatorID && (
           <Button
             color="green"
             onClick={() => {
