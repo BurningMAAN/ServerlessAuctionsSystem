@@ -49,6 +49,7 @@ func (h *handler) HandleBid(ctx context.Context, event events.DynamoDBEvent) err
 	}
 
 	if auction.Stage == "STAGE_AUCTION_ONGOING" {
+		log.Print("Cia atejo")
 		newEndTime := time.Now().Add(time.Minute)
 		log.Printf("new end time: %s", newEndTime.String())
 		err := h.auctionRepo.UpdateAuctionEndDate(ctx, auction.ID, newEndTime)
@@ -63,5 +64,6 @@ func (h *handler) HandleBid(ctx context.Context, event events.DynamoDBEvent) err
 
 	}
 
+	log.Print("Cia neatejo")
 	return nil
 }

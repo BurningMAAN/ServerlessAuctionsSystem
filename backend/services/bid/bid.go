@@ -6,7 +6,6 @@ import (
 	bidRepo "auctionsPlatform/repositories/bid"
 	"context"
 	"fmt"
-	"log"
 	"time"
 )
 
@@ -25,23 +24,17 @@ type userRepository interface {
 	GetUserByID(ctx context.Context, userID string) (models.User, error)
 }
 
-type eventRepository interface {
-	CreateBidEvent(ctx context.Context, auctionID string) error
-}
-
 type service struct {
 	auctionRepository auctionRepository
 	bidRepository     bidRepository
 	userRepository    userRepository
-	eventRepository   eventRepository
 }
 
-func New(auctionRepository auctionRepository, bidRepository bidRepository, userRepository userRepository, eventRepository eventRepository) *service {
+func New(auctionRepository auctionRepository, bidRepository bidRepository, userRepository userRepository) *service {
 	return &service{
 		auctionRepository: auctionRepository,
 		bidRepository:     bidRepository,
 		userRepository:    userRepository,
-		eventRepository:   eventRepository,
 	}
 }
 
@@ -77,11 +70,6 @@ func (s *service) PlaceBid(ctx context.Context, auctionID string, bid models.Bid
 		return models.Bid{}, err
 	}
 
-	err = s.eventRepository.CreateBidEvent(ctx, auction.ID)
-	if err != nil {
-		log.Printf("failed to create bid entry for auction ID: %s, error: %s", auction.ID, err.Error())
-		return placedBid, nil
-	}
 	return placedBid, err
 }
 
