@@ -59,7 +59,6 @@ func (h *handler) GetAuction(ctx context.Context, event events.APIGatewayProxyRe
 		BidIncrement: auction.BidIncrement,
 		CreatorID:    auction.CreatorID,
 		ItemID:       auction.ItemID,
-		IsFinished:   auction.IsFinished,
 		Stage:        auction.Stage,
 		StartDate:    auction.StartDate,
 		EndDate:      auction.EndDate,

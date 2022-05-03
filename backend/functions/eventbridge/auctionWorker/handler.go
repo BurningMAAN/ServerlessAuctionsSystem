@@ -33,13 +33,13 @@ func (h *handler) HandleAuction(ctx context.Context, event models.AuctionEvent) 
 			log.Print(err.Error())
 			return err
 		}
-		newEndTime := time.Now().Add(45 * time.Second)
+		newEndTime := time.Now().Add(60 * time.Second)
 		err = h.auctionRepo.UpdateAuctionEndDate(ctx, event.AuctionID, newEndTime)
 		if err != nil {
 			return err
 		}
 
-		newEndDate := time.Now().Add(45 * time.Second)
+		newEndDate := time.Now().Add(60 * time.Second)
 		err = h.eventRepository.UpdateEventRule(ctx, event.AuctionID, newEndDate)
 		if err != nil {
 			log.Print(err.Error())
@@ -59,5 +59,3 @@ func (h *handler) HandleAuction(ctx context.Context, event models.AuctionEvent) 
 	}
 	return nil
 }
-
-// padaryti activity uml diagrama

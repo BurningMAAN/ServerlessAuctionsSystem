@@ -7,7 +7,6 @@ import "time"
 
 type Auction struct {
 	ID           string
-	IsFinished   bool
 	Type         AuctionType
 	BuyoutPrice  *float64
 	StartDate    time.Time

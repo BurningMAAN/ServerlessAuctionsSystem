@@ -80,7 +80,6 @@ func auctionsToResponse(auctions []models.AuctionListView) response {
 			AuctionType:  string(auctionItem.Auction.Type),
 			BuyoutPrice:  auctionItem.Auction.BuyoutPrice,
 			BidIncrement: auctionItem.Auction.BidIncrement,
-			IsFinished:   auctionItem.Auction.IsFinished,
 			CreatorID:    auctionItem.Auction.CreatorID,
 			Item: itemResponse{
 				ID:          auctionItem.Auction.ItemID,

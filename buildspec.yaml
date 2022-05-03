@@ -24,10 +24,6 @@ phases:
       - cd $ROOTDIR/backend/functions/api/auction/getAuctionList
       - go build -o main
 
-      # Build FinishAuctionFunction
-      - cd $ROOTDIR/backend/functions/api/auction/finishAuction
-      - go build -o main
-
       # Build CreateItemFunction
       - cd $ROOTDIR/backend/functions/api/item/createItem
       - go build -o main
@@ -38,6 +34,10 @@ phases:
 
       # Build CreateUserFunction
       - cd $ROOTDIR/backend/functions/api/user/createUser
+      - go build -o main
+
+      # Build PatchUserFunction
+      - cd $ROOTDIR/backend/functions/api/user/updateUser
       - go build -o main
 
       # Build AuthorizerFunction
@@ -54,10 +54,6 @@ phases:
 
       # Build PlaceAuctionBidFunction
       - cd $ROOTDIR/backend/functions/api/bid/placeBid
-      - go build -o main
-
-      # Build GenerateData
-      - cd $ROOTDIR/backend/functions/api/generateData
       - go build -o main
 
       # Build HandleAuctionFunction

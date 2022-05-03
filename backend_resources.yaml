@@ -255,36 +255,6 @@ Resources:
               RestApiId:
                 Ref: AuctionGateway
 
-  FinishAuctionFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler: main
-      Runtime: go1.x
-      AutoPublishAlias: live
-      Tracing: Active
-      MemorySize: 512
-      Timeout: 15
-      Description: Lambda function that finishes auction
-      CodeUri: backend/functions/api/auction/finishAuction
-      Environment:
-        Variables:
-          DYNAMODB_TABLE: !Ref DynamoDBTable
-      Policies:
-        Statement:
-          - Effect: Allow
-            Action:
-              - dynamodb:GetItem
-              - dynamodb:UpdateItem
-            Resource: !GetAtt DynamoDBTable.Arn
-      Events:
-        ApiEvent:
-            Type: Api
-            Properties:
-              Path: /auctions/{auctionId}/finish
-              Method: post
-              RestApiId:
-                Ref: AuctionGateway
-
   # Item Lambda Functions
   CreateItemFunction:
     Type: AWS::Serverless::Function
@@ -483,6 +453,36 @@ Resources:
               RestApiId:
                 Ref: AuctionGateway
 
+  PatchUserFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: main
+      Runtime: go1.x
+      AutoPublishAlias: live
+      Tracing: Active
+      MemorySize: 512
+      Timeout: 15
+      Description: Lambda function that updates user entity
+      CodeUri: backend/functions/api/user/updateUser
+      Environment:
+        Variables:
+          DYNAMODB_TABLE: !Ref DynamoDBTable
+      Policies:
+        Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:GetItem
+              - dynamodb:PutItem
+            Resource: !GetAtt DynamoDBTable.Arn
+      Events:
+        ApiEvent:
+            Type: Api
+            Properties:
+              Path: /user
+              Method: patch
+              RestApiId:
+                Ref: AuctionGateway
+
   AuthorizerFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -510,41 +510,5 @@ Resources:
             Properties:
               Path: /authorize
               Method: post
-              RestApiId:
-                Ref: AuctionGateway
-
-  GenerateDataFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler: main
-      Runtime: go1.x
-      AutoPublishAlias: live
-      Tracing: Active
-      MemorySize: 512
-      Timeout: 15
-      Description: Lambda function that authorizes user
-      CodeUri: backend/functions/api/generateData
-      Environment:
-        Variables:
-          DYNAMODB_TABLE: !Ref DynamoDBTable
-      Policies:
-        Statement:
-          - Effect: Allow
-            Action:
-              - dynamodb:Query
-              - dynamodb:GetItem
-              - dynamodb:PutItem
-              - dynamodb:Scan
-            Resource: 
-              - !GetAtt DynamoDBTable.Arn
-              - Fn::Sub:
-                  - '${DynamoDBTableArn}/index/GSI1'
-                  - DynamoDBTableArn: !GetAtt DynamoDBTable.Arn
-      Events:
-        ApiEvent:
-            Type: Api
-            Properties:
-              Path: /generateData
-              Method: get
               RestApiId:
                 Ref: AuctionGateway

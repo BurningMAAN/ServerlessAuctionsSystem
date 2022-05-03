@@ -60,7 +60,7 @@ func (s *service) PlaceBid(ctx context.Context, auctionID string, bid models.Bid
 		return models.Bid{}, errors.ErrAuctionUserBidUserMatch
 	}
 
-	if auction.IsFinished {
+	if auction.Stage == "STAGE_AUCTION_FINISHED" {
 		return models.Bid{}, errors.ErrAuctionAlreadyFinished
 	}
 

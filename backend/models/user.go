@@ -10,3 +10,9 @@ type User struct {
 	Email    string
 	Role     string
 }
+
+type UserUpdate struct {
+	ID       string
+	Password *string
+	Email    *string
+}

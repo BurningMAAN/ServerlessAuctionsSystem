@@ -5,7 +5,6 @@ import (
 	"auctionsPlatform/utils"
 	"context"
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -48,7 +47,6 @@ type AuctionDB struct {
 	EndDate      time.Time
 	CreatorID    string
 	Type         string
-	IsFinished   bool
 	ItemID       string
 	Stage        string
 }
@@ -67,7 +65,6 @@ func (r *repository) CreateAuction(ctx context.Context, auction models.Auction) 
 		CreatorID:    auction.CreatorID,
 		Type:         string(auction.Type),
 		ItemID:       auction.ItemID,
-		IsFinished:   false,
 		EndDate:      auction.StartDate.Add(time.Duration(5 * time.Second)),
 		Stage:        "STAGE_ACCEPTING_BIDS",
 	}
@@ -113,36 +110,6 @@ func (r *repository) GetAuctionByID(ctx context.Context, auctionID string) (mode
 	}
 
 	return ExtractAuction(result.Item)
-}
-
-func (r *repository) FinishAuction(ctx context.Context, auctionID string) error {
-	express, err := expression.NewBuilder().WithUpdate(expression.Set(
-		expression.Name("IsFinished"), expression.Value(true))).Build()
-	if err != nil {
-		return err
-	}
-	input := &dynamodb.UpdateItemInput{
-		TableName:                 aws.String(r.tableName),
-		ReturnValues:              types.ReturnValueAllNew,
-		ExpressionAttributeValues: express.Values(),
-		ExpressionAttributeNames:  express.Names(),
-		Key: map[string]types.AttributeValue{
-			"PK": &types.AttributeValueMemberS{
-				Value: fmt.Sprintf("%s#%s", models.AuctionEntityType, auctionID),
-			},
-			"SK": &types.AttributeValueMemberS{
-				Value: "Metadata",
-			},
-		},
-		UpdateExpression: express.Update(),
-	}
-
-	_, err = r.DB.UpdateItem(ctx, input)
-	if err != nil {
-		return err
-	}
-
-	return err
 }
 
 func (r *repository) GetAllAuctions(ctx context.Context, optFns ...func(*OptionalGetParameters)) ([]models.Auction, error) {

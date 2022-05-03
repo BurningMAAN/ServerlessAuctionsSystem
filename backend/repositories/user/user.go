@@ -5,9 +5,11 @@ import (
 	"auctionsPlatform/utils"
 	"context"
 	"errors"
+	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
+	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/expression"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"golang.org/x/crypto/bcrypt"
@@ -119,4 +121,38 @@ func (r *repository) GetUserByUserName(ctx context.Context, userName string) (mo
 	}
 
 	return ExtractUser(result.Item)
+}
+
+func (r *repository) UpdateUser(ctx context.Context, updateModel models.UserUpdate) error {
+	update, err := buildUserUpdate(updateModel)
+	if err != nil {
+		return err
+	}
+
+	express, err := expression.NewBuilder().WithUpdate(update).Build()
+	if err != nil {
+		return err
+	}
+	input := &dynamodb.UpdateItemInput{
+		TableName:                 aws.String(r.tableName),
+		ReturnValues:              types.ReturnValueAllNew,
+		ExpressionAttributeValues: express.Values(),
+		ExpressionAttributeNames:  express.Names(),
+		Key: map[string]types.AttributeValue{
+			"PK": &types.AttributeValueMemberS{
+				Value: fmt.Sprintf("%s#%s", models.UserEntityType, updateModel.ID),
+			},
+			"SK": &types.AttributeValueMemberS{
+				Value: "Metadata",
+			},
+		},
+		UpdateExpression: express.Update(),
+	}
+
+	_, err = r.DB.UpdateItem(ctx, input)
+	if err != nil {
+		return err
+	}
+
+	return err
 }
