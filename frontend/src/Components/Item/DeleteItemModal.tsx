@@ -8,7 +8,7 @@ import {
   } from "@mantine/core";
   import { useState, useEffect } from "react";
   import { useForm } from "@mantine/form";
-  import {X} from "tabler-icons-react";
+  import {X, ChevronDown} from "tabler-icons-react";
   import { showNotification } from '@mantine/notifications';
   
   interface ItemProps {
@@ -35,10 +35,11 @@ import {
   
       try {
         const response = await fetch(url, requestOptions);
-        const responseJSON = await response.json();
-        if(response.status == 200){
+        if(response.status == 204){
           showNotification({
             title: 'Inventoriaus pašalinimas',
+            color: 'green',
+            icon: <ChevronDown/>,
             message: 'Inventorius sėkmingai pašalintas',
           })
           onClose()

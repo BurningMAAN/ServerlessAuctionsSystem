@@ -43,9 +43,6 @@ func (h *handler) DeleteItem(ctx context.Context, event events.APIGatewayProxyRe
 	if err != nil {
 		return utils.InternalError(err.Error())
 	}
-	if err != nil {
-		return utils.InternalError(err.Error())
-	}
 
 	return events.APIGatewayProxyResponse{
 		Headers: map[string]string{

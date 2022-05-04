@@ -4,6 +4,7 @@ import (
 	"auctionsPlatform/models"
 	"context"
 	"errors"
+	"log"
 )
 
 type itemRepository interface {
@@ -71,6 +72,7 @@ func (s *service) DeleteItem(ctx context.Context, itemID string) error {
 		return errors.New("negalima ismest kai aukcione")
 	}
 
+	log.Print("atejo iki cia")
 	return s.itemRepository.DeleteItem(ctx, itemID)
 }
 

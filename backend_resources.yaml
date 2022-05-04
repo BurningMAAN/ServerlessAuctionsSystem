@@ -541,7 +541,7 @@ Resources:
         ApiEvent:
             Type: Api
             Properties:
-              Path: /user/{userId}/items/{itemId}
+              Path: /users/{userId}/items/{itemId}
               Method: patch
               RestApiId:
                 Ref: AuctionGateway      

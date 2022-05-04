@@ -34,9 +34,13 @@ func (h *handler) SearchUserItems(ctx context.Context, event events.APIGatewayPr
 		return utils.InternalError("token not provided")
 	}
 
-	userConfig, err := utils.GetUserConfig(accessToken)
+	_, err := utils.GetUserConfig(accessToken)
 	if err != nil {
 		return utils.InternalError(err.Error())
+	}
+
+	if len(event.PathParameters["userId"]) == 0 {
+		return utils.InternalError("not provided auctionId")
 	}
 
 	if len(event.PathParameters["itemId"]) == 0 {
@@ -44,7 +48,7 @@ func (h *handler) SearchUserItems(ctx context.Context, event events.APIGatewayPr
 	}
 
 	req := request{
-		UserName: userConfig.Name,
+		UserName: event.PathParameters["userId"],
 		ItemID:   event.PathParameters["itemId"],
 	}
 
