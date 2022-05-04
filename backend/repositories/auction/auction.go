@@ -24,6 +24,8 @@ type DB interface {
 	UpdateItem(ctx context.Context, input *dynamodb.UpdateItemInput, optFns ...func(*dynamodb.Options)) (*dynamodb.UpdateItemOutput, error)
 	Query(ctx context.Context, input *dynamodb.QueryInput, optFns ...func(*dynamodb.Options)) (*dynamodb.QueryOutput, error)
 	Scan(ctx context.Context, params *dynamodb.ScanInput, optFns ...func(*dynamodb.Options)) (*dynamodb.ScanOutput, error)
+	// https://pkg.go.dev/github.com/aws/aws-sdk-go-v2/service/dynamodb#Client.GetItem
+	DeleteItem(ctx context.Context, input *dynamodb.DeleteItemInput, optFns ...func(*dynamodb.Options)) (*dynamodb.DeleteItemOutput, error)
 }
 
 type repository struct {
@@ -41,13 +43,14 @@ func New(tableName string, db DB) *repository {
 type AuctionDB struct {
 	PK           string // Example: Auction#{AuctionID}
 	SK           string // Example: Metadata
+	GSI1PK       string // Example: Item#{ItemID}
+	GSI1SK       string // Category#{Category}
 	BuyoutPrice  *float64
 	StartDate    time.Time
 	BidIncrement float64
 	EndDate      time.Time
 	CreatorID    string
 	Type         string
-	ItemID       string
 	Stage        string
 }
 
@@ -59,12 +62,13 @@ func (r *repository) CreateAuction(ctx context.Context, auction models.Auction) 
 	auctionDB := AuctionDB{
 		PK:           utils.Make(models.AuctionEntityType, auctionID),
 		SK:           "Metadata",
+		GSI1PK:       utils.Make(models.ItemEntityType, auction.ItemID),
+		GSI1SK:       utils.Make("Category", auction.Category),
 		BuyoutPrice:  auction.BuyoutPrice,
 		StartDate:    auction.StartDate,
 		BidIncrement: auction.BidIncrement,
 		CreatorID:    auction.CreatorID,
 		Type:         string(auction.Type),
-		ItemID:       auction.ItemID,
 		EndDate:      auction.StartDate.Add(time.Duration(5 * time.Second)),
 		Stage:        "STAGE_ACCEPTING_BIDS",
 	}
@@ -197,5 +201,78 @@ func (r *repository) UpdateAuctionEndDate(ctx context.Context, auctionID string,
 		return err
 	}
 
+	return err
+}
+
+func (r *repository) SearchAuctions(ctx context.Context, searchParams models.AuctionSearchParams) ([]models.Auction, error) {
+	conditionExpression := buildSearchCondition(searchParams)
+
+	expr, err := expression.NewBuilder().WithCondition(conditionExpression).Build()
+	if err != nil {
+		return []models.Auction{}, err
+	}
+	result, err := r.DB.Scan(ctx, &dynamodb.ScanInput{
+		TableName:                 &r.tableName,
+		ExpressionAttributeNames:  expr.Names(),
+		ExpressionAttributeValues: expr.Values(),
+		FilterExpression:          expr.Filter(),
+	})
+	if err != nil {
+		return []models.Auction{}, err
+	}
+
+	if result.Items == nil {
+		return []models.Auction{}, errors.New("exists")
+	}
+
+	return ExtractAuctions(result.Items)
+}
+
+func (r *repository) UpdateAuction(ctx context.Context, auctionID string, update models.AuctionUpdate) error {
+	updateExpression := buildUpdate(update)
+
+	express, err := expression.NewBuilder().WithUpdate(updateExpression).Build()
+	if err != nil {
+		return err
+	}
+	input := &dynamodb.UpdateItemInput{
+		TableName:                 aws.String(r.tableName),
+		ReturnValues:              types.ReturnValueAllNew,
+		ExpressionAttributeValues: express.Values(),
+		ExpressionAttributeNames:  express.Names(),
+		Key: map[string]types.AttributeValue{
+			"PK": &types.AttributeValueMemberS{
+				Value: utils.Make("Auction", auctionID),
+			},
+			"SK": &types.AttributeValueMemberS{
+				Value: "Metadata",
+			},
+		},
+		UpdateExpression: express.Update(),
+	}
+
+	_, err = r.DB.UpdateItem(ctx, input)
+	if err != nil {
+		return err
+	}
+
+	return err
+}
+
+func (r *repository) DeleteAuction(ctx context.Context, auctionID string) error {
+	input := &dynamodb.DeleteItemInput{
+		TableName: aws.String(r.tableName),
+		Key: map[string]types.AttributeValue{
+			"PK": &types.AttributeValueMemberS{
+				Value: utils.Make("Auction", auctionID),
+			},
+			"SK": &types.AttributeValueMemberS{
+				Value: "Metadata",
+			},
+		},
+		ConditionExpression: aws.String("attribute_not_exists(PK)"),
+	}
+
+	_, err := r.DB.DeleteItem(ctx, input)
 	return err
 }

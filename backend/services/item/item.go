@@ -3,6 +3,7 @@ package item
 import (
 	"auctionsPlatform/models"
 	"context"
+	"errors"
 )
 
 type itemRepository interface {
@@ -10,6 +11,8 @@ type itemRepository interface {
 	GetItemByID(ctx context.Context, itemID string) (models.Item, error)
 	AssignItem(ctx context.Context, auctionID, itemID string) error
 	GetItemsByUserName(ctx context.Context, userName string) ([]models.Item, error)
+	UpdateItem(ctx context.Context, itemID string, update models.ItemUpdate) error
+	DeleteItem(ctx context.Context, itemID string) error
 }
 
 type auctionRepository interface {
@@ -51,4 +54,21 @@ func (s *service) AssignItem(ctx context.Context, auctionID, itemID string) erro
 
 func (s *service) GetItemsByUserName(ctx context.Context, userName string) ([]models.Item, error) {
 	return s.itemRepository.GetItemsByUserName(ctx, userName)
+}
+
+func (s *service) UpdateItem(ctx context.Context, itemID string, update models.ItemUpdate) error {
+	return s.itemRepository.UpdateItem(ctx, itemID, update)
+}
+
+func (s *service) DeleteItem(ctx context.Context, itemID string) error {
+	item, err := s.itemRepository.GetItemByID(ctx, itemID)
+	if err != nil {
+		return err
+	}
+
+	if len(item.AuctionID) == 0 {
+		return errors.New("negalima ismest kai aukcione")
+	}
+
+	return s.itemRepository.DeleteItem(ctx, itemID)
 }

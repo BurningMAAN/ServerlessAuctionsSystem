@@ -24,12 +24,28 @@ phases:
       - cd $ROOTDIR/backend/functions/api/auction/getAuctionList
       - go build -o main
 
+      # Build SearchAuctionsFunction
+      - cd $ROOTDIR/backend/functions/api/auction/searchAuctions
+      - go build -o main
+
       # Build CreateItemFunction
       - cd $ROOTDIR/backend/functions/api/item/createItem
       - go build -o main
 
+      # Build UpdateAuctionFunction
+      - cd $ROOTDIR/backend/functions/api/auction/updateAuction
+      - go build -o main
+
+      # Build DeleteAuctionFunction
+      - cd $ROOTDIR/backend/functions/api/auction/deleteAuction
+      - go build -o main
+
       # Build GetItemFunction
       - cd $ROOTDIR/backend/functions/api/item/getItem
+      - go build -o main
+
+      # Build DeleteItemFunction
+      - cd $ROOTDIR/backend/functions/api/item/deleteItem
       - go build -o main
 
       # Build CreateUserFunction

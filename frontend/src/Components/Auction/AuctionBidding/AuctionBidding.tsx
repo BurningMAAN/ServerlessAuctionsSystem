@@ -68,7 +68,7 @@ export default function AuctionBiddingDashboard({
   useEffect(() => {
     getData();
   });
-  const [timeLeft, setTimeLeft] = useState(30);
+  const [timeLeft, setTimeLeft] = useState(60);
   const [days, setDays] = useState(0);
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
@@ -78,7 +78,7 @@ export default function AuctionBiddingDashboard({
   let refreshTime: number | null = 300
   useInterval(() => {
     if (auction.stage === "STAGE_ACCEPTING_BIDS") {
-        const targetDate = new Date(auction.startDate);
+        const targetDate = new Date(auction.endDate);
         const now = new Date();
         const difference = targetDate.getTime() - now.getTime()-45000;
 
@@ -169,7 +169,7 @@ export default function AuctionBiddingDashboard({
         <Text>Minimalus kėlimas: {auction.bidIncrement} €</Text>
       </Center>
       <Center>
-        {(auction.stage != "STAGE_AUCTION_FINISHED" && token && decodedToken.username != auction.creatorID && (
+        {(auction.stage != "STAGE_AUCTION_FINISHED" && timeLeft > 0 && token && decodedToken.username != auction.creatorID && (
           <Button
             color="green"
             onClick={() => {
@@ -201,12 +201,7 @@ export default function AuctionBiddingDashboard({
           ))}
       </Center>
       <Center>
-        <Title order={6}>
-          {auction.endDate}
-          <br></br>
-          {auction.stage}
-        </Title>
-        {auction.stage === "STAGE_ACCEPTING_BIDS" && (
+        {auction.stage === "STAGE_ACCEPTING_BIDS" && days >= 0 && hours >= 0 && minutes >= 0 && seconds >= 0 && (
           <Title order={6}>
             Aukcionas prasideda už {days} dienų {hours} valandų {minutes}{" "}
             minučių {seconds} sekundžių

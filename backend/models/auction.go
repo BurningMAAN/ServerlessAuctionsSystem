@@ -16,6 +16,7 @@ type Auction struct {
 	ItemID       string
 	EndDate      time.Time
 	Stage        string
+	Category     string
 	// Category string Prideti kategorija (nes rodome korteleje)
 }
 
@@ -34,4 +35,16 @@ type AuctionEvent struct {
 	AuctionID string    `json:"id"`
 	Stage     string    `json:"stage"`
 	EndDate   time.Time `json:"endDate"`
+}
+
+type AuctionSearchParams struct {
+	Category    *string
+	AuctionType *string
+}
+
+type AuctionUpdate struct {
+	BuyoutPrice  *float64
+	StartDate    *time.Time
+	BidIncrement *float64
+	Type         *string
 }

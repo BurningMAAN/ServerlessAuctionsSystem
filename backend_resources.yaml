@@ -178,15 +178,6 @@ Resources:
               - dynamodb:GetItem
               - dynamodb:UpdateItem
             Resource: !GetAtt DynamoDBTable.Arn
-          - Effect: Allow
-            Action:
-              - events:PutRule
-              - events:PutTargets
-            Resource: "*"
-          - Effect: Allow
-            Action:
-              - iam:PassRole
-            Resource: "*"
       Events:
         ApiEvent:
             Type: Api
@@ -254,6 +245,116 @@ Resources:
               Method: get
               RestApiId:
                 Ref: AuctionGateway
+  
+  SearchAuctionsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: main
+      Runtime: go1.x
+      AutoPublishAlias: live
+      Tracing: Active
+      MemorySize: 512
+      Timeout: 15
+      Description: Lambda function that searches on auction entity
+      CodeUri: backend/functions/api/auction/searchAuctions
+      Environment:
+        Variables:
+          DYNAMODB_TABLE: !Ref DynamoDBTable
+      Policies:
+        Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:Scan
+            Resource: !GetAtt DynamoDBTable.Arn
+      Events:
+        ApiEvent:
+            Type: Api
+            Properties:
+              Path: /auctions/search
+              Method: post
+              RestApiId:
+                Ref: AuctionGateway
+
+  UpdateAuctionFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: main
+      Runtime: go1.x
+      AutoPublishAlias: live
+      Tracing: Active
+      MemorySize: 512
+      Timeout: 15
+      Description: Lambda function that updates auction entity
+      CodeUri: backend/functions/api/auction/updateAuction
+      Environment:
+        Variables:
+          DYNAMODB_TABLE: !Ref DynamoDBTable
+      Policies:
+        Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:GetItem
+              - dynamodb:UpdateItem
+            Resource: !GetAtt DynamoDBTable.Arn
+          - Effect: Allow
+            Action:
+              - events:PutRule
+              - events:PutTargets
+            Resource: "*"
+          - Effect: Allow
+            Action:
+              - iam:PassRole
+            Resource: "*"
+      Events:
+        ApiEvent:
+            Type: Api
+            Properties:
+              Path: /auctions/{auctionId}
+              Method: patch
+              RestApiId:
+                Ref: AuctionGateway
+
+  DeleteAuctionFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: main
+      Runtime: go1.x
+      AutoPublishAlias: live
+      Tracing: Active
+      MemorySize: 512
+      Timeout: 15
+      Description: Lambda function that deletes auction entity
+      CodeUri: backend/functions/api/auction/deleteAuction
+      Environment:
+        Variables:
+          DYNAMODB_TABLE: !Ref DynamoDBTable
+      Policies:
+        Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:GetItem
+              - dynamodb:UpdateItem
+              - dynamodb:DeleteItem
+            Resource: !GetAtt DynamoDBTable.Arn
+          - Effect: Allow
+            Action:
+              - events:PutRule
+              - events:DeleteRule
+              - events:PutTargets
+              - events:RemoveTargets
+            Resource: "*"
+          - Effect: Allow
+            Action:
+              - iam:PassRole
+            Resource: "*"
+      Events:
+        ApiEvent:
+            Type: Api
+            Properties:
+              Path: /auctions/{auctionId}
+              Method: delete
+              RestApiId:
+                Ref: AuctionGateway
 
   # Item Lambda Functions
   CreateItemFunction:
@@ -282,6 +383,37 @@ Resources:
             Properties:
               Path: /item
               Method: post
+              RestApiId:
+                Ref: AuctionGateway
+
+  # Delete Item Lambda Functions
+  DeleteItemFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: main
+      Runtime: go1.x
+      AutoPublishAlias: live
+      Tracing: Active
+      MemorySize: 512
+      Timeout: 15
+      Description: Lambda function that deletes item entity
+      CodeUri: backend/functions/api/item/deleteItem
+      Environment:
+        Variables:
+          DYNAMODB_TABLE: !Ref DynamoDBTable
+      Policies:
+        Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:GetItem
+              - dynamodb:DeleteItem
+            Resource: !GetAtt DynamoDBTable.Arn
+      Events:
+        ApiEvent:
+            Type: Api
+            Properties:
+              Path: /item/{itemId}
+              Method: delete
               RestApiId:
                 Ref: AuctionGateway
 

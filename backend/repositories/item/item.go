@@ -24,6 +24,7 @@ type DB interface {
 	UpdateItem(ctx context.Context, input *dynamodb.UpdateItemInput, optFns ...func(*dynamodb.Options)) (*dynamodb.UpdateItemOutput, error)
 	Scan(ctx context.Context, params *dynamodb.ScanInput, optFns ...func(*dynamodb.Options)) (*dynamodb.ScanOutput, error)
 	Query(ctx context.Context, input *dynamodb.QueryInput, optFns ...func(*dynamodb.Options)) (*dynamodb.QueryOutput, error)
+	DeleteItem(ctx context.Context, input *dynamodb.DeleteItemInput, optFns ...func(*dynamodb.Options)) (*dynamodb.DeleteItemOutput, error)
 }
 
 type repository struct {
@@ -166,4 +167,52 @@ func (r *repository) GetItemsByUserName(ctx context.Context, userName string) ([
 	}
 
 	return ExtractItems(res.Items)
+}
+
+func (r *repository) UpdateItem(ctx context.Context, itemID string, update models.ItemUpdate) error {
+	updateExpression := buildItemUpdate(update)
+	express, err := expression.NewBuilder().WithUpdate(updateExpression).Build()
+	if err != nil {
+		return err
+	}
+	input := &dynamodb.UpdateItemInput{
+		TableName:                 aws.String(r.tableName),
+		ReturnValues:              types.ReturnValueAllNew,
+		ExpressionAttributeValues: express.Values(),
+		ExpressionAttributeNames:  express.Names(),
+		Key: map[string]types.AttributeValue{
+			"PK": &types.AttributeValueMemberS{
+				Value: fmt.Sprintf("%s#%s", models.ItemEntityType, itemID),
+			},
+			"SK": &types.AttributeValueMemberS{
+				Value: "Metadata",
+			},
+		},
+		UpdateExpression: express.Update(),
+	}
+
+	_, err = r.DB.UpdateItem(ctx, input)
+	if err != nil {
+		return err
+	}
+
+	return err
+}
+
+func (r *repository) DeleteItem(ctx context.Context, itemID string) error {
+	input := &dynamodb.DeleteItemInput{
+		TableName: aws.String(r.tableName),
+		Key: map[string]types.AttributeValue{
+			"PK": &types.AttributeValueMemberS{
+				Value: utils.Make("Item", itemID),
+			},
+			"SK": &types.AttributeValueMemberS{
+				Value: "Metadata",
+			},
+		},
+		ConditionExpression: aws.String("attribute_not_exists(PK)"),
+	}
+
+	_, err := r.DB.DeleteItem(ctx, input)
+	return err
 }

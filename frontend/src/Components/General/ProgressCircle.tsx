@@ -23,7 +23,7 @@ export default function ProgressCircle({
 }
 
 function calculatePercentage(inputValue: number): number{
-    return (100 * inputValue) / 30
+    return (100 * inputValue) / 60
 }
 
 function getColorByPercentage(inputValue: number): string{

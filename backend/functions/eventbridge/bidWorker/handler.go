@@ -4,7 +4,6 @@ import (
 	"auctionsPlatform/models"
 	"auctionsPlatform/utils"
 	"context"
-	"encoding/json"
 	"errors"
 	"log"
 	"time"
@@ -29,8 +28,6 @@ type handler struct {
 }
 
 func (h *handler) HandleBid(ctx context.Context, event events.DynamoDBEvent) error {
-	eventBytes, _ := json.Marshal(event)
-	log.Print(string(eventBytes))
 	bidID := utils.Extract("Bid", event.Records[0].Change.Keys["PK"].String())
 	if len(bidID) == 0 {
 		return nil
@@ -42,14 +39,12 @@ func (h *handler) HandleBid(ctx context.Context, event events.DynamoDBEvent) err
 		return errors.New("failed to parse auctionID")
 	}
 
-	log.Printf("auctionID: %s", auctionID)
 	auction, err := h.auctionRepo.GetAuctionByID(ctx, auctionID)
 	if err != nil {
 		return err
 	}
 
 	if auction.Stage == "STAGE_AUCTION_ONGOING" {
-		log.Print("Cia atejo")
 		newEndTime := time.Now().Add(time.Minute)
 		log.Printf("new end time: %s", newEndTime.String())
 		err := h.auctionRepo.UpdateAuctionEndDate(ctx, auction.ID, newEndTime)
@@ -64,6 +59,5 @@ func (h *handler) HandleBid(ctx context.Context, event events.DynamoDBEvent) err
 
 	}
 
-	log.Print("Cia neatejo")
 	return nil
 }

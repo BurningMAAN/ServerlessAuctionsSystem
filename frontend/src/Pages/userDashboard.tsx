@@ -1,5 +1,6 @@
 import React, { FC, useEffect, useState } from "react";
 import NavigationBar from "../Components/Skeleton/Navbar";
+import { showNotification } from '@mantine/notifications';
 import {
   AppShell,
   Tabs,
@@ -112,7 +113,12 @@ const UserDashboard: FC<TitleProps> = ({}) => {
             <Title order={5}>Mokėjimai</Title>
             <NumberInput label="Kreditų skaičius"></NumberInput>
             <br/>
-            <Button color="green">Papildyti</Button>
+            <Button color="green" onClick={() => {
+              showNotification({
+                title: 'Default notification',
+                message: 'Hey there, your code is awesome! 🤥',
+              })
+            }}>Papildyti</Button>
           </Grid.Col>
           <Grid.Col span={4}>
             <Title order={5}>Ataskaitos</Title>

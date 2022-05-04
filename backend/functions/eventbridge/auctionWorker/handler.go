@@ -39,8 +39,7 @@ func (h *handler) HandleAuction(ctx context.Context, event models.AuctionEvent) 
 			return err
 		}
 
-		newEndDate := time.Now().Add(60 * time.Second)
-		err = h.eventRepository.UpdateEventRule(ctx, event.AuctionID, newEndDate)
+		err = h.eventRepository.UpdateEventRule(ctx, event.AuctionID, newEndTime)
 		if err != nil {
 			log.Print(err.Error())
 			return err

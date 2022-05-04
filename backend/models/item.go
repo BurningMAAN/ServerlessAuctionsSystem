@@ -20,3 +20,11 @@ var (
 	ItemCategoryAppliances ItemCategory = "Appliances"
 	ItemCategoryHome       ItemCategory = "Home"
 )
+
+type ItemUpdate struct {
+	AuctionID   *string
+	OwnerID     *string
+	Category    *string
+	Description *string
+	Name        *string
+}

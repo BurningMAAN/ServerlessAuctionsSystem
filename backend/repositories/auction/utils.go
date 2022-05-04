@@ -5,6 +5,7 @@ import (
 	"auctionsPlatform/utils"
 
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
+	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/expression"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 )
 
@@ -16,7 +17,8 @@ func unmarshalAuction(auctionDB AuctionDB) (models.Auction, error) {
 		BidIncrement: auctionDB.BidIncrement,
 		StartDate:    auctionDB.StartDate,
 		CreatorID:    auctionDB.CreatorID,
-		ItemID:       auctionDB.ItemID,
+		ItemID:       utils.Extract(models.ItemEntityType, auctionDB.GSI1PK),
+		Category:     utils.Extract("Category", auctionDB.GSI1SK),
 		EndDate:      auctionDB.EndDate,
 		Stage:        auctionDB.Stage,
 	}, nil
@@ -49,4 +51,38 @@ func ExtractAuctions(items []map[string]types.AttributeValue) ([]models.Auction,
 	}
 
 	return auctions, nil
+}
+
+func buildSearchCondition(searchParams models.AuctionSearchParams) expression.ConditionBuilder {
+	conditionExpression := expression.ConditionBuilder{}
+	if searchParams.Category != nil {
+		conditionExpression = conditionExpression.And(expression.Name("GSI1SK").Equal(expression.Value(&searchParams.Category)))
+	}
+	if searchParams.AuctionType != nil {
+		conditionExpression = conditionExpression.And(expression.Name("Type").Equal(expression.Value(&searchParams.AuctionType)))
+	}
+
+	return conditionExpression
+}
+
+func buildUpdate(update models.AuctionUpdate) expression.UpdateBuilder {
+	updateExpression := expression.UpdateBuilder{}
+
+	if update.BidIncrement != nil {
+		updateExpression = updateExpression.Set(expression.Name("BidIncrement"), expression.Value(&update.BidIncrement))
+	}
+
+	if update.BuyoutPrice != nil {
+		updateExpression = updateExpression.Set(expression.Name("BuyoutPrice"), expression.Value(&update.BuyoutPrice))
+	}
+
+	if update.StartDate != nil {
+		updateExpression = updateExpression.Set(expression.Name("StartDate"), expression.Value(&update.StartDate))
+	}
+
+	if update.Type != nil {
+		updateExpression = updateExpression.Set(expression.Name("Type"), expression.Value(&update.Type))
+	}
+
+	return updateExpression
 }
