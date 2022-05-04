@@ -479,6 +479,73 @@ Resources:
               RestApiId:
                 Ref: AuctionGateway
 
+  SearchItemsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: main
+      Runtime: go1.x
+      AutoPublishAlias: live
+      Tracing: Active
+      MemorySize: 512
+      Timeout: 15
+      Description: Lambda function that searches user items
+      CodeUri: backend/functions/api/item/searchItems
+      Environment:
+        Variables:
+          DYNAMODB_TABLE: !Ref DynamoDBTable
+      Policies:
+        Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:Scan
+            Resource: 
+              - !GetAtt DynamoDBTable.Arn
+              - Fn::Sub:
+                  - '${DynamoDBTableArn}/index/GSI1'
+                  - DynamoDBTableArn: !GetAtt DynamoDBTable.Arn
+      Events:
+        ApiEvent:
+            Type: Api
+            Properties:
+              Path: /items/{userId}
+              Method: get
+              RestApiId:
+                Ref: AuctionGateway
+
+  UpdateItemFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: main
+      Runtime: go1.x
+      AutoPublishAlias: live
+      Tracing: Active
+      MemorySize: 512
+      Timeout: 15
+      Description: Lambda function that updates user items
+      CodeUri: backend/functions/api/item/updateItem
+      Environment:
+        Variables:
+          DYNAMODB_TABLE: !Ref DynamoDBTable
+      Policies:
+        Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:UpdateItem
+              - dynamodb:GetItem
+            Resource: 
+              - !GetAtt DynamoDBTable.Arn
+              - Fn::Sub:
+                  - '${DynamoDBTableArn}/index/GSI1'
+                  - DynamoDBTableArn: !GetAtt DynamoDBTable.Arn
+      Events:
+        ApiEvent:
+            Type: Api
+            Properties:
+              Path: /user/{userId}/items/{itemId}
+              Method: patch
+              RestApiId:
+                Ref: AuctionGateway      
+
   GetAuctionBidsFunction:
     Type: AWS::Serverless::Function
     Properties:

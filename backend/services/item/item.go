@@ -13,6 +13,7 @@ type itemRepository interface {
 	GetItemsByUserName(ctx context.Context, userName string) ([]models.Item, error)
 	UpdateItem(ctx context.Context, itemID string, update models.ItemUpdate) error
 	DeleteItem(ctx context.Context, itemID string) error
+	SearchItems(ctx context.Context, searchParams models.ItemSearchParams) ([]models.Item, error)
 }
 
 type auctionRepository interface {
@@ -71,4 +72,8 @@ func (s *service) DeleteItem(ctx context.Context, itemID string) error {
 	}
 
 	return s.itemRepository.DeleteItem(ctx, itemID)
+}
+
+func (s *service) SearchItems(ctx context.Context, searchParams models.ItemSearchParams) ([]models.Item, error) {
+	return s.itemRepository.SearchItems(ctx, searchParams)
 }

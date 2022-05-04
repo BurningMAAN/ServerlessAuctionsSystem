@@ -75,3 +75,13 @@ func buildItemUpdate(update models.ItemUpdate) expression.UpdateBuilder {
 
 	return updateExpression
 }
+
+func buildSearchFilter(searchParams models.ItemSearchParams) expression.ConditionBuilder {
+	conditionExpression := expression.ConditionBuilder{}
+	if searchParams.Category != nil {
+		conditionExpression = conditionExpression.And(expression.Name("GSI1SK").Equal(expression.Value(&searchParams.Category)))
+	}
+
+	conditionExpression = conditionExpression.And(expression.Name("GSI1PK").Equal(expression.Value(utils.Make(models.UserEntityType, searchParams.OwnerID))))
+	return conditionExpression
+}

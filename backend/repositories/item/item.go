@@ -216,3 +216,27 @@ func (r *repository) DeleteItem(ctx context.Context, itemID string) error {
 	_, err := r.DB.DeleteItem(ctx, input)
 	return err
 }
+
+func (r *repository) SearchItems(ctx context.Context, searchParams models.ItemSearchParams) ([]models.Item, error) {
+	conditionExpression := buildSearchFilter(searchParams)
+
+	expr, err := expression.NewBuilder().WithCondition(conditionExpression).Build()
+	if err != nil {
+		return []models.Item{}, err
+	}
+	result, err := r.DB.Scan(ctx, &dynamodb.ScanInput{
+		TableName:                 &r.tableName,
+		ExpressionAttributeNames:  expr.Names(),
+		ExpressionAttributeValues: expr.Values(),
+		FilterExpression:          expr.Filter(),
+	})
+	if err != nil {
+		return []models.Item{}, err
+	}
+
+	if result.Items == nil {
+		return []models.Item{}, errors.New("exists")
+	}
+
+	return ExtractItems(result.Items)
+}

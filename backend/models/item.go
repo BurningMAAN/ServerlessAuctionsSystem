@@ -28,3 +28,8 @@ type ItemUpdate struct {
 	Description *string
 	Name        *string
 }
+
+type ItemSearchParams struct {
+	OwnerID  string
+	Category *string
+}

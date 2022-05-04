@@ -48,6 +48,14 @@ phases:
       - cd $ROOTDIR/backend/functions/api/item/deleteItem
       - go build -o main
 
+      # Build SearchItemsFunction
+      - cd $ROOTDIR/backend/functions/api/item/searchItems
+      - go build -o main
+
+      # Build UpdateItemFunction
+      - cd $ROOTDIR/backend/functions/api/item/updateItem
+      - go build -o main
+
       # Build CreateUserFunction
       - cd $ROOTDIR/backend/functions/api/user/createUser
       - go build -o main
