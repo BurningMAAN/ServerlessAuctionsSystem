@@ -210,7 +210,7 @@ func (r *repository) DeleteItem(ctx context.Context, itemID string) error {
 				Value: "Metadata",
 			},
 		},
-		ConditionExpression: aws.String("attribute_not_exists(PK)"),
+		ConditionExpression: aws.String("attribute_exists(PK)"),
 	}
 
 	_, err := r.DB.DeleteItem(ctx, input)

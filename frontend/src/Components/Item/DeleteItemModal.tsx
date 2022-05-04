@@ -8,6 +8,7 @@ import {
   } from "@mantine/core";
   import { useState, useEffect } from "react";
   import { useForm } from "@mantine/form";
+  import { showNotification } from '@mantine/notifications';
   
   interface ItemProps {
     onOpen: boolean;
@@ -17,6 +18,39 @@ import {
   }
   
   export default function DeleteItem({ onOpen, onClose, itemName, itemID }: ItemProps) {
+    const deleteItem = async (itemID: string) => {
+      let tokenas: string = "";
+      const token = sessionStorage.getItem("access_token");
+      if (token) {
+        tokenas = token;
+      }
+    
+      const requestOptions = {
+        method: "DELETE",
+        headers: { access_token: unescape(tokenas) },
+      };
+      const url =
+        `https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/item/${itemID}`;
+  
+      try {
+        const response = await fetch(url, requestOptions);
+        const responseJSON = await response.json();
+        if(response.status == 200){
+          showNotification({
+            title: 'Inventoriaus pašalinimas',
+            message: 'Inventorius sėkmingai pašalintas',
+          })
+          onClose()
+        } else{
+          showNotification({
+            title: 'Inventoriaus pašalinimas',
+            message: 'Inventoriaus nepavyko pašalinti',
+          })
+        }
+      } catch (error) {
+        console.log("failed to delete item", error);
+      }
+    };
     return (
       <Modal opened={onOpen} onClose={onClose} size="xl">
         <Title>Inventoriaus panaikinimas</Title>
@@ -26,8 +60,7 @@ import {
         <br/>
         <Center>
         <Button color="red" onClick={() => {
-          console.log("panaikinta")
-          onClose()
+          deleteItem(itemID)
         }}>Pašalinti</Button>
         </Center>
       </Modal>
