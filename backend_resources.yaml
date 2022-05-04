@@ -507,7 +507,7 @@ Resources:
         ApiEvent:
             Type: Api
             Properties:
-              Path: /items/{userId}
+              Path: /items-search/{userId}
               Method: get
               RestApiId:
                 Ref: AuctionGateway
