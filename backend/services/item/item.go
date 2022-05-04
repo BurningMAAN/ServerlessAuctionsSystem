@@ -67,7 +67,7 @@ func (s *service) DeleteItem(ctx context.Context, itemID string) error {
 		return err
 	}
 
-	if len(item.AuctionID) == 0 {
+	if len(item.AuctionID) > 0 {
 		return errors.New("negalima ismest kai aukcione")
 	}
 
