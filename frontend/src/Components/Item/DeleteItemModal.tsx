@@ -8,6 +8,7 @@ import {
   } from "@mantine/core";
   import { useState, useEffect } from "react";
   import { useForm } from "@mantine/form";
+  import {X} from "tabler-icons-react";
   import { showNotification } from '@mantine/notifications';
   
   interface ItemProps {
@@ -45,6 +46,8 @@ import {
           showNotification({
             title: 'Inventoriaus pašalinimas',
             message: 'Inventoriaus nepavyko pašalinti',
+            color: 'red',
+            icon: <X/>,
           })
         }
       } catch (error) {

@@ -27,12 +27,17 @@ func (h *handler) DeleteItem(ctx context.Context, event events.APIGatewayProxyRe
 		return utils.InternalError("token not provided")
 	}
 
+	if len(event.PathParameters["itemId"]) == 0 {
+		return utils.InternalError("not provided auctionId")
+	}
 	// userConfig, err := utils.GetUserConfig(accessToken)
 	// if err != nil {
 	// 	return utils.InternalError(err.Error())
 	// }
 
-	req := request{}
+	req := request{
+		ItemID: event.PathParameters["itemId"],
+	}
 
 	err := h.itemService.DeleteItem(ctx, req.ItemID)
 	if err != nil {
