@@ -19,6 +19,22 @@ import { Upload, Photo, X, Icon as TablerIcon } from "tabler-icons-react";
 import { Dropzone, DropzoneStatus, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import {ItemCreateRequest, createItem} from "../../api/item";
 import { useForm } from '@mantine/form';
+import AWS from 'aws-sdk'
+import uuid from "uuid";
+
+const S3_BUCKET ='auctioneer-images-bucket';
+const REGION ='us-east-1';
+
+
+AWS.config.update({
+    accessKeyId: 'AKIARPU6BCUFUG5PQY6N',
+    secretAccessKey: '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'
+})
+
+const myBucket = new AWS.S3({
+    params: { Bucket: S3_BUCKET},
+    region: REGION,
+})
 
 interface ItemCreateProps {
   onOpen: boolean;
@@ -30,6 +46,8 @@ export default function ItemCreateWizard({ onOpen, onClose }: ItemCreateProps) {
   const theme = useMantineTheme();
   const [item, setItem] = useState<ItemCreateRequest>({} as ItemCreateRequest);
   const [uploadedImages, setUploadedImages] = useState<string[]>([])
+  const [photoImages, setPhotoImages] = useState<File[]>([])
+  const [imageNames, setImageNames] = useState<string[]>([])
   let testImages = new FormData();
 
   const form = useForm({
@@ -37,7 +55,7 @@ export default function ItemCreateWizard({ onOpen, onClose }: ItemCreateProps) {
       name: '',
       description: '',
       category: '',
-      body: new FormData()
+      photoURLs: []
     },
     validate: {
       name: (value) => value.length >= 4 ? null : 'Daikto pavadinimas turi būti bent 4 simbolių',
@@ -51,7 +69,22 @@ export default function ItemCreateWizard({ onOpen, onClose }: ItemCreateProps) {
       onClose();
     }} size="xl">
       <form onSubmit={form.onSubmit((values) => {
-           setUploadedImages([])
+          //  setUploadedImages([])
+          let imageUUID = uuid.v4()
+         photoImages.map((uploadedImage) => {
+            const params = {
+              ACL: 'public-read',
+              Body: uploadedImage,
+              Bucket: S3_BUCKET,
+              Key: imageUUID
+          };
+  
+          myBucket.putObject(params)
+              .send((err) => {
+                  if (err) console.log(err)
+              })
+          })
+          imageNames.push(imageUUID)
            createItem(values)
            onClose();
         })}>
@@ -102,6 +135,7 @@ export default function ItemCreateWizard({ onOpen, onClose }: ItemCreateProps) {
             setUploadedImages([...uploadedImages, url])
             testImages.append('id', image)
             console.log(testImages.get('id'))
+            photoImages.push(image)
           })
         }}
         onReject={() => console.log("rejected files")}

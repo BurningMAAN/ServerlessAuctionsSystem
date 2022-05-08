@@ -3,7 +3,7 @@ export interface ItemCreateRequest {
     name: string;
     description: string;
     category: string;
-    body: FormData;
+    photoURLs: string[];
   }
 
 

@@ -12,9 +12,10 @@ import (
 )
 
 type request struct {
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	Category    string `json:"category"`
+	Name        string   `json:"name"`
+	Description string   `json:"description"`
+	Category    string   `json:"category"`
+	PhotoURLs   []string `json:"photoURLs"`
 }
 
 type response struct {
@@ -54,11 +55,13 @@ func (h *handler) CreateItem(ctx context.Context, event events.APIGatewayProxyRe
 		return utils.InternalError(err.Error())
 	}
 
+	log.Printf("req: %v", req)
+
 	item, err := h.itemService.CreateItem(ctx, models.Item{
 		Description: req.Description,
 		Category:    models.ItemCategory(req.Category),
 		OwnerID:     userConfig.Name,
-		PhotoURLs:   []string{},
+		PhotoURLs:   req.PhotoURLs,
 		Name:        req.Name,
 	})
 	if err != nil {
@@ -73,6 +76,7 @@ func (h *handler) CreateItem(ctx context.Context, event events.APIGatewayProxyRe
 		PhotoURLs:   item.PhotoURLs,
 		Name:        item.Name,
 	})
+	log.Printf("resp: %v", respBody)
 	if err != nil {
 		return utils.InternalError(err.Error())
 	}
