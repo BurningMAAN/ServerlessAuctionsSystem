@@ -68,7 +68,7 @@ export default function ItemCard({
           Panaikinti
         </Button>
       </Card>
-      <UpdateItem id={id}onOpen={updateOpen} onClose={() => setUpdateOpen(false)}/>
+      <UpdateItem name={name} description={description} category={category} id={id}onOpen={updateOpen} onClose={() => setUpdateOpen(false)}/>
       <DeleteItem onOpen={deleteOpen} onClose={() => setDeleteOpen(false)} itemID={id} itemName={name}></DeleteItem>
     </div>
   );

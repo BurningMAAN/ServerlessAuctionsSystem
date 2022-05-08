@@ -5,6 +5,7 @@ import {
   TextInput,
   Select,
   Textarea,
+  Button,
 } from "@mantine/core";
 import { useState, useEffect } from "react";
 import jwtDecode, { JwtPayload } from "jwt-decode";
@@ -12,6 +13,9 @@ import { useForm } from "@mantine/form";
 
 interface ItemProps {
   id: string;
+  name: string;
+  description: string
+  category: string;
   onOpen: boolean;
   onClose: () => void;
 }
@@ -27,9 +31,9 @@ interface DecodedToken {
   username: string;
 }
 
-export default function UpdateItem({ id, onOpen, onClose }: ItemProps) {
+export default function UpdateItem({ id, name, description, category, onOpen, onClose }: ItemProps) {
   const [item, setItem] = useState<GetItem>({} as GetItem)
-  const getItem = async() => {
+  const updateItem = async() => {
     let tokenas:string = ""
     const token = sessionStorage.getItem("access_token");
     if(token){
@@ -40,6 +44,7 @@ export default function UpdateItem({ id, onOpen, onClose }: ItemProps) {
   const requestOptions = {
     method: "PATCH",
     headers: { "access_token": unescape(tokenas)},
+    body: JSON.stringify(form)
   };
     const url =
       `https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/users/${decodedToken.username}/items/${id}`;
@@ -59,9 +64,9 @@ export default function UpdateItem({ id, onOpen, onClose }: ItemProps) {
   }
   const form = useForm({
     initialValues: {
-      name: item.name,
-      description: item.description,
-      category: item.category,
+      name: name,
+      description: description,
+      category: category,
       body: new FormData()
     },
     validate: {
@@ -70,7 +75,6 @@ export default function UpdateItem({ id, onOpen, onClose }: ItemProps) {
       category: (value) => value == 'Transportas' ? null : 'Pasirinkite tinkamą kategoriją'
     }
   })
-  getItem()
   return (
     <Modal opened={onOpen} onClose={onClose} size="xl">
       <Title>Inventoriaus atnaujinimas</Title>
@@ -94,6 +98,7 @@ export default function UpdateItem({ id, onOpen, onClose }: ItemProps) {
         {...form.getInputProps('description')}
         required
       />
+      <Button onClick={() => updateItem()}>Atnaujinti</Button>
     </Modal>
   );
 }

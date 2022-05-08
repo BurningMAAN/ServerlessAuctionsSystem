@@ -711,3 +711,9 @@ Resources:
               Method: post
               RestApiId:
                 Ref: AuctionGateway
+
+  ImagesBucket:
+    Type: 'AWS::S3::Bucket'
+    DeletionPolicy: Retain
+    Properties:
+      BucketName: auctioneer-images-bucket

@@ -15,6 +15,8 @@ import {
   Notification,
 } from "@mantine/core";
 import { Redirect } from 'react-router-dom';
+import {X} from "tabler-icons-react";
+import { showNotification } from '@mantine/notifications';
 import { useForm } from '@mantine/form';
 
 const useStyles = createStyles((theme) => ({
@@ -133,6 +135,13 @@ export default function AuthenticationImage() {
       const responseJSON = await response.json();
       if(response.status == 200){
         setToken(responseJSON);
+      } else{
+        showNotification({
+          title: 'Autorizacija',
+          message: 'Nepavyko autorizuoti vartotojo. Pasitikrinkite, ar įvesti duomenys yra teisingi',
+          color: 'red',
+          icon: <X/>,
+        })
       }
     } catch (error) {
       console.log("failed to get data from api", error);

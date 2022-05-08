@@ -6,6 +6,7 @@ import jwtDecode, { JwtPayload } from "jwt-decode";
 import { Redirect } from 'react-router-dom';
 
 interface DecodedToken {
+  username: string;
   role: string;
 }
 
@@ -109,7 +110,16 @@ export default function NavigationBar() {
   return (
     <Navbar height={700} width={{ sm: 300 }} p="md">
       <Center>
-       <Avatar radius="xl"/> <b>Tomas Bumbulis</b>
+      {decodedToken.username && (
+        <>
+         <Avatar radius="xl"/> <b>{decodedToken?.username}</b>
+         </>
+      ) || (
+        <>
+        <Avatar radius="xl"/>
+          <b>Neregistruotas vartotojas</b>
+          </>
+      )}
       </Center>
       <Center>
         <CurrencyEuro color="green"/>500.00
