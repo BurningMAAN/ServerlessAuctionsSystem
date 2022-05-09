@@ -20,15 +20,15 @@ import { Dropzone, DropzoneStatus, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import {ItemCreateRequest, createItem} from "../../api/item";
 import { useForm } from '@mantine/form';
 import AWS from 'aws-sdk'
-import uuid from "uuid";
+import {v4 as uuid} from "uuid"; 
 
 const S3_BUCKET ='auctioneer-images-bucket';
 const REGION ='us-east-1';
 
 
 AWS.config.update({
-    accessKeyId: 'AKIARPU6BCUFUG5PQY6N',
-    secretAccessKey: '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'
+    accessKeyId: '',
+    secretAccessKey: ''
 })
 
 const myBucket = new AWS.S3({
@@ -55,7 +55,7 @@ export default function ItemCreateWizard({ onOpen, onClose }: ItemCreateProps) {
       name: '',
       description: '',
       category: '',
-      photoURLs: []
+      photoURLs: ['']
     },
     validate: {
       name: (value) => value.length >= 4 ? null : 'Daikto pavadinimas turi būti bent 4 simbolių',
@@ -69,9 +69,8 @@ export default function ItemCreateWizard({ onOpen, onClose }: ItemCreateProps) {
       onClose();
     }} size="xl">
       <form onSubmit={form.onSubmit((values) => {
-          //  setUploadedImages([])
-          let imageUUID = uuid.v4()
          photoImages.map((uploadedImage) => {
+          let imageUUID = uuid()
             const params = {
               ACL: 'public-read',
               Body: uploadedImage,
@@ -83,8 +82,9 @@ export default function ItemCreateWizard({ onOpen, onClose }: ItemCreateProps) {
               .send((err) => {
                   if (err) console.log(err)
               })
+            imageNames.push(imageUUID)
           })
-          imageNames.push(imageUUID)
+          values.photoURLs = imageNames
            createItem(values)
            onClose();
         })}>
@@ -136,6 +136,7 @@ export default function ItemCreateWizard({ onOpen, onClose }: ItemCreateProps) {
             testImages.append('id', image)
             console.log(testImages.get('id'))
             photoImages.push(image)
+            console.log(photoImages.length)
           })
         }}
         onReject={() => console.log("rejected files")}

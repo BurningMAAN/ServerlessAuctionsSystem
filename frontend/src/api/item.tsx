@@ -23,6 +23,7 @@ export const createItem = async (item: ItemCreateRequest) => {
     body: JSON.stringify(item),
   };
 
+  console.log(JSON.stringify(item))
   try {
     fetch(url, requestOptions).then((response) => {
       console.log(requestOptions)

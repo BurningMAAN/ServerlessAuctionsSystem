@@ -27,6 +27,7 @@ interface AuctionItemProps {
   description: string;
   category: string;
   name: string;
+  photoURLs: string[];
 }
 
 interface AuctionViewProps {}

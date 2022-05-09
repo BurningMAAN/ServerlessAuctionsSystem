@@ -40,6 +40,8 @@ type AuctionEvent struct {
 type AuctionSearchParams struct {
 	Category    *string
 	AuctionType *string
+	OwnerID     *string
+	Status      *string
 }
 
 type AuctionUpdate struct {

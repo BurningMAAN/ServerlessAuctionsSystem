@@ -9,10 +9,12 @@ type User struct {
 	Password string
 	Email    string
 	Role     string
+	Credit   float64
 }
 
 type UserUpdate struct {
 	ID       string
 	Password *string
 	Email    *string
+	Credit   float64
 }
