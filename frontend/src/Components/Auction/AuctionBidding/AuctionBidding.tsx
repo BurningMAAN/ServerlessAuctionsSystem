@@ -93,7 +93,7 @@ export default function AuctionBiddingDashboard({
         setHours(h);
 
         const m = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-        setMinutes(m);
+        setMinutes(m + 1);
 
         const s = Math.floor((difference % (1000 * 60)) / 1000);
         setSeconds(s);

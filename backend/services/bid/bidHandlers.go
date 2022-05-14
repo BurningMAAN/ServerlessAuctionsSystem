@@ -13,7 +13,7 @@ func (s *service) handleAbsoluteBid(ctx context.Context, auctionID string, bid m
 		return fmt.Errorf("get latest auction bids err: %s", err.Error())
 	}
 
-	if userBalance < latestBids[0].Value {
+	if userBalance < latestBids[0].Value && len(latestBids) > 0 {
 		return errors.ErrUnsufficientCreditBalance
 	}
 
