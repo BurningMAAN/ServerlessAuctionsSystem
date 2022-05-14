@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/cloudwatchevents"
@@ -22,9 +21,7 @@ type eventClient interface {
 }
 
 type repository struct {
-	eventClient         eventClient
-	handlerFunctionName string
-	handlerFunctionArn  string
+	eventClient eventClient
 }
 
 func New(eventClient eventClient) *repository {
@@ -56,8 +53,8 @@ func (r *repository) CreateEventRule(ctx context.Context, auctionID string, star
 		Rule: aws.String(fmt.Sprintf("auction-event-%s", auctionID)),
 		Targets: []cloudwatchTypes.Target{
 			{
-				Arn:   aws.String(r.handlerFunctionArn),
-				Id:    aws.String(r.handlerFunctionName),
+				Arn:   aws.String("arn:aws:lambda:us-east-1:160902899897:function:auctioneer-infra-backend-HandleAuctionFunction-IU4UT7Wy9oKi"),
+				Id:    aws.String("auctioneer-infra-backend-HandleAuctionFunction-IU4UT7Wy9oKi"),
 				Input: aws.String(string(eventInput)),
 			},
 		},
@@ -108,23 +105,5 @@ func (r *repository) DeleteEventRule(ctx context.Context, auctionID string) erro
 	_, err = r.eventClient.DeleteRule(ctx, &cloudwatchevents.DeleteRuleInput{
 		Name: aws.String(fmt.Sprintf("auction-event-%s", auctionID)),
 	})
-	return err
-}
-
-// nereikia sito
-func (r *repository) CreateBidEvent(ctx context.Context, auctionID string) error {
-	log.Print("sending bid event to event bus")
-	output, err := r.eventClient.PutEvents(ctx, &cloudwatchevents.PutEventsInput{
-		Entries: []cloudwatchTypes.PutEventsRequestEntry{
-			{
-				Detail:     aws.String(fmt.Sprintf(`{"auctionID": "%s"}`, auctionID)),
-				Source:     aws.String("bid.lambda"),
-				DetailType: aws.String("AUCTION_BID"),
-			},
-		},
-	})
-
-	outputBytes, _ := json.Marshal(output)
-	log.Print(string(outputBytes))
 	return err
 }

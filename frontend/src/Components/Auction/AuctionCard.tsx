@@ -35,6 +35,8 @@ import {
     const theme = useMantineTheme();
     const secondaryColor =
       theme.colorScheme === "dark" ? theme.colors.dark[1] : theme.colors.gray[7];
+      let auctionDateParsed = new Date(auctionDate)
+       let formatted = formatDate(auctionDateParsed)
     return (
       <div style={{ width: 340, margin: "auto" }}>
         <Card shadow="sm" p="lg">
@@ -66,7 +68,7 @@ import {
   
           <Text size="sm" style={{ color: secondaryColor, lineHeight: 1.5 }}>
             <b>Aukciono pradžia</b>:{" "}
-            {(stage == "STAGE_AUCTION_FINISHED" && "Aukcionas baigtas") || stage == "STAGE_AUCTION_ONGOING" && "Aukcionas vyksta" || auctionDate}
+            {(stage == "STAGE_AUCTION_FINISHED" && "Aukcionas baigtas") || stage == "STAGE_AUCTION_ONGOING" && "Aukcionas vyksta" || formatted}
             <br />
             <b>Minimalus kėlimas</b>: {bidIncrement}
           </Text>
@@ -97,6 +99,25 @@ import {
           </Button>
         </Card>
       </div>
+    );
+  }
+  
+  function padTo2Digits(num: number) {
+    return num.toString().padStart(2, '0');
+  }
+  
+  function formatDate(date: Date) {
+    return (
+      [
+        date.getFullYear(),
+        padTo2Digits(date.getMonth() + 1),
+        padTo2Digits(date.getDate()),
+      ].join('-') +
+      ' ' +
+      [
+        padTo2Digits(date.getHours()),
+        padTo2Digits(date.getMinutes()),
+      ].join(':')
     );
   }
   
