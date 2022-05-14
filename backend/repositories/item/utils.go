@@ -17,7 +17,7 @@ func unmarshalItem(itemDB ItemDB) (models.Item, error) {
 		OwnerID:     utils.Extract(models.UserEntityType, itemDB.GSI1PK),
 		PhotoURLs:   itemDB.PhotoURLs,
 		Name:        itemDB.Name,
-		AuctionID:   itemDB.AuctionID,
+		AuctionID:   utils.Extract(models.AuctionEntityType, itemDB.GSI2PK),
 	}, nil
 }
 

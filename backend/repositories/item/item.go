@@ -112,7 +112,7 @@ func (r *repository) GetItemByID(ctx context.Context, itemID string) (models.Ite
 
 func (r *repository) AssignItem(ctx context.Context, auctionID, itemID string) error {
 	express, err := expression.NewBuilder().WithUpdate(expression.Set(
-		expression.Name("GSI2PK"), expression.Value(utils.Make(models.UserEntityType, auctionID)))).Build()
+		expression.Name("GSI2PK"), expression.Value(utils.Make(models.AuctionEntityType, auctionID)))).Build()
 	if err != nil {
 		return err
 	}

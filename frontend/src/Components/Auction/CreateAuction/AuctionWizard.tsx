@@ -81,9 +81,9 @@ export default function AuctionCreateWizard({ onOpen, onClose }: AuctionProps) {
       }
     };
     getUserItems();
-    console.log(userItemsList)
   }, []);
 
+  console.log(userItemsList)
   // userItemsList.items?.map((userItem) => {
   //   console.log(userItem.auctionId.length == 0)
   //   // if(userItem.auctionId == ""){
