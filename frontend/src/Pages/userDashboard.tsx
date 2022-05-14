@@ -18,26 +18,7 @@ import AuctionCard from "../Components/Auction/AuctionItem";
 import jwtDecode, { JwtPayload } from "jwt-decode";
 import { Photo, MessageCircle } from "tabler-icons-react";
 import UpdateUserModal from "../Components/User/UpdateUserModal";
-interface TitleProps {}
-
-export interface AuctionList {
-  auctions: [
-    {
-      id: string;
-      auctionDate: string;
-      buyoutPrice: number;
-      auctionType: string;
-      bidIncrement: number;
-      creatorId: string;
-      isFinished: boolean;
-      description: string;
-      item: {
-        category: string;
-        name: string;
-      };
-    }
-  ];
-}
+import { useForm } from "@mantine/form";
 
 interface DecodedToken {
   username: string;
@@ -52,32 +33,52 @@ const getToken = () => {
   return tokenas;
 };
 
-const UserDashboard: FC<TitleProps> = ({}) => {
+export default function UserDashboard() {
   const token = getToken();
   let decodedToken: DecodedToken = {} as DecodedToken;
   if (token) {
     decodedToken = jwtDecode<DecodedToken>(token);
   }
-  const [auctionsList, setAuctionsList] = useState<AuctionList>(
-    {} as AuctionList
-  );
-  useEffect(() => {
-    const url =
-      `${process.env.REACT_APP_API_URL}auctionsList`;
 
+  const updateUser = async() => {
+    let tokenas:string = ""
+    const token = sessionStorage.getItem("access_token");
+    if(token){
+      tokenas = token
+    }
+    const decodedToken = jwtDecode<DecodedToken>(tokenas);
+
+
+  const requestOptions = {
+    method: "PATCH",
+    headers: { "access_token": unescape(tokenas)},
+    body: JSON.stringify(form)
+  };
+    let url = `${process.env.REACT_APP_API_URL}/user`;
     const fetchData = async () => {
       try {
-        const response = await fetch(url);
+        const response = await fetch(url, requestOptions);
         const responseJSON = await response.json();
         console.log(responseJSON);
-        setAuctionsList(responseJSON);
       } catch (error) {
         console.log("failed to get data from api", error);
       }
     };
-    console.log("Updating data lists");
     fetchData();
-  }, []);
+  }
+
+  const form = useForm({
+    initialValues: {
+      creditBalance: 0.0,
+      userId: decodedToken.username
+    },
+    validate: {
+      creditBalance: (value) => value > 0 ? null : 'Kreditų papildymas turi būti didesnis nei nulis',
+      // name: (value) => value.toString().length >= 4 ? null : 'Daikto pavadinimas turi būti bent 4 simbolių',
+      // description: (value) => value.length > 10 ? null : 'Daikto aprašymas turi būti bent 10 simbolių',
+      // category: (value) => value == 'Transportas' || 'Baldai' || 'Elektronika' || 'Automobilių detalės' || 'Drabužiai' || 'Paveikslai' ? null : 'Pasirinkite tinkamą kategoriją'
+    }
+  })
 
   const [openEditModal, setOpenEditModal] = useState(false);
   return (
@@ -111,30 +112,13 @@ const UserDashboard: FC<TitleProps> = ({}) => {
           </Grid.Col>
           <Grid.Col span={4}>
             <Title order={5}>Mokėjimai</Title>
-            <NumberInput label="Kreditų skaičius"></NumberInput>
+            <NumberInput label="Kreditų skaičius"
+            {...form.getInputProps('creditBalance')}></NumberInput>
             <br/>
-            <Button color="green" onClick={() => {
-              showNotification({
-                title: 'Default notification',
-                message: 'Hey there, your code is awesome! 🤥',
-              })
-            }}>Papildyti</Button>
-          </Grid.Col>
-          <Grid.Col span={4}>
-            <Title order={5}>Ataskaitos</Title>
-            <Text>Sugeneruojama vartotojo aukcionų ataskaita</Text>
-            <Button>Generuoti</Button>
+            <Button color="green" 
+            onClick={() => updateUser()}>Papildyti</Button>
           </Grid.Col>
         </Grid>
-        {/* <Grid.Col span={4}>
-              <Button onClick={() => setOpenEditModal(true)}>Atnaujinti vartotojo informaciją</Button>
-          </Grid.Col>
-          <Grid.Col span={4}>
-              <Button>Generuoti aukcionų ataskaitą</Button>
-          </Grid.Col>
-          <Grid.Col span={4}>
-              <Button onClick={() => setOpenEditModal(true)}>Papildyti kreditų balansą</Button>
-          </Grid.Col> */}
         <UpdateUserModal
           onOpen={openEditModal}
           onClose={() => setOpenEditModal(false)}
@@ -145,4 +129,3 @@ const UserDashboard: FC<TitleProps> = ({}) => {
   );
 };
 
-export default UserDashboard;

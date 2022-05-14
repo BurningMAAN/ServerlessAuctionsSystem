@@ -26,14 +26,8 @@ type handler struct {
 }
 
 func (h *handler) UpdateUser(ctx context.Context, event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	if len(event.PathParameters["userId"]) == 0 {
-		return utils.InternalError("not provided userId")
-	}
 
-	req := request{
-		UserID: event.PathParameters["itemId"],
-	}
-
+	req := request{}
 	err := json.Unmarshal([]byte(event.Body), &req)
 	if err != nil {
 		return utils.InternalError(err.Error())
