@@ -52,6 +52,8 @@ func (h *handler) SearchUserItems(ctx context.Context, event events.APIGatewayPr
 		ItemID:   event.PathParameters["itemId"],
 	}
 
+	log.Printf("req struct: %v", req)
+	log.Printf("req body: %v", string(event.Body))
 	err = json.Unmarshal([]byte(event.Body), &req)
 	if err != nil {
 		return utils.InternalError(err.Error())

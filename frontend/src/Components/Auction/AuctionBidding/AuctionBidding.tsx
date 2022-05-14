@@ -211,7 +211,12 @@ export default function AuctionBiddingDashboard({
                 }
               })
               .catch((error) => {
-                console.log(error)
+                showNotification({
+                  title: 'Klaida',
+                  color: 'red',
+                  icon: <X/>,
+                  message: 'Nepavyko atlikti operacijos',
+                })
               })
             }}
           >

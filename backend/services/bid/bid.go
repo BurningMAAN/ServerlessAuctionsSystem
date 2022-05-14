@@ -59,7 +59,7 @@ func (s *service) PlaceBid(ctx context.Context, auctionID string, bid models.Bid
 
 	switch auction.Type {
 	case models.AuctionTypeAbsolute:
-		err := s.handleAbsoluteBid(ctx, auction.ID, bid, user.Credit)
+		err := s.handleAbsoluteBid(ctx, auction.ID, bid, user.Credit, auction.BidIncrement)
 		if err != nil {
 			return models.Bid{}, err
 		}

@@ -123,7 +123,7 @@ export default function NavigationBar() {
   useEffect(() => {
     getData();
   }, []);
-  console.log(user)
+
   return (
     <Navbar height={700} width={{ sm: 300 }} p="md">
       <Center>
