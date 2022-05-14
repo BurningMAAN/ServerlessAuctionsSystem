@@ -93,7 +93,7 @@ const MyAuctions: FC<TitleProps> = ({}) => {
             })}
           </Grid>
         </Tabs.Tab>
-        <Tabs.Tab label="Baigęsi Aukcionai" icon={<MessageCircle size={14} />}>
+        <Tabs.Tab label="Pasibaigę Aukcionai" icon={<MessageCircle size={14} />}>
           <Title>Bye bye</Title>
         </Tabs.Tab>
         <Tabs.Tab label="Laimėti Aukcionai" icon={<MessageCircle size={14} />}>

@@ -3,6 +3,7 @@ import { createStyles, Navbar, Group, Code, Image, Avatar, Center, Title } from 
 import { Logout, Menu, Login, CurrencyEuro} from "tabler-icons-react";
 import sebas from "../../shared/sebas.png";
 import jwtDecode, { JwtPayload } from "jwt-decode";
+import React, { FC, useEffect } from "react";
 import { Redirect } from 'react-router-dom';
 
 interface DecodedToken {
@@ -99,6 +100,9 @@ const useStyles = createStyles((theme, _params, getRef) => {
   };
 });
 
+type GetUserResponse{
+  creditBalance: number;
+}
 export default function NavigationBar() {
   const { classes, cx } = useStyles();
   const token = getToken();
@@ -107,6 +111,17 @@ export default function NavigationBar() {
     decodedToken =  jwtDecode<DecodedToken>(token);
   }
 
+  const [user, setUser] = useState<GetUserResponse>({} as GetUserResponse)
+  const getData = async () => {
+    const userData = await fetch(
+      `${process.env.REACT_APP_API_URL}users/${decodedToken.username}`
+    ).then((res) => res.json());
+    setUser(userData);
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
   return (
     <Navbar height={700} width={{ sm: 300 }} p="md">
       <Center>

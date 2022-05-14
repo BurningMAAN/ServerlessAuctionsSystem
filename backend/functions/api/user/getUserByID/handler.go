@@ -15,13 +15,14 @@ type request struct {
 }
 
 type response struct {
-	ID       string `json:"id"`
-	Username string `json:"username"`
-	Email    string `json:"email"`
+	ID            string  `json:"id"`
+	Username      string  `json:"username"`
+	Email         string  `json:"email"`
+	CreditBalance float64 `json:"creditBalance"`
 }
 
 type userService interface {
-	GetUserByID(ctx context.Context, userID string) (models.User, error)
+	GetUserByUserName(ctx context.Context, userName string) (models.User, error)
 }
 
 type handler struct {
@@ -37,15 +38,16 @@ func (h *handler) GetItems(ctx context.Context, event events.APIGatewayProxyRequ
 		UserID: event.PathParameters["itemId"],
 	}
 
-	user, err := h.userService.GetUserByID(ctx, req.UserID)
+	user, err := h.userService.GetUserByUserName(ctx, req.UserID)
 	if err != nil {
 		return utils.InternalError(err.Error())
 	}
 
 	respBody, err := json.Marshal(response{
-		ID:       user.ID,
-		Username: user.UserName,
-		Email:    user.Email,
+		ID:            user.ID,
+		Username:      user.UserName,
+		Email:         user.Email,
+		CreditBalance: user.Credit,
 	})
 	if err != nil {
 		return utils.InternalError(err.Error())

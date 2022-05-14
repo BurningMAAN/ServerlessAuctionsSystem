@@ -1,6 +1,7 @@
 import React, { FC, useEffect, useState } from "react";
 import NavigationBar from "../Components/Skeleton/Navbar";
 import { showNotification } from '@mantine/notifications';
+import {X, ChevronDown} from "tabler-icons-react";
 import {
   AppShell,
   Tabs,
@@ -59,8 +60,21 @@ export default function UserDashboard() {
     const fetchData = async () => {
       try {
         const response = await fetch(url, requestOptions);
-        const responseJSON = await response.json();
-        console.log(responseJSON);
+        if(response.status == 200){
+          showNotification({
+            title: 'Vartotojo atnaujinimas',
+            color: 'green',
+            icon: <ChevronDown/>,
+            message: 'Sėkmingai atliktas vartotojo duomenų atnaujinimas',
+          })
+        } else{
+          showNotification({
+            title: 'Klaida',
+            color: 'red',
+            icon: <X/>,
+            message: 'Nepavyko atlikti vartotojo atnaujinimo',
+          })
+        }
       } catch (error) {
         console.log("failed to get data from api", error);
       }
