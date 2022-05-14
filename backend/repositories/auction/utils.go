@@ -21,6 +21,7 @@ func unmarshalAuction(auctionDB AuctionDB) (models.Auction, error) {
 		Category:     utils.Extract("Category", auctionDB.GSI1SK),
 		EndDate:      auctionDB.EndDate,
 		Stage:        auctionDB.Stage,
+		PhotoURL:     auctionDB.PhotoURL,
 	}, nil
 }
 
