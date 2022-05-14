@@ -1,6 +1,7 @@
 package item
 
 import (
+	errs "auctionsPlatform/errors"
 	"auctionsPlatform/models"
 	"context"
 	"errors"
@@ -59,6 +60,14 @@ func (s *service) GetItemsByUserName(ctx context.Context, userName string) ([]mo
 }
 
 func (s *service) UpdateItem(ctx context.Context, itemID string, update models.ItemUpdate) error {
+	item, err := s.itemRepository.GetItemByID(ctx, itemID)
+	if err != nil {
+		return err
+	}
+	if len(item.AuctionID) > 0 {
+		return errs.ErrItemCannotBeUpdated
+	}
+	log.Printf("service: %v", update)
 	return s.itemRepository.UpdateItem(ctx, itemID, update)
 }
 

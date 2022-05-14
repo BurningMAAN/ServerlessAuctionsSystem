@@ -58,7 +58,8 @@ func (h *handler) SearchUserItems(ctx context.Context, event events.APIGatewayPr
 		return utils.InternalError(err.Error())
 	}
 
-	log.Printf("req struct: %v", req)
+	reqBytes, _ := json.Marshal(req)
+	log.Printf("req struct: %v", string(reqBytes))
 
 	err = h.itemService.UpdateItem(ctx, req.ItemID, models.ItemUpdate{})
 	if err != nil {

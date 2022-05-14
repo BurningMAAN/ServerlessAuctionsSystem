@@ -53,6 +53,7 @@ func ExtractItems(items []map[string]types.AttributeValue) ([]models.Item, error
 }
 
 func buildItemUpdate(update models.ItemUpdate) expression.UpdateBuilder {
+	log.Print("buildinam updeita")
 	updateExpression := expression.UpdateBuilder{}
 	if update.AuctionID != nil {
 		updateExpression = updateExpression.Set(expression.Name("GSI2PK"), expression.Value(utils.Make(models.AuctionEntityType, *update.AuctionID)))
