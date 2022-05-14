@@ -496,7 +496,7 @@ Resources:
       MemorySize: 512
       Timeout: 15
       Description: Lambda function that gets user items list
-      CodeUri: backend/functions/api/item/getUserByID
+      CodeUri: backend/functions/api/user/getUserByID
       Environment:
         Variables:
           DYNAMODB_TABLE: !Ref DynamoDBTable
