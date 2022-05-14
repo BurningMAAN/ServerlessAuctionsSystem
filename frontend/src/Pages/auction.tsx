@@ -39,11 +39,11 @@ export default function AuctionView({}: AuctionViewProps) {
 
   const getData = async () => {
     const auctionData = await fetch(
-      `https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/auctions/${auctionID}`
+      `${process.env.REACT_APP_API_URL}auctions/${auctionID}`
     ).then((res) => res.json());
     setAuction(auctionData);
     const itemData = await fetch(
-      `https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/items/${auctionData.itemId}`
+      `${process.env.REACT_APP_API_URL}items/${auctionData.itemId}`
     ).then((res) => res.json());
     setItem(itemData);
   };
@@ -58,6 +58,7 @@ export default function AuctionView({}: AuctionViewProps) {
         <AuctionInformationDashboard
           name={item.name}
           description={item.description}
+          photoURLs={item.photoURLs}
         ></AuctionInformationDashboard>
         <AuctionBiddingDashboard
           auctionID={auction.id}

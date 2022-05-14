@@ -9,7 +9,7 @@ export interface ItemCreateRequest {
 
 export const createItem = async (item: ItemCreateRequest) => {
   const url =
-    "https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/item";
+    `${process.env.REACT_APP_API_URL}item`;
 
     let tokenas:string = ""
     const token = sessionStorage.getItem("access_token");

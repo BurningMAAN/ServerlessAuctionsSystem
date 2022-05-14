@@ -42,7 +42,7 @@ const BugalterDashboard =  () => {
   const [data, setData] = useState('')
   const getData = async () => {
     const auctionData = await fetch(
-      `https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/generateData`
+      `${process.env.REACT_APP_API_URL}generateData`
     ).then((res) => res.json());
     setData(auctionData)
     console.log(data)

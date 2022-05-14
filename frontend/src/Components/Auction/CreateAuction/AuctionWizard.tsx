@@ -68,7 +68,7 @@ export default function AuctionCreateWizard({ onOpen, onClose }: AuctionProps) {
       headers: { access_token: unescape(tokenas) },
     };
     const url =
-      "https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/user/items";
+      `${process.env.REACT_APP_API_URL}user/items`;
 
     const getUserItems = async () => {
       try {
@@ -102,7 +102,7 @@ export default function AuctionCreateWizard({ onOpen, onClose }: AuctionProps) {
       body: JSON.stringify(auction)
     };
     const url =
-      "https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/auction";
+      `${process.env.REACT_APP_API_URL}auction`;
 
     try {
       const response = await fetch(url, requestOptions);

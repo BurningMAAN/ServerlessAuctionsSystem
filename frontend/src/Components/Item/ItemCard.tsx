@@ -25,11 +25,13 @@ export default function ItemCard({
   category,
   description,
   id,
+  photoURLs,
 }: ItemProps) {
   const theme = useMantineTheme();
   const secondaryColor =
     theme.colorScheme === "dark" ? theme.colors.dark[1] : theme.colors.gray[7];
 
+    console.log(`${process.env.REACT_APP_S3_URL}/${photoURLs[0]}`)
   const [updateOpen, setUpdateOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
   return (
@@ -37,7 +39,7 @@ export default function ItemCard({
       <Card shadow="sm" p="lg">
         <Card.Section>
           <Image
-            src="https://cdn.shopify.com/s/files/1/0773/9113/products/RoeblingProfile_5000x.jpg?v=1629750752"
+            src={`${process.env.REACT_APP_S3_URL}/${photoURLs[0]}`}
             height={160}
             alt="Norway"
           />

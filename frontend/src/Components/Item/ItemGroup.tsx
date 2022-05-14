@@ -9,6 +9,7 @@ export interface ItemList {
       description: string;
       category: string;
       name: string;
+      photoURLs: string[];
     }
   ]
 }
@@ -29,7 +30,7 @@ export default function AuctionGroup() {
     headers: { "access_token": unescape(tokenas)},
   };
     const url =
-      "https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/user/items";
+      `${process.env.REACT_APP_API_URL}user/items`;
 
     const fetchData = async () => {
       try {
@@ -52,6 +53,7 @@ export default function AuctionGroup() {
         return (
           <Grid.Col span={4}>
             <ItemCard
+              photoURLs={item.photoURLs}
               name={item.name}
               id={item.id}
               category={item.category}

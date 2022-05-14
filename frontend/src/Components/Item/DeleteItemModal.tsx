@@ -31,7 +31,7 @@ import {
         headers: { access_token: unescape(tokenas) },
       };
       const url =
-        `https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/item/${itemID}`;
+        `${process.env.REACT_APP_API_URL}item/${itemID}`;
   
       try {
         const response = await fetch(url, requestOptions);

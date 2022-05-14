@@ -52,6 +52,7 @@ type AuctionDB struct {
 	CreatorID    string
 	Type         string
 	Stage        string
+	PhotoURL     string
 }
 
 type OptionalGetParameters struct{}
@@ -71,6 +72,7 @@ func (r *repository) CreateAuction(ctx context.Context, auction models.Auction) 
 		Type:         string(auction.Type),
 		EndDate:      auction.StartDate.Add(time.Duration(5 * time.Second)),
 		Stage:        "STAGE_ACCEPTING_BIDS",
+		PhotoURL:     auction.PhotoURL,
 	}
 	auctionAttributeValues, err := attributevalue.MarshalMap(auctionDB)
 	if err != nil {

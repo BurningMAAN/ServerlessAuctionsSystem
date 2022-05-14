@@ -10,14 +10,13 @@ type Auction struct {
 	Type         AuctionType
 	BuyoutPrice  *float64
 	StartDate    time.Time
-	Participants []string /// ID's of Auction participants
 	BidIncrement float64
 	CreatorID    string
 	ItemID       string
 	EndDate      time.Time
 	Stage        string
 	Category     string
-	// Category string Prideti kategorija (nes rodome korteleje)
+	PhotoURL     string
 }
 
 type AuctionType string

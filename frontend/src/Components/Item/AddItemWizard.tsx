@@ -22,13 +22,14 @@ import { useForm } from '@mantine/form';
 import AWS from 'aws-sdk'
 import {v4 as uuid} from "uuid"; 
 
-const S3_BUCKET ='auctioneer-images-bucket';
+const S3_BUCKET ='auctioneer-images-bucket-tomas-b';
 const REGION ='us-east-1';
 
 
 AWS.config.update({
-    accessKeyId: '',
-    secretAccessKey: ''
+    accessKeyId: process.env.REACT_APP_AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.REACT_APP_AWS_SECRET_ACCESS_KEY,
+    sessionToken: process.env.REACT_APP_SESSION_TOKEN,
 })
 
 const myBucket = new AWS.S3({

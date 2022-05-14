@@ -97,7 +97,7 @@ export default function AuthenticationImage() {
 
   const registerUser = async (user: CreateUserRequest) => {
     const url =
-      "https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/user";
+      `${process.env.REACT_APP_API_URL}user`;
 
     const requestOptions = {
       method: "POST",
@@ -105,6 +105,8 @@ export default function AuthenticationImage() {
       body: JSON.stringify(user),
     };
 
+    console.log(requestOptions)
+    console.log(url)
     try {
       fetch(url, requestOptions).then((response) => {
         response.json();
@@ -122,7 +124,7 @@ export default function AuthenticationImage() {
 
   const authorizeUser = async (user: AuthorizeUserRequest) => {
     const url =
-      "https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/authorize";
+      `${process.env.REACT_APP_API_URL}authorize`;
 
     const requestOptions = {
       method: "POST",

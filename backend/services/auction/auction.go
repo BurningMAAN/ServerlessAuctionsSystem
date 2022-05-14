@@ -50,6 +50,7 @@ func (s *service) CreateAuction(ctx context.Context, auction models.Auction, ite
 		return models.Auction{}, err
 	}
 
+	auction.PhotoURL = item.PhotoURLs[0]
 	auction, err = s.auctionRepository.CreateAuction(ctx, auction)
 	if err != nil {
 		return models.Auction{}, err

@@ -13,6 +13,7 @@ export interface AuctionList {
       bidIncrement: number;
       isFinished: boolean;
       description: string;
+      photoURL: string;
       item: {
         category: string;
         name: string;
@@ -28,7 +29,7 @@ export default function AuctionGroup() {
 
   useEffect(() => {
     const url =
-      "https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/auctionsList";
+    `${process.env.REACT_APP_API_URL}auctionsList`;
 
     const fetchData = async () => {
       try {
@@ -50,6 +51,7 @@ export default function AuctionGroup() {
         return (
           <Grid.Col span={4}>
             <AuctionCard
+              photoURL={auctionItem.photoURL}
               isFinished={auctionItem.isFinished}
               auctionID={auctionItem.id}
               auctionDate={auctionItem.auctionDate}

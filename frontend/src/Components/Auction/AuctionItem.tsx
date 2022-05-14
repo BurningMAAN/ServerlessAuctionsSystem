@@ -19,6 +19,7 @@ export interface AuctionProps {
   bidIncrement: number;
   auctionID: string;
   isFinished: boolean;
+  photoURL: string;
 }
 
 export default function AuctionCard({
@@ -30,6 +31,7 @@ export default function AuctionCard({
   bidIncrement,
   auctionID,
   isFinished,
+  photoURL,
 }: AuctionProps) {
   const theme = useMantineTheme();
   const secondaryColor =
@@ -39,7 +41,7 @@ export default function AuctionCard({
       <Card shadow="sm" p="lg">
         <Card.Section>
           <Image
-            src="https://cdn.shopify.com/s/files/1/0773/9113/products/RoeblingProfile_5000x.jpg?v=1629750752"
+            src={`${process.env.REACT_APP_S3_URL}/${photoURL}`}
             height={160}
             alt="Norway"
           />

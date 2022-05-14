@@ -47,7 +47,7 @@ export default function UpdateItem({ id, name, description, category, onOpen, on
     body: JSON.stringify(form)
   };
     const url =
-      `https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/users/${decodedToken.username}/items/${id}`;
+      `${process.env.REACT_APP_API_URL}users/${decodedToken.username}/items/${id}`;
 
     const fetchData = async () => {
       try {

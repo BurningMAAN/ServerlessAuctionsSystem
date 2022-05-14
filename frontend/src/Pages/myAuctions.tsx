@@ -49,7 +49,7 @@ const MyAuctions: FC<TitleProps> = ({}) => {
   );
   useEffect(() => {
     const url =
-      "https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/auctionsList";
+      `${process.env.REACT_APP_API_URL}auctionsList`;
 
     const fetchData = async () => {
       try {

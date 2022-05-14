@@ -49,7 +49,7 @@ const placeBid = async (auctionID: string, bid: number) => {
     body: JSON.stringify({value: bid})
   };
   return await fetch(
-    `https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/auction/${auctionID}/bid`, requestOptions
+    `${process.env.REACT_APP_API_URL}auction/${auctionID}/bid`, requestOptions
   )
 }
 
@@ -60,7 +60,7 @@ export default function AuctionBiddingDashboard({
   const [auction, setAuction] = useState<GetAuctionResponse>({} as GetAuctionResponse)
   const getData = async () => {
     const auctionData = await fetch(
-      `https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/auctions/${auctionID}`
+      `${process.env.REACT_APP_API_URL}auctions/${auctionID}`
     ).then((res) => res.json());
     setAuction(auctionData);
   };
@@ -132,7 +132,7 @@ export default function AuctionBiddingDashboard({
       headers: {"access_token": unescape(getToken())},
     };
     const itemData = await fetch(
-      `https://garckgt6p0.execute-api.us-east-1.amazonaws.com/Stage/auction/${auctionID}/bids`, requestOptions
+      `${process.env.REACT_APP_API_URL}auction/${auctionID}/bids`, requestOptions
     ).then((res) => res.json());
     setBids(itemData);
   }
