@@ -13,7 +13,7 @@ type User struct {
 }
 
 type UserUpdate struct {
-	ID       string
+	UserName string
 	Password *string
 	Email    *string
 	Credit   *float64

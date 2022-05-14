@@ -141,7 +141,7 @@ func (r *repository) UpdateUser(ctx context.Context, updateModel models.UserUpda
 		ExpressionAttributeNames:  express.Names(),
 		Key: map[string]types.AttributeValue{
 			"PK": &types.AttributeValueMemberS{
-				Value: fmt.Sprintf("%s#%s", models.UserEntityType, updateModel.ID),
+				Value: fmt.Sprintf("%s#%s", models.UserEntityType, updateModel.UserName),
 			},
 			"SK": &types.AttributeValueMemberS{
 				Value: "Metadata",
