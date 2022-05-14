@@ -17,6 +17,8 @@ export interface AuctionList {
       bidIncrement: number;
       creatorId: string;
       isFinished: boolean;
+      stage: string;
+      photoURL: string;
       item: {
         category: string;
         name: string;
@@ -75,13 +77,14 @@ const MyAuctions: FC<TitleProps> = ({}) => {
                   {auctionItem.creatorId == decodedToken.username && (
                     <Grid.Col span={4}>
                       <MyAuctionCard
-                        isFinished={auctionItem.isFinished}
+                      stage={auctionItem.stage}
                         auctionID={auctionItem.id}
                         auctionDate={auctionItem.auctionDate}
                         buyoutPrice={auctionItem.buyoutPrice}
                         auctionName={auctionItem.item.name}
                         category={auctionItem.item.category}
                         bidIncrement={auctionItem.bidIncrement}
+                        photoURL={auctionItem.photoURL}
                       ></MyAuctionCard>
                     </Grid.Col>
                   )}

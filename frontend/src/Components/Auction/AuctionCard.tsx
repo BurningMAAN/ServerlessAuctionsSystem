@@ -6,6 +6,7 @@ import {
     Button,
     Group,
     useMantineTheme,
+    Center,
   } from "@mantine/core";
   import { Link } from "react-router-dom";
   import { useParams, Redirect } from "react-router-dom";
@@ -17,7 +18,8 @@ import {
     buyoutPrice: number;
     bidIncrement: number;
     auctionID: string;
-    isFinished: boolean;
+    photoURL: string;
+    stage: string;
   }
   
   export default function MyAuctionCard({
@@ -27,7 +29,8 @@ import {
     category,
     bidIncrement,
     auctionID,
-    isFinished,
+    photoURL,
+    stage,
   }: AuctionProps) {
     const theme = useMantineTheme();
     const secondaryColor =
@@ -36,11 +39,14 @@ import {
       <div style={{ width: 340, margin: "auto" }}>
         <Card shadow="sm" p="lg">
           <Card.Section>
-            <Image
-              src="https://cdn.shopify.com/s/files/1/0773/9113/products/RoeblingProfile_5000x.jpg?v=1629750752"
-              height={160}
-              alt="Norway"
-            />
+          <Center>
+          <img
+          style={{objectFit: 'contain'}}
+            src={`${process.env.REACT_APP_S3_URL}/${photoURL}`}
+            height={160}
+            alt="Norway"
+          />
+          </Center>
           </Card.Section>
   
           <Group
@@ -60,7 +66,7 @@ import {
   
           <Text size="sm" style={{ color: secondaryColor, lineHeight: 1.5 }}>
             <b>Aukciono pradžia</b>:{" "}
-            {(isFinished && "Aukcionas baigtas") || auctionDate}
+            {(stage == "STAGE_AUCTION_FINISHED" && "Aukcionas baigtas") || stage == "STAGE_AUCTION_ONGOING" && "Aukcionas vyksta" || auctionDate}
             <br />
             <b>Minimalus kėlimas</b>: {bidIncrement}
           </Text>

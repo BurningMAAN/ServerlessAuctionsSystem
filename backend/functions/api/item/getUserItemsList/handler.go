@@ -25,6 +25,7 @@ type item struct {
 	OwnerID     string   `json:"ownerId"`
 	PhotoURLs   []string `json:"photoURLs"`
 	Name        string   `json:"name"`
+	AuctionID   string   `json:"auctionId"`
 }
 
 type itemService interface {
@@ -64,6 +65,7 @@ func (h *handler) GetUserItems(ctx context.Context, event events.APIGatewayProxy
 			OwnerID:     foundItem.OwnerID,
 			PhotoURLs:   foundItem.PhotoURLs,
 			Name:        foundItem.Name,
+			AuctionID:   foundItem.AuctionID,
 		})
 	}
 

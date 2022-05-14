@@ -6,6 +6,7 @@ import {
   Button,
   Group,
   useMantineTheme,
+  Center,
 } from "@mantine/core";
 import { Link } from "react-router-dom";
 import UpdateItem from "./UpdateItemModal";
@@ -38,11 +39,14 @@ export default function ItemCard({
     <div style={{ width: 340, margin: "auto" }}>
       <Card shadow="sm" p="lg">
         <Card.Section>
-          <Image
+        <Center>
+          <img
+            style={{objectFit: 'contain'}}
             src={`${process.env.REACT_APP_S3_URL}/${photoURLs[0]}`}
             height={160}
             alt="Norway"
           />
+          </Center>
         </Card.Section>
 
         <Group

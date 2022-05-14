@@ -13,6 +13,7 @@ export interface AuctionList {
       bidIncrement: number;
       isFinished: boolean;
       description: string;
+      stage: string;
       photoURL: string;
       item: {
         category: string;
@@ -48,13 +49,15 @@ export default function AuctionGroup() {
   return (
     <>
       {auctionsList?.auctions?.map((auctionItem) => {
+       let auctionDateParsed = new Date(auctionItem.auctionDate)
+       let formatted = formatDate(auctionDateParsed)
         return (
           <Grid.Col span={4}>
             <AuctionCard
+            stage={auctionItem.stage}
               photoURL={auctionItem.photoURL}
-              isFinished={auctionItem.isFinished}
               auctionID={auctionItem.id}
-              auctionDate={auctionItem.auctionDate}
+              auctionDate={formatted}
               buyoutPrice={auctionItem.buyoutPrice}
               auctionName={auctionItem.item.name}
               category={auctionItem.item.category}
@@ -65,5 +68,24 @@ export default function AuctionGroup() {
         );
       })}
     </>
+  );
+}
+
+function padTo2Digits(num: number) {
+  return num.toString().padStart(2, '0');
+}
+
+function formatDate(date: Date) {
+  return (
+    [
+      date.getFullYear(),
+      padTo2Digits(date.getMonth() + 1),
+      padTo2Digits(date.getDate()),
+    ].join('-') +
+    ' ' +
+    [
+      padTo2Digits(date.getHours()),
+      padTo2Digits(date.getMinutes()),
+    ].join(':')
   );
 }
