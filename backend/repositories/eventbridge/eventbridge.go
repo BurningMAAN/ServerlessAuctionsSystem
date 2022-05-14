@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/cloudwatchevents"
@@ -22,12 +23,16 @@ type eventClient interface {
 }
 
 type repository struct {
-	eventClient eventClient
+	eventClient         eventClient
+	handlerFunctionName string
+	handlerFunctionArn  string
 }
 
 func New(eventClient eventClient) *repository {
 	return &repository{
-		eventClient: eventClient,
+		eventClient:         eventClient,
+		handlerFunctionName: os.Getenv("FunctionName"),
+		handlerFunctionArn:  os.Getenv("FunctionArn"),
 	}
 }
 
@@ -54,8 +59,8 @@ func (r *repository) CreateEventRule(ctx context.Context, auctionID string, star
 		Rule: aws.String(fmt.Sprintf("auction-event-%s", auctionID)),
 		Targets: []cloudwatchTypes.Target{
 			{
-				Arn:   aws.String("arn:aws:lambda:us-east-1:102336894219:function:test-backend-HandleAuctionFunction-Oa1T2FivSffq"),
-				Id:    aws.String("test-backend-HandleAuctionFunction-Oa1T2FivSffq"),
+				Arn:   aws.String(r.handlerFunctionArn),
+				Id:    aws.String(r.handlerFunctionName),
 				Input: aws.String(string(eventInput)),
 			},
 		},
