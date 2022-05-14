@@ -178,6 +178,13 @@ Resources:
               - dynamodb:GetItem
               - dynamodb:UpdateItem
             Resource: !GetAtt DynamoDBTable.Arn
+          - Effect: Allow
+            Action:
+              - events:PutRule
+              - events:DeleteRule
+              - events:PutTargets
+              - events:RemoveTargets
+            Resource: "*"
       Events:
         ApiEvent:
             Type: Api

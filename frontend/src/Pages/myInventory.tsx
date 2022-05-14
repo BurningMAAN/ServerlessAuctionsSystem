@@ -31,9 +31,10 @@ const MyInventory: FC<TitleProps> = ({}) => {
             label="Kategorija"
             placeholder="Kategorija"
             data={[
-                {value: "-", label: "-"},
-                { value: "Transportas", label: "Transportas" }
-            ]}
+              {value: "-", label: "-"},
+              {value: "Transportas", label: "Transportas" },
+              {value: "Baldai", label: "Baldai"}, {value: "Elektronika", label: "Elektronika"}, {value: "Automobilių detalės", label: "Automobilių detalės"}, {value: "Drabužiai", label: "Drabužiai"}, {label: "Paveikslai", value: "Paveikslai"}
+          ]}
           ></Select>
           <Button px={50} style={{top: 12}}>
             Ieškoti

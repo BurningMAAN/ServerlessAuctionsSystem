@@ -44,7 +44,6 @@ interface SelectItemProps {
 
 export default function AuctionCreateWizard({ onOpen, onClose }: AuctionProps) {
   const [activeStep, setActiveStepStepper] = useState(0);
-  const selectionItems: SelectItemProps[] = [];
   const [auctionMetadata, setAuctionMetadata] = useState<CreateAuctionRequest>({} as CreateAuctionRequest);
   const nextStep = () =>
     setActiveStepStepper((current) => (current < 3 ? current + 1 : current));
@@ -83,14 +82,12 @@ export default function AuctionCreateWizard({ onOpen, onClose }: AuctionProps) {
     getUserItems();
   }, []);
 
-  console.log(userItemsList)
-  // userItemsList.items?.map((userItem) => {
-  //   console.log(userItem.auctionId.length == 0)
-  //   // if(userItem.auctionId == ""){
-  //   //   console.log(userItem.name)
-  //   //   selectionItems.push({ label: userItem.name, value: userItem.id });
-  //   // }
-  // });
+  const selectionItems: SelectItemProps[] = [];
+  userItemsList.items?.map((userItem) => {
+    if(userItem?.auctionId == ""){
+      selectionItems.push({ label: userItem.name, value: userItem.id });
+    }
+  });
 
   const createAuction = async (auction: CreateAuctionRequest) => {
     let tokenas: string = "";

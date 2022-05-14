@@ -40,7 +40,8 @@ const Dashboard: FC<TitleProps> = ({}) => {
             placeholder="Kategorija"
             data={[
                 {value: "-", label: "-"},
-                { value: "Transportas", label: "Transportas" }
+                {value: "Transportas", label: "Transportas" },
+                {value: "Baldai", label: "Baldai"}, {value: "Elektronika", label: "Elektronika"}, {value: "Automobilių detalės", label: "Automobilių detalės"}, {value: "Drabužiai", label: "Drabužiai"}, {label: "Paveikslai", value: "Paveikslai"}
             ]}
           ></Select>
           <Select style={{width: 150}}

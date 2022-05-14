@@ -104,7 +104,16 @@ export default function AuctionBiddingDashboard({
   if (auction.stage === "STAGE_AUCTION_FINISHED"){
     timerInterval = null
   }
+
   useInterval(() => {
+    console.log(auction.stage)
+    if(auction.stage == "STAGE_ACCEPTING_BIDS"){
+      return
+    }
+    if(auction.stage == "STAGE_AUCTION_FINISHED"){
+      setTimeLeft(0)
+      return
+    }
     const endDateTime = new Date(auction.endDate);
     const now = new Date();
     const difference = endDateTime.getTime() - now.getTime();
@@ -113,10 +122,6 @@ export default function AuctionBiddingDashboard({
     if (s <= 0){
       setTimeLeft(0)
     }
-    if(auction.stage == "STAGE_AUCTION_FINISHED"){
-      setTimeLeft(0)
-      return
-    }
     if (auction.stage === "STAGE_AUCTION_ONGOING") {
       if (timeLeft <= 0) {
         return
@@ -124,7 +129,6 @@ export default function AuctionBiddingDashboard({
       setTimeLeft(s - 1);
     }
   }, timerInterval);
-
   
   const getLatestBids = async (auctionID: string) => {
     const requestOptions = {

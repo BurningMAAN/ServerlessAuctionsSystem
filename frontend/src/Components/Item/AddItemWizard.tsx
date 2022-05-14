@@ -102,7 +102,7 @@ export default function ItemCreateWizard({ onOpen, onClose }: ItemCreateProps) {
         placeholder="Pasirinkti"
         required
         {...form.getInputProps('category')}
-        data={[{ value: "Transportas", label: "Transportas" }]}
+        data={[{ value: "Transportas", label: "Transportas" }, {value: "Baldai", label: "Baldai"}, {value: "Elektronika", label: "Elektronika"}, {value: "Automobilių detalės", label: "Automobilių detalės"}, {value: "Drabužiai", label: "Drabužiai"}, {label: "Paveikslai", value: "Paveikslai"}]}
       />
       <Textarea
         placeholder="Aprašymas"
