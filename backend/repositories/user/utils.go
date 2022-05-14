@@ -16,6 +16,7 @@ func unmarshalUser(userDB UserDB) (models.User, error) {
 		Password: userDB.Password,
 		Email:    userDB.Email,
 		Role:     userDB.Role,
+		Credit:   userDB.CreditBalance,
 	}, nil
 }
 
@@ -45,6 +46,9 @@ func buildUserUpdate(update models.UserUpdate) (expression.UpdateBuilder, error)
 	}
 	if update.Email != nil {
 		updateExpr = updateExpr.Set(expression.Name("Email"), expression.Value(string(*update.Email)))
+	}
+	if update.Credit != nil {
+		updateExpr = updateExpr.Set(expression.Name("CreditBalance"), expression.Value(float64(*update.Credit)))
 	}
 	return updateExpr, nil
 }

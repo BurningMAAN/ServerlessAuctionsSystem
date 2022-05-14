@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import ProgressCircle from "../../General/ProgressCircle";
 import jwtDecode, { JwtPayload } from "jwt-decode";
 import { useInterval } from 'usehooks-ts'
+import {X, ChevronDown} from "tabler-icons-react";
+import { showNotification } from '@mantine/notifications';
 
 interface AuctionInput{
   auctionID: string;
@@ -184,7 +186,30 @@ export default function AuctionBiddingDashboard({
                 bidValue = bids.bids![0].value + auction.bidIncrement
               }
               placeBid(auctionID, bidValue)
-              .then((response) => {})
+              .then((response) => {
+                if(response.status == 201){
+                  showNotification({
+                    title: 'Atliktas statymas',
+                    color: 'green',
+                    icon: <ChevronDown/>,
+                    message: 'Sėkmingai atliktas statymas',
+                  })
+                } else if(response.status == 409){
+                  showNotification({
+                    title: 'Klaida',
+                    color: 'red',
+                    icon: <X/>,
+                    message: 'Nepakankamas kreditų balansas atlikti statymui',
+                  })
+                } else{
+                  showNotification({
+                    title: 'Klaida',
+                    color: 'red',
+                    icon: <X/>,
+                    message: 'Nepavyko atlikti operacijos',
+                  })
+                }
+              })
               .catch((error) => {
                 console.log(error)
               })

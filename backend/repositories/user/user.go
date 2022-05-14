@@ -16,11 +16,12 @@ import (
 )
 
 type UserDB struct {
-	PK       string // Example: User#{UserName}
-	SK       string // Example: Metadata
-	Password string
-	Email    string
-	Role     string
+	PK            string // Example: User#{UserName}
+	SK            string // Example: Metadata
+	Password      string
+	Email         string
+	Role          string
+	CreditBalance float64
 }
 
 type DB interface {

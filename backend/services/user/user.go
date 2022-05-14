@@ -35,9 +35,15 @@ func (s *service) GetUserByID(ctx context.Context, userID string) (models.User, 
 }
 
 func (s *service) UpdateUser(ctx context.Context, updateModel models.UserUpdate) error {
-	_, err := s.userRepository.GetUserByID(ctx, updateModel.ID)
+	user, err := s.userRepository.GetUserByID(ctx, updateModel.ID)
 	if err != nil {
 		return err
+	}
+
+	if updateModel.Credit != nil {
+		var updateCredit = *updateModel.Credit
+		updateCredit += user.Credit
+		updateModel.Credit = &updateCredit
 	}
 
 	return s.userRepository.UpdateUser(ctx, updateModel)

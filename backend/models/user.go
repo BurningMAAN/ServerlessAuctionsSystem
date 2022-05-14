@@ -16,5 +16,5 @@ type UserUpdate struct {
 	ID       string
 	Password *string
 	Email    *string
-	Credit   float64
+	Credit   *float64
 }

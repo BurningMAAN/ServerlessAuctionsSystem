@@ -1,10 +1,12 @@
 package main
 
 import (
+	errs "auctionsPlatform/errors"
 	"auctionsPlatform/models"
 	"auctionsPlatform/utils"
 	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"time"
 
@@ -62,6 +64,11 @@ func (h *handler) PlaceBid(ctx context.Context, event events.APIGatewayProxyRequ
 		UserID:    userConfig.Name,
 	})
 	if err != nil {
+		if errors.Is(err, errs.ErrUnsufficientCreditBalance) {
+			return events.APIGatewayProxyResponse{
+				StatusCode: http.StatusConflict,
+			}, nil
+		}
 		return utils.InternalError(err.Error())
 	}
 

@@ -11,9 +11,10 @@ import (
 )
 
 type request struct {
-	UserID   string
-	Password string `json:"password"`
-	Email    string `json:"email"`
+	UserID        string
+	Password      *string  `json:"password"`
+	Email         *string  `json:"email"`
+	CreditBalance *float64 `json:"creditBalance"`
 }
 
 type userService interface {
@@ -40,8 +41,9 @@ func (h *handler) UpdateUser(ctx context.Context, event events.APIGatewayProxyRe
 
 	updateModel := models.UserUpdate{
 		ID:       req.UserID,
-		Password: &req.Password,
-		Email:    &req.Email,
+		Password: req.Password,
+		Email:    req.Email,
+		Credit:   req.CreditBalance,
 	}
 
 	err = h.userService.UpdateUser(ctx, updateModel)
