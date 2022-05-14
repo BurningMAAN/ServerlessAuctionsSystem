@@ -57,14 +57,14 @@ type AuctionDB struct {
 
 type OptionalGetParameters struct{}
 
-func (r *repository) CreateAuction(ctx context.Context, auction models.Auction) (models.Auction, error) {
+func (r *repository) CreateAuction(ctx context.Context, auction models.Auction, category models.ItemCategory) (models.Auction, error) {
 	auctionID := uuid.New().String()
 
 	auctionDB := AuctionDB{
 		PK:           utils.Make(models.AuctionEntityType, auctionID),
 		SK:           "Metadata",
 		GSI1PK:       utils.Make(models.ItemEntityType, auction.ItemID),
-		GSI1SK:       utils.Make("Category", auction.Category),
+		GSI1SK:       utils.Make("Category", category.String()),
 		BuyoutPrice:  auction.BuyoutPrice,
 		StartDate:    auction.StartDate,
 		BidIncrement: auction.BidIncrement,

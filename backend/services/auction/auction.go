@@ -10,7 +10,7 @@ import (
 )
 
 type auctionRepository interface {
-	CreateAuction(ctx context.Context, auction models.Auction) (models.Auction, error)
+	CreateAuction(ctx context.Context, auction models.Auction, category models.ItemCategory) (models.Auction, error)
 	GetAuctionByID(ctx context.Context, auctionID string) (models.Auction, error)
 	GetAllAuctions(ctx context.Context, optFns ...func(*auction.OptionalGetParameters)) ([]models.Auction, error)
 	SearchAuctions(ctx context.Context, searchParams models.AuctionSearchParams) ([]models.Auction, error)
@@ -51,7 +51,7 @@ func (s *service) CreateAuction(ctx context.Context, auction models.Auction, ite
 	}
 
 	auction.PhotoURL = item.PhotoURLs[0]
-	auction, err = s.auctionRepository.CreateAuction(ctx, auction)
+	auction, err = s.auctionRepository.CreateAuction(ctx, auction, item.Category)
 	if err != nil {
 		return models.Auction{}, err
 	}

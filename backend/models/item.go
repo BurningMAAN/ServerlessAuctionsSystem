@@ -33,3 +33,7 @@ type ItemSearchParams struct {
 	OwnerID  string
 	Category *string
 }
+
+func (i ItemCategory) String() string {
+	return string(i)
+}
