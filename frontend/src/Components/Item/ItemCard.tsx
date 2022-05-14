@@ -17,6 +17,7 @@ export interface ItemProps {
   description: string;
   category: string;
   name: string;
+  photoURLs: string[];
 }
 
 export default function ItemCard({

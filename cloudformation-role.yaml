@@ -3,7 +3,7 @@ Parameters:
   CFNStackName:
     Description: stack name
     Type: String
-    Default: test
+    Default: auctioneer
 Resources:
   CloudFormationRole:
     Type: AWS::IAM::Role
@@ -26,7 +26,7 @@ Resources:
             Condition:
               StringLike:
                 'aws:PrincipalArn':
-                  - !Sub arn:aws:iam::${AWS::AccountId}:role/test-CodePipelineServiceRole*
+                  - !Sub arn:aws:iam::${AWS::AccountId}:role/auctioneer-CodePipelineServiceRole*
             Action: sts:AssumeRole
 
       Policies:

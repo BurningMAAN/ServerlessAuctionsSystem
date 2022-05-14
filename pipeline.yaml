@@ -209,7 +209,7 @@ Resources:
                   - iam:PassRole
                   - iam:UpdateAssumeRolePolicy
                 Resource:
-                  - !Sub "arn:aws:iam::${AWS::AccountId}:role/${AWS::StackName}-cloudformation-role"
+                  - !Sub "arn:aws:iam::${AWS::AccountId}:role/auctioneer-cloudformation-role"
 
               - Effect: Allow
                 Action:
@@ -298,7 +298,7 @@ Resources:
                 Capabilities: "CAPABILITY_AUTO_EXPAND,CAPABILITY_NAMED_IAM,CAPABILITY_IAM"
                 StackName: !Sub ${AWS::StackName}-backend
                 TemplatePath: BuildArtifact::packaged-backend_resources.yaml
-                RoleArn: !Sub "arn:aws:iam::${AWS::AccountId}:role/${AWS::StackName}-cloudformation-role"
+                RoleArn: !Sub "arn:aws:iam::${AWS::AccountId}:role/auctioneer-cloudformation-role"
               InputArtifacts:
                 - Name: 'BuildArtifact'
               RunOrder: 1

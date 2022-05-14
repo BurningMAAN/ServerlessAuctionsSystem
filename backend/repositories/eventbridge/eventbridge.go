@@ -109,6 +109,7 @@ func (r *repository) DeleteEventRule(ctx context.Context, auctionID string) erro
 	return err
 }
 
+// nereikia sito
 func (r *repository) CreateBidEvent(ctx context.Context, auctionID string) error {
 	log.Print("sending bid event to event bus")
 	output, err := r.eventClient.PutEvents(ctx, &cloudwatchevents.PutEventsInput{

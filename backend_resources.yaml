@@ -716,4 +716,4 @@ Resources:
     Type: 'AWS::S3::Bucket'
     DeletionPolicy: Retain
     Properties:
-      BucketName: auctioneer-images-bucket
+      BucketName: auctioneer-images-bucket-tomas-b
