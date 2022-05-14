@@ -3,6 +3,7 @@ package item
 import (
 	"auctionsPlatform/models"
 	"auctionsPlatform/utils"
+	"log"
 
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/expression"
@@ -70,7 +71,8 @@ func buildItemUpdate(update models.ItemUpdate) expression.UpdateBuilder {
 	}
 
 	if update.Name != nil {
-		updateExpression = updateExpression.Set(expression.Name("Name"), expression.Value(*update.Name))
+		log.Print("I AM HERE")
+		updateExpression = updateExpression.Set(expression.Name("Name"), expression.Value(&update.Name))
 	}
 
 	return updateExpression

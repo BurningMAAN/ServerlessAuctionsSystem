@@ -44,7 +44,7 @@ export default function UpdateItem({ id, name, description, category, onOpen, on
   const requestOptions = {
     method: "PATCH",
     headers: { "access_token": unescape(tokenas)},
-    body: JSON.stringify(form)
+    body: JSON.stringify(form.values)
   };
     const url =
       `${process.env.REACT_APP_API_URL}users/${decodedToken.username}/items/${id}`;
