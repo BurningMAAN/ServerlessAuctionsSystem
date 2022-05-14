@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"os"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/cloudwatchevents"
@@ -30,9 +29,7 @@ type repository struct {
 
 func New(eventClient eventClient) *repository {
 	return &repository{
-		eventClient:         eventClient,
-		handlerFunctionName: os.Getenv("FunctionName"),
-		handlerFunctionArn:  os.Getenv("FunctionArn"),
+		eventClient: eventClient,
 	}
 }
 
@@ -91,8 +88,8 @@ func (r *repository) UpdateEventRule(ctx context.Context, auctionID string, newD
 		Rule: aws.String(fmt.Sprintf("auction-event-%s", auctionID)),
 		Targets: []cloudwatchTypes.Target{
 			{
-				Arn:   aws.String("arn:aws:lambda:us-east-1:102336894219:function:test-backend-HandleAuctionFunction-Oa1T2FivSffq"),
-				Id:    aws.String("test-backend-HandleAuctionFunction-Oa1T2FivSffq"),
+				Arn:   aws.String("arn:aws:lambda:us-east-1:160902899897:function:auctioneer-infra-backend-HandleAuctionFunction-IU4UT7Wy9oKi"),
+				Id:    aws.String("auctioneer-infra-backend-HandleAuctionFunction-IU4UT7Wy9oKi"),
 				Input: aws.String(string(eventInput)),
 			},
 		},
@@ -103,7 +100,7 @@ func (r *repository) UpdateEventRule(ctx context.Context, auctionID string, newD
 func (r *repository) DeleteEventRule(ctx context.Context, auctionID string) error {
 	_, err := r.eventClient.RemoveTargets(ctx, &cloudwatchevents.RemoveTargetsInput{
 		Rule: aws.String(fmt.Sprintf("auction-event-%s", auctionID)),
-		Ids:  []string{"test-backend-HandleAuctionFunction-Oa1T2FivSffq"},
+		Ids:  []string{"auctioneer-infra-backend-HandleAuctionFunction-IU4UT7Wy9oKi"},
 	})
 	if err != nil {
 		return err

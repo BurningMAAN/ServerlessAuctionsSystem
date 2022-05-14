@@ -96,8 +96,6 @@ Resources:
       Environment:
         Variables:
           DYNAMODB_TABLE: !Ref DynamoDBTable
-          FunctionName: !Ref HandleAuctionFunction
-          FunctionArn: !GetAtt HandleAuctionFunction.Arn
       Policies:
         Statement:
           - Effect: Allow
