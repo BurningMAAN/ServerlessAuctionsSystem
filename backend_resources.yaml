@@ -680,6 +680,7 @@ Resources:
               - dynamodb:GetItem
               - dynamodb:Query
               - dynamodb:PutItem
+              - dynamodb:UpdateItem
             Resource: !GetAtt DynamoDBTable.Arn
       Events:
         ApiEvent:

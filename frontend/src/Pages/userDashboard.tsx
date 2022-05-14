@@ -52,7 +52,7 @@ export default function UserDashboard() {
   const requestOptions = {
     method: "PATCH",
     headers: { "access_token": unescape(tokenas)},
-    body: JSON.stringify(form)
+    body: JSON.stringify(form.values)
   };
   console.log(requestOptions.body)
     let url = `${process.env.REACT_APP_API_URL}/user`;
