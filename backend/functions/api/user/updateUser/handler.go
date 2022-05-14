@@ -34,7 +34,7 @@ func (h *handler) UpdateUser(ctx context.Context, event events.APIGatewayProxyRe
 	}
 
 	updateModel := models.UserUpdate{
-		ID:       req.UserID,
+		UserName: req.UserID,
 		Password: req.Password,
 		Email:    req.Email,
 		Credit:   req.CreditBalance,
