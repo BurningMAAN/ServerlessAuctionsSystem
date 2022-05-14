@@ -100,9 +100,10 @@ const useStyles = createStyles((theme, _params, getRef) => {
   };
 });
 
-type GetUserResponse{
+interface GetUserResponse{
   creditBalance: number;
 }
+
 export default function NavigationBar() {
   const { classes, cx } = useStyles();
   const token = getToken();
@@ -122,6 +123,7 @@ export default function NavigationBar() {
   useEffect(() => {
     getData();
   }, []);
+  console.log(user)
   return (
     <Navbar height={700} width={{ sm: 300 }} p="md">
       <Center>
@@ -137,7 +139,7 @@ export default function NavigationBar() {
       )}
       </Center>
       <Center>
-        <CurrencyEuro color="green"/>500.00
+        <CurrencyEuro color="green"/>{user.creditBalance}
       </Center>
       <Navbar.Section grow>
         <Group className={classes.header} position="apart"></Group>

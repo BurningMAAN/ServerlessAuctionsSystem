@@ -72,6 +72,10 @@ phases:
       - cd $ROOTDIR/backend/functions/api/item/getUserItemsList
       - go build -o main
 
+      # Build GetUserByIDFunction
+      - cd $ROOTDIR/backend/functions/api/user/getUserByID
+      - go build -o main
+
       # Build GetAuctionBidsFunction
       - cd $ROOTDIR/backend/functions/api/bid/getAuctionBids
       - go build -o main

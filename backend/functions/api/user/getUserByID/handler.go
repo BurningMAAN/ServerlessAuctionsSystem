@@ -30,12 +30,12 @@ type handler struct {
 }
 
 func (h *handler) GetItems(ctx context.Context, event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	if len(event.PathParameters["userId"]) == 0 {
+	if len(event.PathParameters["userName"]) == 0 {
 		return utils.InternalError("not provided userId")
 	}
 
 	req := request{
-		UserID: event.PathParameters["itemId"],
+		UserID: event.PathParameters["userName"],
 	}
 
 	user, err := h.userService.GetUserByUserName(ctx, req.UserID)
