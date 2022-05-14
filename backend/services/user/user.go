@@ -3,6 +3,8 @@ package user
 import (
 	"auctionsPlatform/models"
 	"context"
+	"encoding/json"
+	"log"
 )
 
 type userRepository interface {
@@ -35,6 +37,8 @@ func (s *service) GetUserByID(ctx context.Context, userID string) (models.User, 
 }
 
 func (s *service) UpdateUser(ctx context.Context, updateModel models.UserUpdate) error {
+	updateBytes, _ := json.Marshal(updateModel)
+	log.Print(string(updateBytes))
 	user, err := s.userRepository.GetUserByUserName(ctx, updateModel.UserName)
 	if err != nil {
 		return err

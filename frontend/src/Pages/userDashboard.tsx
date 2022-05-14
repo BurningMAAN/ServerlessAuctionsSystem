@@ -54,6 +54,7 @@ export default function UserDashboard() {
     headers: { "access_token": unescape(tokenas)},
     body: JSON.stringify(form)
   };
+  console.log(requestOptions.body)
     let url = `${process.env.REACT_APP_API_URL}/user`;
     const fetchData = async () => {
       try {

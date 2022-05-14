@@ -678,6 +678,7 @@ Resources:
           - Effect: Allow
             Action:
               - dynamodb:GetItem
+              - dynamodb:Query
               - dynamodb:PutItem
             Resource: !GetAtt DynamoDBTable.Arn
       Events:
