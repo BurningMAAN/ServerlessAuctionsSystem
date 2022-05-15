@@ -93,6 +93,7 @@ func (h *handler) HandleAuction(ctx context.Context, event models.AuctionEvent) 
 					UserName: bids[0].UserID,
 					Credit:   &newCreditBalance,
 				})
+				log.Printf("new credit balance: %v", newCreditBalance)
 				if err != nil {
 					return err
 				}

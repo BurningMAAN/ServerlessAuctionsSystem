@@ -93,7 +93,7 @@ export default function AuctionBiddingDashboard({
         setHours(h);
 
         const m = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-        setMinutes(m + 1);
+        setMinutes(m);
 
         const s = Math.floor((difference % (1000 * 60)) / 1000);
         setSeconds(s);
@@ -239,6 +239,11 @@ export default function AuctionBiddingDashboard({
           <Title order={6}>
             Aukcionas prasideda už {days} dienų {hours} valandų {minutes}{" "}
             minučių {seconds} sekundžių
+          </Title>
+        )}
+         {auction.stage === "STAGE_ACCEPTING_BIDS" && days <= 0 && hours <= 0 && minutes <= 0 && seconds <= 0 && (
+          <Title order={6}>
+            Aukcionas pradedamas
           </Title>
         )}
         {auction.stage === "STAGE_AUCTION_ONGOING" && (
