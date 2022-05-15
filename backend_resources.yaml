@@ -279,6 +279,7 @@ Resources:
             Action:
               - dynamodb:Scan
               - dynamodb:Query
+              - dynamodb:GetItem
             Resource: !GetAtt DynamoDBTable.Arn
       Events:
         ApiEvent:
