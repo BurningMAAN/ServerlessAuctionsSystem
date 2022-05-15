@@ -52,6 +52,7 @@ type AuctionDB struct {
 	Type         string
 	Stage        string
 	PhotoURL     string
+	WinnerID     string
 }
 
 type OptionalGetParameters struct{}

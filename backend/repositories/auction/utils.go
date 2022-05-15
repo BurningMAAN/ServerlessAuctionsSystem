@@ -80,5 +80,9 @@ func buildUpdate(update models.AuctionUpdate) expression.UpdateBuilder {
 		updateExpression = updateExpression.Set(expression.Name("Type"), expression.Value(&update.Type))
 	}
 
+	if update.WinnerID != nil {
+		updateExpression = updateExpression.Set(expression.Name("WinnerID"), expression.Value(&update.WinnerID))
+	}
+
 	return updateExpression
 }
