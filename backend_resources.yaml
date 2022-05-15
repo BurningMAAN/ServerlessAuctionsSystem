@@ -122,8 +122,7 @@ Resources:
             Resource: 
               - !GetAtt DynamoDBTable.Arn
               - Fn::Sub:
-                  - '${DynamoDBTableArn}/index/GSI1'
-                  - '${DynamoDBTableArn}/index/GSI2'
+                  - '${DynamoDBTableArn}/index/GSI*'
                   - DynamoDBTableArn: !GetAtt DynamoDBTable.Arn
   # Bid Handler function
   HandleBidFunction:
