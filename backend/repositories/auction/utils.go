@@ -64,7 +64,7 @@ func buildSearchCondition(searchParams models.AuctionSearchParams) expression.Co
 		conditionExpression = conditionExpression.And(expression.Name("Type").Equal(expression.Value(&searchParams.AuctionType)))
 	}
 	if searchParams.WinnerName != nil {
-		conditionExpression = conditionExpression.And(expression.Name("WinnerID").Equal(expression.Value(&searchParams.WinnerName)))
+		conditionExpression = expression.Name("WinnerID").Equal(expression.Value(&searchParams.WinnerName))
 	}
 	if searchParams.Stage != nil {
 		log.Print("I CAME HERE")

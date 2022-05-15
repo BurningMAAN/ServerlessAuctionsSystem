@@ -131,6 +131,7 @@ const MyAuctions: FC<TitleProps> = ({}) => {
           </Grid>
         </Tabs.Tab>
         <Tabs.Tab label="Baigti Aukcionai" icon={<MessageCircle size={14} />}>
+        <Grid>
         {endedAuctionsList?.auctions?.map((auctionItem) => {
               return (
                 <>
@@ -150,6 +151,7 @@ const MyAuctions: FC<TitleProps> = ({}) => {
                 </>
               );
             })}
+            </Grid>
         </Tabs.Tab>
         <Tabs.Tab label="Laimėti Aukcionai" icon={<MessageCircle size={14} />}>
         {wonAuctionsList?.auctions?.map((auctionItem) => {
