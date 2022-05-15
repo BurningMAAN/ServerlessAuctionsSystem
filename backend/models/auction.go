@@ -40,6 +40,8 @@ type AuctionSearchParams struct {
 	AuctionType *string
 	OwnerID     *string
 	Status      *string
+	WinnerName  *string
+	Stage       *string
 }
 
 type AuctionUpdate struct {

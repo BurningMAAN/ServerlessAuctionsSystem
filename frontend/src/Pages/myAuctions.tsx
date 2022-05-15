@@ -45,32 +45,71 @@ const MyAuctions: FC<TitleProps> = ({}) => {
   if (token) {
     decodedToken = jwtDecode<DecodedToken>(token);
   }
-  const [auctionsList, setAuctionsList] = useState<AuctionList>(
+  const [activeAuctionsList, setActiveAuctionsList] = useState<AuctionList>(
+    {} as AuctionList
+  );
+  const [endedAuctionsList, setEndedAuctionsList] = useState<AuctionList>(
+    {} as AuctionList
+  );
+  const [wonAuctionsList, setWonAuctionsList] = useState<AuctionList>(
     {} as AuctionList
   );
   useEffect(() => {
     const url =
-      `${process.env.REACT_APP_API_URL}auctionsList`;
+      `${process.env.REACT_APP_API_URL}auctions/search`;
 
-    const fetchData = async () => {
+    const getActive = async () => {
       try {
-        const response = await fetch(url);
+        const requestOptions = {
+          method: "GET",
+          body: JSON.stringify({stage: 'STAGE_ACCEPTING_BIDS'})
+        };
+        const response = await fetch(url, requestOptions);
         const responseJSON = await response.json();
         console.log(responseJSON);
-        setAuctionsList(responseJSON);
+        setActiveAuctionsList(responseJSON);
       } catch (error) {
         console.log("failed to get data from api", error);
       }
     };
-    console.log("Updating data lists");
-    fetchData();
+    const getEnded = async () => {
+      try {
+        const requestOptions = {
+          method: "GET",
+          body: JSON.stringify({stage: 'STAGE_AUCTION_FINISHED'})
+        };
+        const response = await fetch(url, requestOptions);
+        const responseJSON = await response.json();
+        console.log(responseJSON);
+        setEndedAuctionsList(responseJSON);
+      } catch (error) {
+        console.log("failed to get data from api", error);
+      }
+    };
+    const getWon = async () => {
+      try {
+        const requestOptions = {
+          method: "GET",
+          body: JSON.stringify({winnerName: decodedToken.username})
+        };
+        const response = await fetch(url, requestOptions);
+        const responseJSON = await response.json();
+        console.log(responseJSON);
+        setWonAuctionsList(responseJSON);
+      } catch (error) {
+        console.log("failed to get data from api", error);
+      }
+    };
+    getActive();
+    getWon();
+    getEnded();
   }, []);
   return (
     <AppShell padding="md" navbar={<NavigationBar></NavigationBar>} fixed>
       <Tabs>
         <Tabs.Tab label="Aktyvūs Aukcionai" icon={<Photo size={14} />}>
           <Grid>
-            {auctionsList?.auctions?.map((auctionItem) => {
+            {activeAuctionsList?.auctions?.map((auctionItem) => {
               return (
                 <>
                   {auctionItem.creatorId == decodedToken.username && (
@@ -91,11 +130,47 @@ const MyAuctions: FC<TitleProps> = ({}) => {
             })}
           </Grid>
         </Tabs.Tab>
-        <Tabs.Tab label="Pasibaigę Aukcionai" icon={<MessageCircle size={14} />}>
-          <Title>Bye bye</Title>
+        <Tabs.Tab label="Baigti Aukcionai" icon={<MessageCircle size={14} />}>
+        {endedAuctionsList?.auctions?.map((auctionItem) => {
+              return (
+                <>
+                  {auctionItem.creatorId == decodedToken.username && (
+                    <Grid.Col span={4}>
+                      <MyAuctionCard
+                      stage={auctionItem.stage}
+                        auctionID={auctionItem.id}
+                        auctionDate={auctionItem.auctionDate}
+                        auctionName={auctionItem.item.name}
+                        category={auctionItem.item.category}
+                        bidIncrement={auctionItem.bidIncrement}
+                        photoURL={auctionItem.photoURL}
+                      ></MyAuctionCard>
+                    </Grid.Col>
+                  )}
+                </>
+              );
+            })}
         </Tabs.Tab>
         <Tabs.Tab label="Laimėti Aukcionai" icon={<MessageCircle size={14} />}>
-          <Title>Bye bye</Title>
+        {wonAuctionsList?.auctions?.map((auctionItem) => {
+              return (
+                <>
+                  {auctionItem.creatorId == decodedToken.username && (
+                    <Grid.Col span={4}>
+                      <MyAuctionCard
+                      stage={auctionItem.stage}
+                        auctionID={auctionItem.id}
+                        auctionDate={auctionItem.auctionDate}
+                        auctionName={auctionItem.item.name}
+                        category={auctionItem.item.category}
+                        bidIncrement={auctionItem.bidIncrement}
+                        photoURL={auctionItem.photoURL}
+                      ></MyAuctionCard>
+                    </Grid.Col>
+                  )}
+                </>
+              );
+            })}
         </Tabs.Tab>
       </Tabs>
     </AppShell>

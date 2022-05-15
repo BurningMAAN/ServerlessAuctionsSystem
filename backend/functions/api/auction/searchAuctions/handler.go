@@ -12,8 +12,10 @@ import (
 )
 
 type request struct {
-	Category string `json:"category"`
-	Type     string `json:"type"`
+	Category   string `json:"category"`
+	Type       string `json:"type"`
+	WinnerName string `json:"winnerName"`
+	Stage      string `json:"stage"`
 }
 
 type response struct {
@@ -61,6 +63,8 @@ func (h *handler) GetAuction(ctx context.Context, event events.APIGatewayProxyRe
 	auctions, err := h.auctionService.SearchAuctions(ctx, models.AuctionSearchParams{
 		Category:    &req.Category,
 		AuctionType: &req.Type,
+		WinnerName:  &req.WinnerName,
+		Stage:       &req.Stage,
 	})
 	if err != nil {
 		return utils.InternalError(err.Error())

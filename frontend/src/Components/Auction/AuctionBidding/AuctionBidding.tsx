@@ -246,9 +246,14 @@ export default function AuctionBiddingDashboard({
             Aukcionas pradedamas
           </Title>
         )}
-        {auction.stage === "STAGE_AUCTION_ONGOING" && (
+        {auction.stage === "STAGE_AUCTION_ONGOING" && timeLeft >= 0 && (
           <Title order={6}>
             Aukcionas šiuo metu vyksta
+          </Title>
+        )}
+        {auction.stage === "STAGE_AUCTION_ONGOING" && timeLeft <= 0 && (
+          <Title order={6}>
+            Aukcionas užbaigiamas
           </Title>
         )}
         {auction.stage === "STAGE_AUCTION_FINISHED" &&  (
