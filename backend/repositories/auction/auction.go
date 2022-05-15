@@ -208,7 +208,7 @@ func (r *repository) UpdateAuctionEndDate(ctx context.Context, auctionID string,
 func (r *repository) SearchAuctions(ctx context.Context, searchParams models.AuctionSearchParams) ([]models.Auction, error) {
 	conditionExpression := buildSearchCondition(searchParams)
 
-	expr, err := expression.NewBuilder().WithCondition(conditionExpression).Build()
+	expr, err := expression.NewBuilder().WithFilter(conditionExpression).Build()
 	if err != nil {
 		return []models.Auction{}, err
 	}
