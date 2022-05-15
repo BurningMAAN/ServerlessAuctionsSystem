@@ -8,7 +8,6 @@ export interface AuctionList {
     {
       id: string;
       auctionDate: string;
-      buyoutPrice: number;
       auctionType: string;
       bidIncrement: number;
       isFinished: boolean;
@@ -58,7 +57,6 @@ export default function AuctionGroup() {
               photoURL={auctionItem.photoURL}
               auctionID={auctionItem.id}
               auctionDate={formatted}
-              buyoutPrice={auctionItem.buyoutPrice}
               auctionName={auctionItem.item.name}
               category={auctionItem.item.category}
               description={auctionItem.description}

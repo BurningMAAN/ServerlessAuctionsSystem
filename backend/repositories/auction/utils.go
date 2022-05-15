@@ -13,7 +13,6 @@ func unmarshalAuction(auctionDB AuctionDB) (models.Auction, error) {
 	return models.Auction{
 		ID:           utils.Extract(models.AuctionEntityType, auctionDB.PK),
 		Type:         models.AuctionType(auctionDB.Type),
-		BuyoutPrice:  auctionDB.BuyoutPrice,
 		BidIncrement: auctionDB.BidIncrement,
 		StartDate:    auctionDB.StartDate,
 		CreatorID:    auctionDB.CreatorID,
@@ -71,10 +70,6 @@ func buildUpdate(update models.AuctionUpdate) expression.UpdateBuilder {
 
 	if update.BidIncrement != nil {
 		updateExpression = updateExpression.Set(expression.Name("BidIncrement"), expression.Value(&update.BidIncrement))
-	}
-
-	if update.BuyoutPrice != nil {
-		updateExpression = updateExpression.Set(expression.Name("BuyoutPrice"), expression.Value(&update.BuyoutPrice))
 	}
 
 	if update.StartDate != nil {

@@ -15,7 +15,6 @@ import {
     auctionName: string;
     auctionDate: string;
     category: string;
-    buyoutPrice: number;
     bidIncrement: number;
     auctionID: string;
     photoURL: string;
@@ -24,7 +23,6 @@ import {
   
   export default function MyAuctionCard({
     auctionDate,
-    buyoutPrice,
     auctionName,
     category,
     bidIncrement,
@@ -56,11 +54,6 @@ import {
             style={{ marginBottom: 5, marginTop: theme.spacing.sm }}
           >
             <Text weight={500}>{auctionName}</Text>
-            {buyoutPrice && (
-              <Badge color="green" variant="light">
-                Pirkti dabar
-              </Badge>
-            )}
             <Badge color="pink" variant="light">
               {category}
             </Badge>

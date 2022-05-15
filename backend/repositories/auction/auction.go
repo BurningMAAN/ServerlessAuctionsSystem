@@ -45,7 +45,6 @@ type AuctionDB struct {
 	SK           string // Example: Metadata
 	GSI1PK       string // Example: Item#{ItemID}
 	GSI1SK       string // Category#{Category}
-	BuyoutPrice  *float64
 	StartDate    time.Time
 	BidIncrement float64
 	EndDate      time.Time
@@ -65,7 +64,6 @@ func (r *repository) CreateAuction(ctx context.Context, auction models.Auction, 
 		SK:           "Metadata",
 		GSI1PK:       utils.Make(models.ItemEntityType, auction.ItemID),
 		GSI1SK:       utils.Make("Category", category.String()),
-		BuyoutPrice:  auction.BuyoutPrice,
 		StartDate:    auction.StartDate,
 		BidIncrement: auction.BidIncrement,
 		CreatorID:    auction.CreatorID,

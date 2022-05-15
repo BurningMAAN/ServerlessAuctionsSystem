@@ -32,7 +32,6 @@ interface ItemList {
 interface CreateAuctionRequest {
   itemID: string;
   auctionDate: string;
-  buyoutPrice: number;
   auctionType: string;
   bidIncrement: number;
 }
@@ -117,7 +116,6 @@ export default function AuctionCreateWizard({ onOpen, onClose }: AuctionProps) {
       itemID: '',
       auctionType: '',
       auctionDate: '',
-      buyoutPrice: 0,
       bidIncrement: 0,
     },
     validate: {
@@ -181,8 +179,6 @@ export default function AuctionCreateWizard({ onOpen, onClose }: AuctionProps) {
            form.setFieldValue("auctionDate", dateSelected.toISOString())
           }}
           required></TimeInput>
-          <NumberInput label="Išpirkimo kaina" placeholder="Įvesti"
-          {...form.getInputProps('buyoutPrice')} />
           <NumberInput label="Minimalus kėlimas" placeholder="Įvesti"
           {...form.getInputProps('bidIncrement')} />
           <Divider />
@@ -196,12 +192,6 @@ export default function AuctionCreateWizard({ onOpen, onClose }: AuctionProps) {
         <>
           <Title order={1}>
             Ar tikrai norite kurti aukcioną?
-            {/* <ul>
-              <li>Aukciono tipas: {auctionMetadata.auctionType}</li>
-              <li>Minimalus statymas: {auctionMetadata.bidIncrement}</li>
-              <li>Aukciono data: {auctionMetadata.auctionDate}</li>
-              <li>Ispirkimo kaina: {auctionMetadata.buyoutPrice}</li>
-            </ul> */}
           </Title>
           <Divider />
           <Center>

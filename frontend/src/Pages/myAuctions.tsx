@@ -12,7 +12,6 @@ export interface AuctionList {
     {
       id: string;
       auctionDate: string;
-      buyoutPrice: number;
       auctionType: string;
       bidIncrement: number;
       creatorId: string;
@@ -80,7 +79,6 @@ const MyAuctions: FC<TitleProps> = ({}) => {
                       stage={auctionItem.stage}
                         auctionID={auctionItem.id}
                         auctionDate={auctionItem.auctionDate}
-                        buyoutPrice={auctionItem.buyoutPrice}
                         auctionName={auctionItem.item.name}
                         category={auctionItem.item.category}
                         bidIncrement={auctionItem.bidIncrement}

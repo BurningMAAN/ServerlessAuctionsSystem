@@ -9,7 +9,6 @@ interface AuctionProps {
   auctionName: string;
   auctionDate: string;
   category: string;
-  buyoutPrice: number;
   description: string;
   auctionType: string;
   bidIncrement: number;

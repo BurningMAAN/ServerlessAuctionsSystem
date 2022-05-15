@@ -15,7 +15,6 @@ export interface AuctionProps {
   auctionName: string;
   auctionDate: string;
   category: string;
-  buyoutPrice: number;
   description: string;
   bidIncrement: number;
   auctionID: string;
@@ -25,7 +24,6 @@ export interface AuctionProps {
 
 export default function AuctionCard({
   auctionDate,
-  buyoutPrice,
   auctionName,
   category,
   description,
@@ -56,11 +54,6 @@ export default function AuctionCard({
           style={{ marginBottom: 5, marginTop: theme.spacing.sm }}
         >
           <Text weight={500}>{auctionName}</Text>
-          {buyoutPrice && (
-            <Badge color="green" variant="light">
-              Pirkti dabar
-            </Badge>
-          )}
           <Badge color="pink" variant="light">
             {category}
           </Badge>

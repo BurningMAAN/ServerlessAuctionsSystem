@@ -14,7 +14,6 @@ import (
 type request struct {
 	ItemID       string    `json:"itemId"`
 	AuctionDate  time.Time `json:"auctionDate"`
-	BuyoutPrice  *float64  `json:"buyoutPrice"`
 	AuctionType  string    `json:"auctionType"`
 	BidIncrement float64   `json:"bidIncrement"`
 }
@@ -22,7 +21,6 @@ type request struct {
 type response struct {
 	ID           string    `json:"id"`
 	AuctionDate  time.Time `json:"auctionDate"`
-	BuyoutPrice  *float64  `json:"buyoutPrice"`
 	AuctionType  string    `json:"auctionType"`
 	BidIncrement float64   `json:"bidIncrement"`
 	CreatorName  string    `json:"creatorName"`
@@ -67,7 +65,6 @@ func (h *handler) CreateAuction(ctx context.Context, event events.APIGatewayProx
 	respBody, err := json.Marshal(response{
 		ID:           auction.ID,
 		AuctionDate:  auction.StartDate,
-		BuyoutPrice:  auction.BuyoutPrice,
 		AuctionType:  string(auction.Type),
 		BidIncrement: auction.BidIncrement,
 		CreatorName:  auction.CreatorID,
