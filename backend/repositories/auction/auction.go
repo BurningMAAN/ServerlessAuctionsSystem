@@ -5,6 +5,7 @@ import (
 	"auctionsPlatform/utils"
 	"context"
 	"errors"
+	"log"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -208,11 +209,12 @@ func (r *repository) UpdateAuctionEndDate(ctx context.Context, auctionID string,
 func (r *repository) SearchAuctions(ctx context.Context, searchParams models.AuctionSearchParams) ([]models.Auction, error) {
 	conditionExpression := buildSearchCondition(searchParams)
 
+	log.Printf("got repository condition: %v", conditionExpression)
 	expr, err := expression.NewBuilder().WithFilter(conditionExpression).Build()
 	if err != nil {
 		return []models.Auction{}, err
 	}
-	result, err := r.DB.Query(ctx, &dynamodb.QueryInput{
+	result, err := r.DB.Scan(ctx, &dynamodb.ScanInput{
 		TableName:                 &r.tableName,
 		ExpressionAttributeNames:  expr.Names(),
 		ExpressionAttributeValues: expr.Values(),
