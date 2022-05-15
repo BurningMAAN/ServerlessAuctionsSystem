@@ -68,7 +68,7 @@ func buildSearchCondition(searchParams models.AuctionSearchParams) expression.Co
 	}
 	if searchParams.Stage != nil {
 		log.Print("I CAME HERE")
-		conditionExpression = conditionExpression.And(expression.Name("Stage").Equal(expression.Value(&searchParams.Stage)))
+		conditionExpression = expression.Name("Stage").Equal(expression.Value(&searchParams.Stage))
 	}
 
 	log.Printf("is set: %v", conditionExpression.IsSet())
