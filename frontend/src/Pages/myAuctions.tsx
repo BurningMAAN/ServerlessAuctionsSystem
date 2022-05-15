@@ -61,7 +61,7 @@ const MyAuctions: FC<TitleProps> = ({}) => {
     const getActive = async () => {
       try {
         const requestOptions = {
-          method: "GET",
+          method: "POST",
           body: JSON.stringify({stage: 'STAGE_ACCEPTING_BIDS'})
         };
         const response = await fetch(url, requestOptions);
@@ -75,7 +75,7 @@ const MyAuctions: FC<TitleProps> = ({}) => {
     const getEnded = async () => {
       try {
         const requestOptions = {
-          method: "GET",
+          method: "POST",
           body: JSON.stringify({stage: 'STAGE_AUCTION_FINISHED'})
         };
         const response = await fetch(url, requestOptions);
@@ -89,7 +89,7 @@ const MyAuctions: FC<TitleProps> = ({}) => {
     const getWon = async () => {
       try {
         const requestOptions = {
-          method: "GET",
+          method: "POST",
           body: JSON.stringify({winnerName: decodedToken.username})
         };
         const response = await fetch(url, requestOptions);

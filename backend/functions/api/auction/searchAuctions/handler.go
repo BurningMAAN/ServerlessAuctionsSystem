@@ -5,6 +5,7 @@ import (
 	"auctionsPlatform/utils"
 	"context"
 	"encoding/json"
+	"log"
 	"net/http"
 	"time"
 
@@ -12,10 +13,10 @@ import (
 )
 
 type request struct {
-	Category   string `json:"category"`
-	Type       string `json:"type"`
-	WinnerName string `json:"winnerName"`
-	Stage      string `json:"stage"`
+	Category   *string `json:"category"`
+	Type       *string `json:"type"`
+	WinnerName *string `json:"winnerName"`
+	Stage      *string `json:"stage"`
 }
 
 type response struct {
@@ -60,11 +61,15 @@ func (h *handler) GetAuction(ctx context.Context, event events.APIGatewayProxyRe
 		return utils.InternalError(err.Error())
 	}
 
+	eventBody, _ := json.Marshal(event.Body)
+	log.Printf("req body: %s", string(eventBody))
+	reqStruct, _ := json.Marshal(req)
+	log.Printf("unmarshalled req: %s", string(reqStruct))
 	auctions, err := h.auctionService.SearchAuctions(ctx, models.AuctionSearchParams{
-		Category:    &req.Category,
-		AuctionType: &req.Type,
-		WinnerName:  &req.WinnerName,
-		Stage:       &req.Stage,
+		Category:    req.Category,
+		AuctionType: req.Type,
+		WinnerName:  req.WinnerName,
+		Stage:       req.Stage,
 	})
 	if err != nil {
 		return utils.InternalError(err.Error())

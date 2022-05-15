@@ -99,6 +99,7 @@ func (s *service) GetAuctions(ctx context.Context) ([]models.AuctionListView, er
 
 func (s *service) SearchAuctions(ctx context.Context, searchParams models.AuctionSearchParams) ([]models.AuctionListView, error) {
 	view := []models.AuctionListView{}
+	log.Printf("service objektas: %v", searchParams)
 	auctions, err := s.auctionRepository.SearchAuctions(ctx, searchParams)
 	for _, auction := range auctions {
 		item, err := s.itemRepository.GetItemByID(ctx, auction.ItemID)
