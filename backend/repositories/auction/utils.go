@@ -3,6 +3,7 @@ package auction
 import (
 	"auctionsPlatform/models"
 	"auctionsPlatform/utils"
+	"log"
 
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/expression"
@@ -55,6 +56,7 @@ func ExtractAuctions(items []map[string]types.AttributeValue) ([]models.Auction,
 
 func buildSearchCondition(searchParams models.AuctionSearchParams) expression.ConditionBuilder {
 	conditionExpression := expression.ConditionBuilder{}
+	log.Print("building condition")
 	if searchParams.Category != nil {
 		conditionExpression = conditionExpression.And(expression.Name("GSI1SK").Equal(expression.Value(&searchParams.Category)))
 	}
@@ -65,9 +67,11 @@ func buildSearchCondition(searchParams models.AuctionSearchParams) expression.Co
 		conditionExpression = conditionExpression.And(expression.Name("WinnerID").Equal(expression.Value(&searchParams.WinnerName)))
 	}
 	if searchParams.Stage != nil {
+		log.Print("I CAME HERE")
 		conditionExpression = conditionExpression.And(expression.Name("Stage").Equal(expression.Value(&searchParams.Stage)))
 	}
 
+	log.Printf("condition: %v", conditionExpression)
 	return conditionExpression
 }
 
