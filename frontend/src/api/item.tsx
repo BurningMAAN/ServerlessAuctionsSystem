@@ -23,14 +23,10 @@ export const createItem = async (item: ItemCreateRequest) => {
     body: JSON.stringify(item),
   };
 
-  console.log(JSON.stringify(item))
   try {
     fetch(url, requestOptions).then((response) => {
-      console.log(requestOptions)
      return response.json()
     }).then((responseJSON) => {
-      console.log(responseJSON)
-      console.log(token)
     });
   } catch (error) {
     console.log("failed to create item", error);

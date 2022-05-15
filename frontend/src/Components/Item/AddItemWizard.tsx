@@ -61,7 +61,7 @@ export default function ItemCreateWizard({ onOpen, onClose }: ItemCreateProps) {
     validate: {
       name: (value) => value.length >= 4 ? null : 'Daikto pavadinimas turi būti bent 4 simbolių',
       description: (value) => value.length > 10 ? null : 'Daikto aprašymas turi būti bent 10 simbolių',
-      category: (value) => value == 'Transportas' ? null : 'Pasirinkite tinkamą kategoriją'
+      category: (value) => value == 'Transportas' || 'Baldai' || 'Elektronika' || 'Automobilių detalės' || 'Drabužiai' || 'Paveikslai' ? null : 'Pasirinkite tinkamą kategoriją'
     }
   })
   return (
@@ -135,9 +135,7 @@ export default function ItemCreateWizard({ onOpen, onClose }: ItemCreateProps) {
             const url = URL.createObjectURL(image)
             setUploadedImages([...uploadedImages, url])
             testImages.append('id', image)
-            console.log(testImages.get('id'))
             photoImages.push(image)
-            console.log(photoImages.length)
           })
         }}
         onReject={() => console.log("rejected files")}

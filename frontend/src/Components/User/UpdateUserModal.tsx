@@ -33,7 +33,6 @@ import {
         label="Pakartokite slaptažodį"/>
         <Center>
         <Button color="green" onClick={() => {
-          console.log("panaikinta")
           onClose()
         }}>Atnaujinti</Button>
         </Center>

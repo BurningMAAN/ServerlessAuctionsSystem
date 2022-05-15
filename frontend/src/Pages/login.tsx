@@ -105,15 +105,12 @@ export default function AuthenticationImage() {
       body: JSON.stringify(user),
     };
 
-    console.log(requestOptions)
-    console.log(url)
     try {
       fetch(url, requestOptions).then((response) => {
         response.json();
         if(response.status == 201){
           setClickedRegister(false);
         }
-        console.log(response);
 
       });
     } catch (error) {

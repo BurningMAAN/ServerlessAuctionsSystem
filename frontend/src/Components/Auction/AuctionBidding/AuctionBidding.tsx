@@ -108,7 +108,6 @@ export default function AuctionBiddingDashboard({
   }
 
   useInterval(() => {
-    console.log(auction.stage)
     if(auction.stage == "STAGE_ACCEPTING_BIDS"){
       return
     }
@@ -120,7 +119,6 @@ export default function AuctionBiddingDashboard({
     const now = new Date();
     const difference = endDateTime.getTime() - now.getTime();
     const s = Math.floor((difference % (1000 * 60)) / 1000);
-    console.log(s)
     if (s <= 0){
       setTimeLeft(0)
     }

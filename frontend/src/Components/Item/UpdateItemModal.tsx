@@ -53,13 +53,11 @@ export default function UpdateItem({ id, name, description, category, onOpen, on
       try {
         const response = await fetch(url, requestOptions);
         const responseJSON = await response.json();
-        console.log(responseJSON);
         setItem(responseJSON);
       } catch (error) {
         console.log("failed to get data from api", error);
       }
     };
-    console.log("Updating data lists");
     fetchData();
   }
   const form = useForm({

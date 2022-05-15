@@ -32,7 +32,6 @@ export default function ItemCard({
   const secondaryColor =
     theme.colorScheme === "dark" ? theme.colors.dark[1] : theme.colors.gray[7];
 
-    console.log(`${process.env.REACT_APP_S3_URL}/${photoURLs[0]}`)
   const [updateOpen, setUpdateOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
   return (

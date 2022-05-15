@@ -36,13 +36,11 @@ export default function AuctionGroup() {
       try {
         const response = await fetch(url, requestOptions);
         const responseJSON = await response.json();
-        console.log(responseJSON);
         setItemsList(responseJSON);
       } catch (error) {
         console.log("failed to get data from api", error);
       }
     };
-    console.log("Updating data lists");
     fetchData();
   }, []);
 

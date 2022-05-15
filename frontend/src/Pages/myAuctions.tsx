@@ -66,7 +66,6 @@ const MyAuctions: FC<TitleProps> = ({}) => {
         };
         const response = await fetch(url, requestOptions);
         const responseJSON = await response.json();
-        console.log(responseJSON);
         setActiveAuctionsList(responseJSON);
       } catch (error) {
         console.log("failed to get data from api", error);
@@ -80,7 +79,6 @@ const MyAuctions: FC<TitleProps> = ({}) => {
         };
         const response = await fetch(url, requestOptions);
         const responseJSON = await response.json();
-        console.log(responseJSON);
         setEndedAuctionsList(responseJSON);
       } catch (error) {
         console.log("failed to get data from api", error);
@@ -94,7 +92,6 @@ const MyAuctions: FC<TitleProps> = ({}) => {
         };
         const response = await fetch(url, requestOptions);
         const responseJSON = await response.json();
-        console.log(responseJSON);
         setWonAuctionsList(responseJSON);
       } catch (error) {
         console.log("failed to get data from api", error);
@@ -154,10 +151,10 @@ const MyAuctions: FC<TitleProps> = ({}) => {
             </Grid>
         </Tabs.Tab>
         <Tabs.Tab label="Laimėti Aukcionai" icon={<MessageCircle size={14} />}>
-        {wonAuctionsList?.auctions?.map((auctionItem) => {
+        <Grid>
+            {wonAuctionsList?.auctions?.map((auctionItem) => {
               return (
                 <>
-                  {auctionItem.creatorId == decodedToken.username && (
                     <Grid.Col span={4}>
                       <MyAuctionCard
                       stage={auctionItem.stage}
@@ -169,10 +166,10 @@ const MyAuctions: FC<TitleProps> = ({}) => {
                         photoURL={auctionItem.photoURL}
                       ></MyAuctionCard>
                     </Grid.Col>
-                  )}
                 </>
               );
             })}
+          </Grid>
         </Tabs.Tab>
       </Tabs>
     </AppShell>

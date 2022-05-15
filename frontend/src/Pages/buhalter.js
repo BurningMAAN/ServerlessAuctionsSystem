@@ -45,7 +45,6 @@ const BugalterDashboard =  () => {
       `${process.env.REACT_APP_API_URL}generateData`
     ).then((res) => res.json());
     setData(auctionData)
-    console.log(data)
   };
   return (
     <AppShell
