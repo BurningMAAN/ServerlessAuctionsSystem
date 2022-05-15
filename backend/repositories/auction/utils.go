@@ -71,6 +71,7 @@ func buildSearchCondition(searchParams models.AuctionSearchParams) expression.Co
 		conditionExpression = conditionExpression.And(expression.Name("Stage").Equal(expression.Value(&searchParams.Stage)))
 	}
 
+	log.Printf("is set: %v", conditionExpression.IsSet())
 	log.Printf("condition: %v", conditionExpression)
 	return conditionExpression
 }
