@@ -8,7 +8,6 @@ import "time"
 type Auction struct {
 	ID           string
 	Type         AuctionType
-	BuyoutPrice  *float64
 	StartDate    time.Time
 	BidIncrement float64
 	CreatorID    string
@@ -44,8 +43,8 @@ type AuctionSearchParams struct {
 }
 
 type AuctionUpdate struct {
-	BuyoutPrice  *float64
 	StartDate    *time.Time
 	BidIncrement *float64
 	Type         *string
+	WinnerID     *string
 }

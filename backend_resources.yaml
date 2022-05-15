@@ -114,10 +114,17 @@ Resources:
             Resource: "*"
           - Effect: Allow
             Action:
-              - dynamodb:PutItem
+              - dynamodb:Query
               - dynamodb:GetItem
               - dynamodb:UpdateItem
-            Resource: !GetAtt DynamoDBTable.Arn
+              - dynamodb:PutItem
+              - dynamodb:DeleteItem
+            Resource: 
+              - !GetAtt DynamoDBTable.Arn
+              - Fn::Sub:
+                  - '${DynamoDBTableArn}/index/GSI1'
+                  - '${DynamoDBTableArn}/index/GSI2'
+                  - DynamoDBTableArn: !GetAtt DynamoDBTable.Arn
   # Bid Handler function
   HandleBidFunction:
     Type: AWS::Serverless::Function

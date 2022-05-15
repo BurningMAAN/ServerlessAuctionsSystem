@@ -13,7 +13,6 @@ import (
 
 type request struct {
 	AuctionID    string
-	BuyoutPrice  float64   `json:"buyoutPrice"`
 	StartDate    time.Time `json:"startDate"`
 	BidIncrement float64   `json:"bidIncrement"`
 	Type         string    `json:"type"`
@@ -49,7 +48,6 @@ func (h *handler) CreateAuction(ctx context.Context, event events.APIGatewayProx
 	}
 
 	err = h.auctionService.UpdateAuction(ctx, req.AuctionID, models.AuctionUpdate{
-		BuyoutPrice:  &req.BuyoutPrice,
 		StartDate:    &req.StartDate,
 		BidIncrement: &req.BidIncrement,
 		Type:         &req.Type,
