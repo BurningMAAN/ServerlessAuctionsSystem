@@ -212,7 +212,7 @@ func (r *repository) SearchAuctions(ctx context.Context, searchParams models.Auc
 	if err != nil {
 		return []models.Auction{}, err
 	}
-	result, err := r.DB.Scan(ctx, &dynamodb.ScanInput{
+	result, err := r.DB.Query(ctx, &dynamodb.QueryInput{
 		TableName:                 &r.tableName,
 		ExpressionAttributeNames:  expr.Names(),
 		ExpressionAttributeValues: expr.Values(),
