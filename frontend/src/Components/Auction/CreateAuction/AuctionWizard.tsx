@@ -3,6 +3,7 @@ import {
   Modal,
   Stepper,
   Center,
+  List,
   Title,
   Select,
   NumberInput,
@@ -11,6 +12,7 @@ import {
 import { useState, useEffect } from "react";
 import { DatePicker, TimeInput } from "@mantine/dates";
 import { useForm } from '@mantine/form';
+import { Item } from "react-bootstrap/lib/Breadcrumb";
 
 interface AuctionProps {
   onOpen: boolean;
@@ -139,7 +141,6 @@ export default function AuctionCreateWizard({ onOpen, onClose }: AuctionProps) {
       <Stepper active={activeStep} color="green">
         <Stepper.Step label="Inventoriaus pasirinkimas"></Stepper.Step>
         <Stepper.Step label="Aukciono duomenys"></Stepper.Step>
-        <Stepper.Step label="Patvirtinimas"></Stepper.Step>
       </Stepper>
       <Divider />
       {activeStep == 0 && (
@@ -181,18 +182,6 @@ export default function AuctionCreateWizard({ onOpen, onClose }: AuctionProps) {
           required></TimeInput>
           <NumberInput label="Minimalus kėlimas" placeholder="Įvesti"
           {...form.getInputProps('bidIncrement')} />
-          <Divider />
-          <Center>
-            <Button onClick={prevStep}>Atgal</Button>
-            <Button onClick={nextStep}>Toliau</Button>
-          </Center>
-        </>
-      )}
-      {activeStep == 2 && (
-        <>
-          <Title order={1}>
-            Ar tikrai norite kurti aukcioną?
-          </Title>
           <Divider />
           <Center>
             <Button onClick={prevStep}>Atgal</Button>

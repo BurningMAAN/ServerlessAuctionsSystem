@@ -70,7 +70,7 @@ export default function UpdateItem({ id, name, description, category, onOpen, on
     validate: {
       name: (value) => value.toString().length >= 4 ? null : 'Daikto pavadinimas turi būti bent 4 simbolių',
       description: (value) => value.length > 10 ? null : 'Daikto aprašymas turi būti bent 10 simbolių',
-      category: (value) => value == 'Transportas' || 'Baldai' || 'Elektronika' || 'Automobilių detalės' || 'Drabužiai' || 'Paveikslai' ? null : 'Pasirinkite tinkamą kategoriją'
+      category: (value) => value == 'Transportas' || 'Baldai' || 'Elektronika' || 'Automobilių detalės' || 'Drabužiai' || 'Paveikslas' ? null : 'Pasirinkite tinkamą kategoriją'
     }
   })
   return (
@@ -88,7 +88,7 @@ export default function UpdateItem({ id, name, description, category, onOpen, on
         placeholder="Pasirinkti"
         required
         {...form.getInputProps('category')}
-        data={[{ value: "Transportas", label: "Transportas" }, {value: "Baldai", label: "Baldai"}, {value: "Elektronika", label: "Elektronika"}, {value: "Automobilių detalės", label: "Automobilių detalės"}, {value: "Drabužiai", label: "Drabužiai"}, {label: "Paveikslai", value: "Paveikslai"}]}
+        data={[{ value: "Transportas", label: "Transportas" }, {value: "Baldai", label: "Baldai"}, {value: "Elektronika", label: "Elektronika"}, {value: "Automobilių detalės", label: "Automobilių detalės"}, {value: "Drabužiai", label: "Drabužiai"}, {label: "Paveikslas", value: "Paveikslas"}]}
       />
       <Textarea
         placeholder="Aprašymas"
@@ -96,7 +96,10 @@ export default function UpdateItem({ id, name, description, category, onOpen, on
         {...form.getInputProps('description')}
         required
       />
-      <Button onClick={() => updateItem()}>Atnaujinti</Button>
+      <Button onClick={() => {
+        updateItem()
+        onClose();
+        }}>Atnaujinti</Button>
     </Modal>
   );
 }

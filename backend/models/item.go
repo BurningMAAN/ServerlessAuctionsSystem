@@ -16,12 +16,12 @@ type Item struct {
 type ItemCategory string
 
 var (
-	ItemCategoryTransport   ItemCategory = "Transport"
-	ItemCategoryElectronics ItemCategory = "Appliance"
-	ItemCategoryHome        ItemCategory = "Furniture"
-	ItemCategoryClothing    ItemCategory = "Clothing"
-	ItemCategoryCarParts    ItemCategory = "CarPart"
-	ItemCategoryPainting    ItemCategory = "Painting"
+	ItemCategoryTransport   ItemCategory = "Transportas"
+	ItemCategoryElectronics ItemCategory = "Elektronika"
+	ItemCategoryHome        ItemCategory = "Baldas"
+	ItemCategoryDrabužiai   ItemCategory = "Drabužiai"
+	ItemCategoryDetalės     ItemCategory = "Detalė"
+	ItemCategoryPaveikslas  ItemCategory = "Paveikslas"
 )
 
 type ItemUpdate struct {

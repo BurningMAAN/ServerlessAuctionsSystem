@@ -90,7 +90,7 @@ export default function UserDashboard() {
       creditBalance: (value) => value > 0 ? null : 'Kreditų papildymas turi būti didesnis nei nulis',
       // name: (value) => value.toString().length >= 4 ? null : 'Daikto pavadinimas turi būti bent 4 simbolių',
       // description: (value) => value.length > 10 ? null : 'Daikto aprašymas turi būti bent 10 simbolių',
-      // category: (value) => value == 'Transportas' || 'Baldai' || 'Elektronika' || 'Automobilių detalės' || 'Drabužiai' || 'Paveikslai' ? null : 'Pasirinkite tinkamą kategoriją'
+      // category: (value) => value == 'Transportas' || 'Baldai' || 'Elektronika' || 'Automobilių detalės' || 'Drabužiai' || 'Paveikslas' ? null : 'Pasirinkite tinkamą kategoriją'
     }
   })
 

@@ -4,7 +4,6 @@ import (
 	"auctionsPlatform/models"
 	bidRepo "auctionsPlatform/repositories/bid"
 	"context"
-	"encoding/json"
 	"log"
 	"time"
 )
@@ -13,6 +12,7 @@ type auctionRepository interface {
 	UpdateAuctionStage(ctx context.Context, auctionID string, stage string) error
 	UpdateAuctionEndDate(ctx context.Context, auctionID string, endDate time.Time) error
 	UpdateAuction(ctx context.Context, auctionID string, update models.AuctionUpdate) error
+	GetAuctionByID(ctx context.Context, auctionID string) (models.Auction, error)
 }
 
 type eventRepository interface {
@@ -37,8 +37,11 @@ type handler struct {
 }
 
 func (h *handler) HandleAuction(ctx context.Context, event models.AuctionEvent) error {
-	eventBytes, _ := json.Marshal(event)
-	log.Print(string(eventBytes))
+	auction, err := h.auctionRepo.GetAuctionByID(ctx, event.AuctionID)
+	if err != nil {
+		return err
+	}
+
 	switch event.Stage {
 	case "STAGE_ACCEPTING_BIDS":
 		err := h.auctionRepo.UpdateAuctionStage(ctx, event.AuctionID, "STAGE_AUCTION_ONGOING")
@@ -94,6 +97,20 @@ func (h *handler) HandleAuction(ctx context.Context, event models.AuctionEvent) 
 					Credit:   &newCreditBalance,
 				})
 				log.Printf("new credit balance: %v", newCreditBalance)
+				if err != nil {
+					return err
+				}
+
+				creator, err := h.userRepository.GetUserByUserName(ctx, auction.CreatorID)
+				if err != nil {
+					return err
+				}
+
+				creatorCreditBalance := creator.Credit + bids[0].Value
+				err = h.userRepository.UpdateUser(ctx, models.UserUpdate{
+					UserName: auction.CreatorID,
+					Credit:   &creatorCreditBalance,
+				})
 				if err != nil {
 					return err
 				}

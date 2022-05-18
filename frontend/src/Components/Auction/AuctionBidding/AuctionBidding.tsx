@@ -67,9 +67,9 @@ export default function AuctionBiddingDashboard({
     setAuction(auctionData);
   };
 
-  useEffect(() => {
+  useInterval(() => {
     getData();
-  });
+  }, 1000)
   const [timeLeft, setTimeLeft] = useState(60);
   const [days, setDays] = useState(0);
   const [hours, setHours] = useState(0);
@@ -139,9 +139,10 @@ export default function AuctionBiddingDashboard({
       `${process.env.REACT_APP_API_URL}auction/${auctionID}/bids`, requestOptions
     ).then((res) => res.json());
     setBids(itemData);
+    console.log('fetching bids')
   }
 
-  let getLatestBidsDelay: number | null = 300
+  let getLatestBidsDelay: number | null = 800
    useInterval(() => {
      if(auctionID){
       getLatestBids(auctionID)

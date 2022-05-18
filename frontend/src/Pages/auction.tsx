@@ -49,6 +49,7 @@ export default function AuctionView({}: AuctionViewProps) {
 
   useEffect(() => {
     getData();
+    console.log('fetching')
   }, []);
 
   return (
