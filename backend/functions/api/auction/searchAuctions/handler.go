@@ -32,7 +32,9 @@ type auction struct {
 	CreatorID    string       `json:"creatorId"`
 	ItemID       string       `json:"itemId"`
 	Item         itemResponse `json:"item"`
+	Stage        string       `json:"stage"`
 	PhotoURL     string       `json:"photoURL"`
+	WinnerID     string       `json:"winnerId"`
 }
 
 type itemResponse struct {
@@ -43,6 +45,7 @@ type itemResponse struct {
 	Name        string   `json:"name"`
 	PhotoURLs   []string `json:"photoURLs"`
 	AuctionID   string   `json:"auctionId"`
+	WinnerID    string   `json:"winnerId"`
 }
 
 type auctionService interface {
@@ -101,6 +104,8 @@ func auctionsToResponse(auctions []models.AuctionListView) response {
 			BidIncrement: auctionItem.Auction.BidIncrement,
 			CreatorID:    auctionItem.Auction.CreatorID,
 			PhotoURL:     auctionItem.Auction.PhotoURL,
+			WinnerID:     auctionItem.Auction.WinnerID,
+			Stage:        auctionItem.Auction.Stage,
 			Item: itemResponse{
 				ID:          auctionItem.Auction.ItemID,
 				Description: auctionItem.Item.Description,

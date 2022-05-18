@@ -22,6 +22,7 @@ func unmarshalAuction(auctionDB AuctionDB) (models.Auction, error) {
 		EndDate:      auctionDB.EndDate,
 		Stage:        auctionDB.Stage,
 		PhotoURL:     auctionDB.PhotoURL,
+		WinnerID:     auctionDB.WinnerID,
 	}, nil
 }
 

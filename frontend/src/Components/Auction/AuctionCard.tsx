@@ -35,6 +35,7 @@ import {
       theme.colorScheme === "dark" ? theme.colors.dark[1] : theme.colors.gray[7];
       let auctionDateParsed = new Date(auctionDate)
        let formatted = formatDate(auctionDateParsed)
+       console.log(stage)
     return (
       <div style={{ width: 340, margin: "auto" }}>
         <Card shadow="sm" p="lg">
@@ -74,22 +75,26 @@ import {
           >
             <Link to={`/auctions/${auctionID}`}>Peržiūrėti</Link>
           </Button>
-          <Button
-            variant="light"
-            color="yellow"
-            fullWidth
-            style={{ marginTop: 14 }}
-          >
-           Atnaujinti
-          </Button>
-          <Button
-            variant="light"
-            color="red"
-            fullWidth
-            style={{ marginTop: 14 }}
-          >
-           Pašalinti
-          </Button>
+          {stage != undefined && (
+            <>
+              <Button
+              variant="light"
+              color="yellow"
+              fullWidth
+              style={{ marginTop: 14 }}
+            >
+            Atnaujinti
+            </Button>
+            <Button
+              variant="light"
+              color="red"
+              fullWidth
+              style={{ marginTop: 14 }}
+            >
+            Pašalinti
+            </Button>
+            </>
+          )}
         </Card>
       </div>
     );

@@ -16,6 +16,7 @@ type Auction struct {
 	Stage        string
 	Category     string
 	PhotoURL     string
+	WinnerID     string
 }
 
 type AuctionType string
