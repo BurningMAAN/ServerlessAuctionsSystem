@@ -59,7 +59,7 @@ func (r *repository) CreateItem(ctx context.Context, item models.Item) (models.I
 		PK:          utils.Make(models.ItemEntityType, itemID),
 		SK:          "Metadata",
 		GSI1PK:      utils.Make(models.UserEntityType, item.OwnerID),
-		GSI1SK:      string(item.Category),
+		GSI1SK:      utils.Make("Category", string(item.Category)),
 		PhotoURLs:   item.PhotoURLs,
 		Description: item.Description,
 		Name:        item.Name,

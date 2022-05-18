@@ -14,7 +14,7 @@ interface GetAuctionResponse{
   auctionType: string;
   bidIncrement: number;
   startDate: string;
-  creatorID: string;
+  creatorId: string;
   auctionID: string;
   stage: string;
   endDate: string;
@@ -153,7 +153,6 @@ export default function AuctionBiddingDashboard({
 
   const token = getToken();
   const decodedToken = jwtDecode<DecodedToken>(token);
-  console.log(decodedToken.username, ' ', auction.creatorID)
   return (
     <Grid.Col span={4}>
       <Center>
@@ -174,7 +173,7 @@ export default function AuctionBiddingDashboard({
         <Text>Minimalus kėlimas: {auction.bidIncrement} €</Text>
       </Center>
       <Center>
-        {(auction.stage != "STAGE_AUCTION_FINISHED" && timeLeft > 0 && token && decodedToken.username != auction.creatorID && (
+        {(auction.stage != "STAGE_AUCTION_FINISHED" && timeLeft > 0 && token && decodedToken.username != auction.creatorId && (
           <Button
             color="green"
             onClick={() => {
@@ -222,12 +221,12 @@ export default function AuctionBiddingDashboard({
             + {auction.bidIncrement}
           </Button>
          )) ||
-          (auction.stage == "STAGE_AUCTION_FINISHED" && token && decodedToken.username != auction.creatorID && (
+          (auction.stage == "STAGE_AUCTION_FINISHED" && token && decodedToken.username != auction.creatorId && (
             <Button color="grey" disabled>
               Aukcionas baigėsi
             </Button>
           )) ||
-          (!token && decodedToken.username != auction.creatorID && (
+          (!token && decodedToken.username != auction.creatorId && (
             <Button color="grey" disabled>
               Tik registruotiems nariams
             </Button>

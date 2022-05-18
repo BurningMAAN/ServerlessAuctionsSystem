@@ -14,7 +14,7 @@ func unmarshalItem(itemDB ItemDB) (models.Item, error) {
 	return models.Item{
 		ID:          utils.Extract(models.ItemEntityType, itemDB.PK),
 		Description: itemDB.Description,
-		Category:    models.ItemCategory(itemDB.GSI1SK),
+		Category:    models.ItemCategory(utils.Extract("Category", itemDB.GSI1SK)),
 		OwnerID:     utils.Extract(models.UserEntityType, itemDB.GSI1PK),
 		PhotoURLs:   itemDB.PhotoURLs,
 		Name:        itemDB.Name,
