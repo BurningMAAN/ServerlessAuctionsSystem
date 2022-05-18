@@ -153,6 +153,7 @@ export default function AuctionBiddingDashboard({
 
   const token = getToken();
   const decodedToken = jwtDecode<DecodedToken>(token);
+  console.log(decodedToken.username, ' ', auction.creatorID)
   return (
     <Grid.Col span={4}>
       <Center>

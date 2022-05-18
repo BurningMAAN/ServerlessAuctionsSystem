@@ -16,9 +16,12 @@ type Item struct {
 type ItemCategory string
 
 var (
-	ItemCategoryCar        ItemCategory = "Car"
-	ItemCategoryAppliances ItemCategory = "Appliances"
-	ItemCategoryHome       ItemCategory = "Home"
+	ItemCategoryTransport   ItemCategory = "Transport"
+	ItemCategoryElectronics ItemCategory = "Appliance"
+	ItemCategoryHome        ItemCategory = "Furniture"
+	ItemCategoryClothing    ItemCategory = "Clothing"
+	ItemCategoryCarParts    ItemCategory = "CarPart"
+	ItemCategoryPainting    ItemCategory = "Painting"
 )
 
 type ItemUpdate struct {

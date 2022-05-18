@@ -61,7 +61,7 @@ export default function ItemCreateWizard({ onOpen, onClose }: ItemCreateProps) {
     validate: {
       name: (value) => value.length >= 4 ? null : 'Daikto pavadinimas turi būti bent 4 simbolių',
       description: (value) => value.length > 10 ? null : 'Daikto aprašymas turi būti bent 10 simbolių',
-      category: (value) => value == 'Transportas' || 'Baldai' || 'Elektronika' || 'Automobilių detalės' || 'Drabužiai' || 'Paveikslai' ? null : 'Pasirinkite tinkamą kategoriją'
+      category: (value) => value == 'Transport' || 'Furniture' || 'Appliance' || 'Painting' || 'CarPart' || 'Clothing' ? null : 'Pasirinkite tinkamą kategoriją'
     }
   })
   return (
@@ -102,7 +102,7 @@ export default function ItemCreateWizard({ onOpen, onClose }: ItemCreateProps) {
         placeholder="Pasirinkti"
         required
         {...form.getInputProps('category')}
-        data={[{ value: "Transportas", label: "Transportas" }, {value: "Baldai", label: "Baldai"}, {value: "Elektronika", label: "Elektronika"}, {value: "Automobilių detalės", label: "Automobilių detalės"}, {value: "Drabužiai", label: "Drabužiai"}, {label: "Paveikslai", value: "Paveikslai"}]}
+        data={[{ value: "Transport", label: "Transportas" }, {value: "Furniture", label: "Baldai"}, {value: "Appliance", label: "Elektronika"}, {value: "CarPart", label: "Automobilių detalės"}, {value: "Clothing", label: "Drabužiai"}, {label: "Painting", value: "Paveikslai"}]}
       />
       <Textarea
         placeholder="Aprašymas"
