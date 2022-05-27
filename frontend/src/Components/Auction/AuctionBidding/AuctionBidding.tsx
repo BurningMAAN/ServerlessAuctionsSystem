@@ -69,7 +69,7 @@ export default function AuctionBiddingDashboard({
 
   useInterval(() => {
     getData();
-  }, 1000)
+  }, 500)
   const [timeLeft, setTimeLeft] = useState(60);
   const [days, setDays] = useState(0);
   const [hours, setHours] = useState(0);
@@ -102,7 +102,7 @@ export default function AuctionBiddingDashboard({
     }
   }, refreshTime);
 
-  let timerInterval: number | null = 1000
+  let timerInterval: number | null = 300
   if (auction.stage === "STAGE_AUCTION_FINISHED"){
     timerInterval = null
   }
@@ -245,12 +245,12 @@ export default function AuctionBiddingDashboard({
             Aukcionas pradedamas
           </Title>
         )}
-        {auction.stage === "STAGE_AUCTION_ONGOING" && timeLeft >= 0 && (
+        {auction.stage === "STAGE_AUCTION_ONGOING" && timeLeft > 0 && (
           <Title order={6}>
             Aukcionas šiuo metu vyksta
           </Title>
         )}
-        {auction.stage === "STAGE_AUCTION_ONGOING" && timeLeft <= 0 && (
+        {auction.stage === "STAGE_AUCTION_ONGOING" && timeLeft < 0 && (
           <Title order={6}>
             Aukcionas užbaigiamas
           </Title>

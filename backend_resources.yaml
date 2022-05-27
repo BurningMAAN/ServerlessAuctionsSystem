@@ -36,27 +36,13 @@ Resources:
           Projection:
             ProjectionType: ALL
           ProvisionedThroughput: 
-            ReadCapacityUnits: "100"
-            WriteCapacityUnits: "100"
-        # - IndexName: GSI2
-        #   KeySchema:
-        #     - AttributeName: GSI2PK
-        #       KeyType: HASH
-        #     - AttributeName: GSI2SK
-        #       KeyType: RANGE
-        #   Projection:
-        #     ProjectionType: ALL
-        #   ProvisionedThroughput: 
-        #     ReadCapacityUnits: "100"
-        #     WriteCapacityUnits: "100"
+            ReadCapacityUnits: 100
+            WriteCapacityUnits: 100
       ProvisionedThroughput: 
-        ReadCapacityUnits: "10"
-        WriteCapacityUnits: "10"
+        ReadCapacityUnits: 10
+        WriteCapacityUnits: 10
       StreamSpecification:
         StreamViewType: NEW_AND_OLD_IMAGES
-      TimeToLiveSpecification:
-        AttributeName: "EndDate"
-        Enabled: true
       TableName: "AuctionsTable"
 
   DynamoDBTableStream:

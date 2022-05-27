@@ -75,7 +75,7 @@ import {
           >
             <Link to={`/auctions/${auctionID}`}>Peržiūrėti</Link>
           </Button>
-          {stage != undefined && (
+          {stage != "STAGE_AUCTION_FINISHED" && (
             <>
               <Button
               variant="light"
